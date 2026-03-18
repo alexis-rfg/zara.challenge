@@ -1,0 +1,8 @@
+{
+  // Root orchestrator - no compilerOptions, just project references
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}

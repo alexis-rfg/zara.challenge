@@ -1,0 +1,58 @@
+{
+  // Base configuration for application TypeScript compilation within the src directory
+  "compilerOptions": {
+    // Enables TypeScript project references for modular builds and incremental compilation
+    "composite": true,
+    // Where TypeScript stores incremental compilation information for faster rebuilds
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // Compile to ES2022 - modern JavaScript with latest features
+    "target": "ES2022",
+    // Use standard class field behavior matching TC39 spec
+    "useDefineForClassFields": true,
+    // Include ES2022 standard library plus browser DOM APIs
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // Use ESNext module syntax (import/export)
+    "module": "ESNext",
+    // Include Vite's client type definitions for import.meta.env, etc.
+    "types": ["vite/client"],
+    // Skip type checking of declaration files (.d.ts) for faster compilation
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    // Use bundler-specific module resolution (Vite/esbuild)
+    "moduleResolution": "bundler",
+    // Allow importing .ts/.tsx files with extensions in import statements
+    "allowImportingTsExtensions": true,
+    // Enforces that type-only imports use 'import type' - required for bundler mode and ensures correct tree-shaking
+    "verbatimModuleSyntax": true,
+    // Treat all files as modules even without import/export
+    "moduleDetection": "force",
+    // Don't emit JavaScript files - Vite handles compilation
+    "noEmit": true,
+    // Use React 17+ JSX transform (no need to import React)
+    "jsx": "react-jsx",
+
+    /* Linting */
+    // Umbrella flag enabling strictNullChecks, strictFunctionTypes, noImplicitAny, and others - eliminates runtime null/undefined bugs
+    "strict": true,
+    // Catches variables declared but never read - dead code gets caught at compile time
+    "noUnusedLocals": true,
+    // Same for function parameters - forces deliberate use of _prefix convention when a parameter is intentionally ignored
+    "noUnusedParameters": true,
+    // Every code path through a function that returns a value must return explicitly - prevents undefined surprises
+    "noImplicitReturns": true,
+    // Every case in a switch must either break, return, or throw - prevents accidental fallthrough bugs
+    "noFallthroughCasesInSwitch": true,
+    // { foo?: string } means the property is either string or absent - not string | undefined - distinguishes between missing key and key set to undefined
+    "exactOptionalPropertyTypes": true,
+    // arr[0] returns T | undefined rather than T - forces you to check before using array or record values
+    "noUncheckedIndexedAccess": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}
