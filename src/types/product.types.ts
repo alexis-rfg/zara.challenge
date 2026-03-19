@@ -40,13 +40,3 @@ export type ProductDetail = {
   storageOptions: StorageOption[];
   similarProducts: ProductSummary[];
 };
-
-export type CartItem = {
-  id: string;
-  name: string;
-  brand: string;
-  imageUrl: string;
-  colorName: string;
-  storageCapacity: string;
-  price: number;
-};
