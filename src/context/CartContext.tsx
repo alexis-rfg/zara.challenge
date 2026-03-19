@@ -47,7 +47,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const savedCart: CartItem[] = getCart();
     dispatch({ type: CartActionType.LOAD_CART, payload: savedCart });
   }, []);
