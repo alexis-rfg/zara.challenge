@@ -20,10 +20,14 @@
     "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
     "verify": "tsc --noEmit && eslint . --max-warnings 0 && vitest run --passWithNoTests",
+    "docs": "typedoc && start docs/index.html",
+    "docs:watch": "typedoc --watch",
+    "docs:generate": "typedoc",
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,css,scss,json,md}": "prettier --write"
+    "src/**/*.{ts,tsx,css,scss,json,md}": "prettier --write",
+    "src/**/*.{ts,tsx}": ["eslint --fix", "vitest related --run"]
   },
   "dependencies": {
     "react": "catalog:",
@@ -55,6 +59,7 @@
     "lint-staged": "^16.4.0",
     "prettier": "catalog:",
     "sass": "catalog:",
+    "typedoc": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",

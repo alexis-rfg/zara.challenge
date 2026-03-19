@@ -8,11 +8,12 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import vitest from 'eslint-plugin-vitest'
 
 export default defineConfig([
-  globalIgnores(['dist', 'coverage']),
+  globalIgnores(['dist', 'coverage', '**/*.d.ts']),
 
   // All source files
   {
     files: ['src/**/*.{ts,tsx}'],
+    ignores: ['**/*.d.ts'],
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked, // type-aware rules; requires parserOptions.project
