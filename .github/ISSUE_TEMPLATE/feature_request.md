@@ -1,36 +1,41 @@
 ---
 name: Feature Request
-about: Suggest an idea for this project
+about: Suggest a new feature or enhancement
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-## Feature Description
+## Is your feature request related to a problem?
 
-A clear and concise description of the feature you'd like to see.
+<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
 
-## Problem Statement
+## Describe the solution you'd like
 
-Is your feature request related to a problem? Please describe.
-Example: I'm always frustrated when [...]
+<!-- A clear and concise description of what you want to happen. -->
 
-## Proposed Solution
+## Describe alternatives you've considered
 
-A clear and concise description of what you want to happen.
+<!-- A clear and concise description of any alternative solutions or features you've considered. -->
 
-## Alternatives Considered
+## Additional context
 
-A clear and concise description of any alternative solutions or features you've considered.
+<!-- Add any other context, screenshots, or mockups about the feature request here. -->
 
-## Additional Context
+## Acceptance Criteria
 
-Add any other context, screenshots, or mockups about the feature request here.
+<!-- What needs to be true for this feature to be considered complete? -->
 
-## Benefits
+- [ ] 
+- [ ] 
+- [ ]
 
-How would this feature benefit the project and its users?
+## Implementation Notes
 
-## Implementation Suggestions
+<!-- Optional: Technical details, API changes, dependencies, etc. -->
 
-If you have ideas on how to implement this feature, please share them here.
+## Related Issues
+
+<!-- Link any related issues or PRs -->
+
+Closes #
