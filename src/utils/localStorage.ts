@@ -1,4 +1,4 @@
-import type { CartItem } from '@/types/product.types';
+import type { CartItem } from '@/types/cart.types';
 
 const CART_KEY = 'zara-cart';
 
