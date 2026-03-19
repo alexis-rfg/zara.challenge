@@ -1,0 +1,54 @@
+@use "@/styles/variables" as *;
+.navbar {
+  background-color: $color-background;
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__container {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: $spacing-md $spacing-lg;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      padding: $spacing-md;
+    }
+  }
+
+  &__home,
+  &__cart {
+    display: flex;
+    align-items: center;
+    color: $color-text;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $color-secondary;
+    }
+  }
+
+  &__cart {
+    position: relative;
+
+    &-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: $color-primary;
+      color: $color-background;
+      font-size: 12px;
+      font-weight: bold;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+    }
+  }
+}
