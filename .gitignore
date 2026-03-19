@@ -23,8 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
-# Reference files
+# Generated documentation
 docs/
+
+# Requirements documentation
+requirements/
 
 # Agents
 .agents/*
