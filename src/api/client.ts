@@ -3,6 +3,10 @@ import { env } from '@/env';
 const API_BASE_URL = env().baseUrl;
 const API_KEY = env().apiKey;
 
+/**
+ * Custom error class for API-related errors.
+ * Extends the native Error class with HTTP status information.
+ */
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -14,6 +18,25 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Generic API client for making authenticated requests to the backend.
+ * Automatically includes the API key in request headers.
+ *
+ * @template T - The expected response type
+ * @param endpoint - The API endpoint path (e.g., '/products' or '/products/123')
+ * @returns Promise resolving to the typed response data
+ * @throws {ApiError} When the API returns a non-OK status code
+ * @throws {Error} When a network error occurs
+ *
+ * @example
+ * ```typescript
+ * // Fetch products
+ * const products = await apiClient<ProductSummary[]>('/products?limit=20');
+ *
+ * // Fetch single product
+ * const product = await apiClient<ProductDetail>('/products/iphone-15');
+ * ```
+ */
 export const apiClient = async <T>(endpoint: string): Promise<T> => {
   const url = `${API_BASE_URL}${endpoint}`;
   try {

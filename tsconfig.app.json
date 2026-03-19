@@ -52,7 +52,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    
+    /* JSON imports */
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }
