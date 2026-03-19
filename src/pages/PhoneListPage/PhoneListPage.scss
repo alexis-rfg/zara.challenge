@@ -1,0 +1,89 @@
+@use "@/styles/variables" as *;
+
+.phone-list-page {
+  width: 100%;
+
+  // Grid of cards — CSS Grid as required, matching Figma card sizing
+  &__grid {
+    display: grid;
+    // Desktop: fixed 344px (21.5rem) cards, border-sharing between cells
+    grid-template-columns: repeat(auto-fill, $card-size); // 21.5rem
+    padding: 0 $padding-horizontal; // 0 100px
+
+    @media (max-width: 64rem) {
+      // Tablet: fluid columns, smaller padding
+      grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+      padding: 0 $padding-horizontal-tablet;
+    }
+
+    @media (max-width: 48rem) {
+      // Mobile: 2-column grid
+      grid-template-columns: repeat(2, 1fr);
+      padding: 0 $padding-horizontal-mobile;
+    }
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-2xl $padding-horizontal;
+    gap: $spacing-md;
+  }
+
+  &__spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0.25rem solid $color-border;
+    border-top-color: $color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: $spacing-2xl $padding-horizontal;
+    color: $color-text-light;
+    font-weight: 300;
+    font-size: $font-size-card;
+    text-transform: uppercase;
+  }
+
+  &__error {
+    text-align: center;
+    padding: $spacing-2xl $padding-horizontal;
+
+    h2 {
+      font-weight: 300;
+      font-size: $font-size-base;
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      font-weight: 300;
+      font-size: $font-size-card;
+      color: $color-error;
+      margin-bottom: $spacing-md;
+    }
+
+    button {
+      padding: $spacing-sm $spacing-lg;
+      background-color: $color-primary;
+      color: $color-background;
+      border: none;
+      font-family: $font-family;
+      font-weight: 300;
+      font-size: $font-size-card;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
