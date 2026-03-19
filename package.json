@@ -20,6 +20,8 @@
     "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
     "verify": "tsc --noEmit && eslint . --max-warnings 0 && vitest run --passWithNoTests",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -55,6 +57,7 @@
     "lint-staged": "^16.4.0",
     "prettier": "catalog:",
     "sass": "catalog:",
+    "typedoc": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
