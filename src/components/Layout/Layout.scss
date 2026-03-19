@@ -12,7 +12,8 @@
     margin: 0 auto;
     padding: $spacing-lg;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
+      // 768px
       padding: $spacing-md;
     }
   }

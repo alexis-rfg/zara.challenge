@@ -220,6 +220,37 @@ CRA is officially unmaintained. Vite satisfies both build mode requirements (dev
 
 SASS produces static CSS at build time — zero runtime overhead. Styled Components injects styles at runtime, adding ~15 KB to the bundle and complicating SSR. SASS `.module.scss` provides the same component-scoped isolation without the trade-offs.
 
+### `rem` units over `px` for accessibility
+
+All spacing, typography, and layout values use `rem` units instead of `px` to ensure the application scales correctly with user browser font size preferences:
+
+**Why `rem`:**
+- **Accessibility**: Respects user's browser font size settings (WCAG 2.1 Success Criterion 1.4.4)
+- **Consistent scaling**: All components scale together harmoniously when users zoom or change font size
+- **Better responsive design**: Media query breakpoints in `rem` adapt to user preferences
+- **Easy mental math**: `1rem = 16px` (browser default), making conversions straightforward
+
+**Conversion reference:**
+```scss
+// Design tokens in src/styles/variables.scss
+$spacing-xs: 0.25rem;   // 4px
+$spacing-sm: 0.5rem;    // 8px
+$spacing-md: 1rem;      // 16px
+$spacing-lg: 1.5rem;    // 24px
+$spacing-xl: 2rem;      // 32px
+
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-lg: 1.125rem;   // 18px
+
+$max-width: 75rem;      // 1200px
+```
+
+**Example impact:**
+If a user sets their browser font size to 20px (125% zoom):
+- `rem`-based design: Everything scales up proportionally — layout remains balanced
+- `px`-based design: Text grows but spacing stays fixed — layout breaks
+
 ### Native `fetch` over Axios
 
 The API layer is a thin typed wrapper around `fetch`. Axios adds ~14 KB to the bundle for features (interceptors, automatic JSON, request cancellation) that can be implemented in ~30 lines with `fetch` + `AbortController`.
