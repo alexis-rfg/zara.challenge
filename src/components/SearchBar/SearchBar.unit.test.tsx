@@ -14,7 +14,7 @@ describe('SearchBar', () => {
   it('renders search input with placeholder', () => {
     render(<SearchBar {...defaultProps} />);
 
-    const input = screen.getByPlaceholderText('Search by name or brand...');
+    const input = screen.getByPlaceholderText('Search for a smartphone...');
     expect(input).toBeInTheDocument();
   });
 
@@ -31,7 +31,7 @@ describe('SearchBar', () => {
 
     render(<SearchBar {...defaultProps} onChange={onChange} />);
 
-    const input = screen.getByPlaceholderText('Search by name or brand...');
+    const input = screen.getByPlaceholderText('Search for a smartphone...');
     await user.type(input, 'Samsung');
 
     expect(onChange).toHaveBeenCalledTimes(7); // One call per character

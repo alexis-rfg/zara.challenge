@@ -59,7 +59,7 @@ describe('PhoneListPage', () => {
 
     renderWithRouter(<PhoneListPage />);
 
-    expect(screen.getByPlaceholderText('Search by name or brand...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
   it('displays loading state', () => {
@@ -179,7 +179,7 @@ describe('PhoneListPage', () => {
 
     renderWithRouter(<PhoneListPage />);
 
-    const searchInput = screen.getByPlaceholderText('Search by name or brand...');
+    const searchInput = screen.getByPlaceholderText('Search for a smartphone...');
     await user.type(searchInput, 'iPhone');
 
     await waitFor(() => {

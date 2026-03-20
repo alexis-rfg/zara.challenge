@@ -25,12 +25,14 @@ export const PhoneListPage = () => {
     <div className="phone-list-page">
       <h1 className="sr-only">Mobile Phones</h1>
 
-      <SearchBar
-        value={searchTerm}
-        onChange={setSearchTerm}
-        resultCount={resultCount}
-        loading={loading}
-      />
+      <div className="phone-list-page__sticky-header">
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          resultCount={resultCount}
+          loading={loading}
+        />
+      </div>
 
       {loading ? (
         <div className="phone-list-page__loading" aria-live="polite">
@@ -42,10 +44,12 @@ export const PhoneListPage = () => {
           <p>No products found{searchTerm && ` for "${searchTerm}"`}</p>
         </div>
       ) : (
-        <div className="phone-list-page__grid">
-          {products.map((product) => (
-            <PhoneCard key={product.id} product={product} />
-          ))}
+        <div className="phone-list-page__grid-shell">
+          <div className="phone-list-page__grid">
+            {products.map((product) => (
+              <PhoneCard key={product.id} product={product} />
+            ))}
+          </div>
         </div>
       )}
     </div>

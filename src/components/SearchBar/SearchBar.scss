@@ -3,8 +3,13 @@
 .search-bar {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; // 12px
-  padding: 0.75rem $padding-horizontal; // 12px 100px
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem $padding-horizontal;
+  margin-bottom: 2rem;
+  width: 100%;
+  min-height: 5.4375rem;
   background-color: $color-background;
 
   @media (max-width: 64rem) {
@@ -18,10 +23,11 @@
   &__input-wrapper {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 0.75rem; // 12px
-    padding-bottom: 0.5rem; // 8px
-    border-bottom: 0.03125rem solid $color-primary; // 0.5px solid #000
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    min-height: 1.6875rem;
+    border-bottom: 0.03125rem solid $color-primary;
   }
 
   // Search icon hidden per Figma design
@@ -34,14 +40,15 @@
     border: none;
     outline: none;
     background: transparent;
+    min-height: 1.1875rem;
     font-family: $font-family;
     font-weight: 300;
-    font-size: $font-size-base; // 16px
-    line-height: 1.1875rem; // 19px
+    font-size: $font-size-base;
+    line-height: 1.1875rem;
     color: $color-text;
 
     &::placeholder {
-      color: $color-placeholder; // #AAAAAA
+      color: $color-placeholder;
     }
 
     // Prevent iOS zoom on focus
@@ -55,12 +62,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    min-height: 1.5rem;
 
     span {
       font-family: $font-family;
       font-weight: 300;
-      font-size: $font-size-card; // 12px
-      line-height: 0.9375rem; // 15px
+      font-size: $font-size-card;
+      line-height: 0.9375rem;
       text-transform: uppercase;
       color: $color-text;
     }

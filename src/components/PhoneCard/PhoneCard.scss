@@ -4,20 +4,92 @@
   display: block;
   text-decoration: none;
   color: inherit;
+  background: $color-background; // explicit white — prevents stacking bleed
+  position: relative;
+  isolation: isolate; // stacking context on the card (matches Figma)
   width: 100%;
-  aspect-ratio: 1; // square cards at all breakpoints
-  border: 0.03125rem solid $color-primary; // 0.5px solid #000
+  aspect-ratio: 1; // square cards at desktop/tablet
+  overflow: hidden;
 
+  // ─── Border rules (shared edges, no gap needed) ───────────────────────────
+  // Desktop default: right + bottom only; nth-child adds top/left for first row/col
+  border-top: 0;
+  border-left: 0;
+  border-right: 0.03125rem solid $color-primary;
+  border-bottom: 0.03125rem solid $color-primary;
+
+  // Desktop (5-col): first 5 cards get top border; every 5th+1 gets left border
+  &:nth-child(-n + 5) {
+    border-top: 0.03125rem solid $color-primary;
+  }
+
+  &:nth-child(5n + 1) {
+    border-left: 0.03125rem solid $color-primary;
+  }
+
+  @media (max-width: 64rem) {
+    // Undo 5-col desktop rules
+    &:nth-child(-n + 5) {
+      border-top: 0;
+    }
+
+    &:nth-child(5n + 1) {
+      border-left: 0;
+    }
+
+    // Apply 2-col tablet rules
+    &:nth-child(-n + 2) {
+      border-top: 0.03125rem solid $color-primary;
+    }
+
+    &:nth-child(2n + 1) {
+      border-left: 0.03125rem solid $color-primary;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    aspect-ratio: auto; // mobile card is 361×344 (not square)
+
+    // Undo 2-col tablet rules
+    &:nth-child(-n + 2) {
+      border-top: 0;
+    }
+
+    &:nth-child(2n + 1) {
+      border-left: 0;
+    }
+
+    // 1-col: every card gets all 4 borders
+    &:nth-child(n) {
+      border-top: 0.03125rem solid $color-primary;
+      border-left: 0.03125rem solid $color-primary;
+    }
+  }
+
+  // ─── Hover fill overlay ───────────────────────────────────────────────────
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: $color-primary;
+    transform: translateY(100%);
+    transition: transform 900ms ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  // ─── Content ──────────────────────────────────────────────────────────────
   &__content {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem; // 16px
-    gap: 1.5rem; // 24px
+    padding: 1rem;
+    gap: 1.5rem;
     width: 100%;
     height: 100%;
-    isolation: isolate;
   }
 
   &__image-wrapper {
@@ -29,6 +101,11 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
+
+    @media (max-width: 48rem) {
+      flex: none;
+      height: 16.0625rem; // 257px — fixed per Figma mobile
+    }
   }
 
   &__image {
@@ -43,14 +120,14 @@
     flex-direction: row;
     align-items: flex-end;
     width: 100%;
-    gap: 0.5rem; // 8px
+    gap: 0.5rem;
     flex-shrink: 0;
   }
 
   &__brand-name {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem; // 4px
+    gap: 0.25rem;
     flex: 1;
     min-width: 0;
   }
@@ -59,35 +136,60 @@
     font-family: $font-family;
     font-weight: 300;
     font-size: $font-size-xs; // 10px
-    line-height: 0.75rem; // 12px
+    line-height: 0.75rem;
     text-transform: uppercase;
-    color: $color-brand-text; // #79736D
+    color: $color-brand-text;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 900ms ease;
   }
 
   &__name {
     font-family: $font-family;
     font-weight: 300;
     font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    line-height: 0.9375rem;
     text-transform: uppercase;
-    color: $color-text; // #000
+    color: $color-text;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 900ms ease;
   }
 
   &__price {
     font-family: $font-family;
     font-weight: 300;
     font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    line-height: 0.9375rem;
     text-align: right;
-    color: $color-text; // #000
+    color: $color-text;
     flex-shrink: 0;
     white-space: nowrap;
+    transition: color 900ms ease;
+  }
+
+  // ─── Hover / focus states ─────────────────────────────────────────────────
+  &:hover::before,
+  &:focus-visible::before,
+  &:focus-within::before {
+    transform: translateY(0);
+  }
+
+  &:hover &__brand,
+  &:focus-visible &__brand,
+  &:focus-within &__brand {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  &:hover &__name,
+  &:hover &__price,
+  &:focus-visible &__name,
+  &:focus-visible &__price,
+  &:focus-within &__name,
+  &:focus-within &__price {
+    color: #fff;
   }
 }

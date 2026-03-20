@@ -29,7 +29,7 @@ export const SearchBar = ({ value, onChange, resultCount, loading }: SearchBarPr
         <input
           type="text"
           className="search-bar__input"
-          placeholder="Search by name or brand..."
+          placeholder="Search for a smartphone..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
           aria-label="Search products"

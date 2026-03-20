@@ -2,24 +2,48 @@
 
 .phone-list-page {
   width: 100%;
+  padding-bottom: $padding-horizontal;
 
-  // Grid of cards — CSS Grid as required, matching Figma card sizing
-  &__grid {
-    display: grid;
-    // Desktop: fixed 344px (21.5rem) cards, border-sharing between cells
-    grid-template-columns: repeat(auto-fill, $card-size); // 21.5rem
-    padding: 0 $padding-horizontal; // 0 100px
+  @media (max-width: 64rem) {
+    padding-bottom: $padding-horizontal-tablet;
+  }
+
+  @media (max-width: 48rem) {
+    padding-bottom: $padding-horizontal-mobile;
+  }
+
+  &__sticky-header {
+    position: sticky;
+    top: $header-height;
+    z-index: 90;
+    background: $color-background;
+  }
+
+  &__grid-shell {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 $padding-horizontal;
 
     @media (max-width: 64rem) {
-      // Tablet: fluid columns, smaller padding
-      grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
       padding: 0 $padding-horizontal-tablet;
     }
 
     @media (max-width: 48rem) {
-      // Mobile: 2-column grid
-      grid-template-columns: repeat(2, 1fr);
       padding: 0 $padding-horizontal-mobile;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    @media (max-width: 64rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 48rem) {
+      grid-template-columns: 1fr;
     }
   }
 

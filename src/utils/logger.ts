@@ -64,7 +64,6 @@ type LoggerDevtoolsApi = {
 const MAX_BUFFER_SIZE = 200;
 const LOG_BUFFER: LogEntry[] = [];
 const LOG_LISTENERS = new Set<LogListener>();
-const consoleApi = globalThis.console;
 
 let logSequence = 0;
 
@@ -112,37 +111,23 @@ const mergeTags = (...tagSets: Array<string[] | undefined>): string[] => {
   return [...new Set(tagSets.flatMap((tags) => tags ?? []).filter(Boolean))];
 };
 
-const shouldMirrorToConsole = (): boolean => {
+const shouldForwardToTerminal = (): boolean => {
   return import.meta.env.DEV && import.meta.env.MODE !== 'test';
 };
 
-const getConsoleMethod = (level: LogLevel): 'log' | 'info' | 'warn' | 'error' => {
-  if (level === 'debug') {
-    return 'log';
-  }
-
-  return level;
-};
-
-const mirrorEntryToConsole = (entry: LogEntry): void => {
-  if (!shouldMirrorToConsole()) {
+const forwardEntryToTerminal = (entry: LogEntry): void => {
+  if (!shouldForwardToTerminal()) {
     return;
   }
 
-  const method = getConsoleMethod(entry.level);
-  const tagLabel = entry.tags.length > 0 ? ` tags=${entry.tags.join(',')}` : '';
-  const durationLabel =
-    typeof entry.durationMs === 'number' ? ` duration=${entry.durationMs.toFixed(1)}ms` : '';
-
-  consoleApi[method](
-    `[${entry.level.toUpperCase()}] [${entry.scope}] ${entry.event}${tagLabel}${durationLabel}`,
-    {
-      correlationId: entry.correlationId,
-      context: entry.context,
-      error: entry.error,
-      timestamp: entry.timestamp,
-    },
-  );
+  // Fire-and-forget — intentionally not awaited
+  fetch('/api/dev-log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entry),
+  }).catch(() => {
+    // Silently ignore — dev server may not be reachable
+  });
 };
 
 const emitLog = (entry: LogEntry): LogEntry => {
@@ -156,7 +141,7 @@ const emitLog = (entry: LogEntry): LogEntry => {
     listener(entry);
   });
 
-  mirrorEntryToConsole(entry);
+  forwardEntryToTerminal(entry);
 
   return entry;
 };
