@@ -3,30 +3,40 @@
 .phone-detail-page {
   width: 100%;
   padding-bottom: 0;
-  padding-top: 2.75rem; // 44px - height of back button
+  padding-top: 0;
 
   // ─── Hero ─────────────────────────────────────────────────────────────────
   &__hero {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     max-width: $max-width; // 1200px
     margin: 0 auto;
-    padding: 2.5rem $padding-horizontal; // top+bottom 40px, sides 100px
-    gap: 2rem;
-    min-height: 39.375rem; // 630px
+    padding: 6.875rem $padding-horizontal 0;
+    gap: 10.625rem;
+    min-height: 39.375rem;
 
+    // Prevent overflow on viewports between 1024px and 1400px
+    @media (max-width: 87.5rem) {
+      gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+
+    // Tablet: keep horizontal layout like desktop
     @media (max-width: 64rem) {
-      padding: 2rem $padding-horizontal-tablet;
+      padding: 2rem $padding-horizontal-tablet 0;
+      gap: 2rem;
+    }
+
+    // Mobile: switch to vertical layout
+    @media (max-width: 48rem) {
+      padding: 1.5rem $padding-horizontal-mobile 0;
       flex-direction: column;
       align-items: flex-start;
       min-height: auto;
-    }
-
-    @media (max-width: 48rem) {
-      padding: 1.5rem $padding-horizontal-mobile;
-      gap: 1.5rem;
+      gap: 2.5rem; // 40px gap between image and product info (Figma mobile spec)
     }
   }
 
@@ -34,17 +44,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 31.875rem; // 510px
-    height: 39.375rem; // 630px
+    width: 31.875rem;
+    height: 39.375rem;
     flex-shrink: 0;
 
     @media (max-width: 64rem) {
-      width: 100%;
-      height: 25rem; // 400px
+      width: 50%; // Allow flexible width in tablet horizontal layout
+      height: 26rem;
+      flex-shrink: 1;
     }
 
     @media (max-width: 48rem) {
-      height: 18.75rem; // 300px
+      width: 100%;
+      height: 18.75rem;
     }
   }
 
@@ -57,18 +69,23 @@
   &__product-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4rem;
     width: 23.75rem;
+    min-height: 39.375rem; // center content against the phone image block
     flex-shrink: 0;
-    margin-top: 3.5rem;
+    margin-top: 0;
 
     @media (max-width: 64rem) {
-      width: 100%;
+      width: 50%; // Allow flexible width in tablet horizontal layout
       gap: 2.5rem;
+      min-height: auto;
+      flex-shrink: 1; // Allow shrinking to fit
       margin-top: 0;
     }
 
     @media (max-width: 48rem) {
+      width: 100%;
       gap: 2rem;
       margin-top: 0;
     }
@@ -77,14 +94,14 @@
   &__title-price {
     display: flex;
     flex-direction: column;
-    gap: 0.6875rem; // 11px
+    gap: 0.6875rem;
   }
 
   &__title {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 1.5rem; // 24px
-    line-height: 100%; // 24px - Figma spec
+    font-size: 1.5rem;
+    line-height: 100%;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -93,8 +110,8 @@
   &__price {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 1.25rem; // 20px
-    line-height: 1.25rem; // 20px
+    font-size: 1.25rem;
+    line-height: 1.25rem;
     color: $color-text;
     margin: 0;
 
@@ -106,7 +123,11 @@
   &__selectors {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px
+    gap: 2.5rem; // 40px (Figma spec)
+
+    @media (max-width: 48rem) {
+      gap: 2rem; // 32px gap between selectors on mobile (Figma mobile spec)
+    }
   }
 
   &__add-btn {
@@ -114,15 +135,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
+    padding: 1.25rem 2rem;
     width: 100%;
-    height: 3.5rem; // 56px
+    height: 3.5rem;
     border: none;
     cursor: default;
     font-family: $font-family;
     font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem; // 16px
+    font-size: $font-size-card;
+    line-height: 1rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     transition:
@@ -153,26 +174,26 @@
   &__specs {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px
-    max-width: $max-width; // 1200px
+    gap: 2.5rem;
+    max-width: $max-width;
     margin: 0 auto;
-    padding: 2.5rem $padding-horizontal;
+    padding: 9.625rem $padding-horizontal 9.625rem;
 
     @media (max-width: 64rem) {
-      padding: 2.5rem $padding-horizontal-tablet;
+      padding: 5.5rem $padding-horizontal-tablet 5.5rem;
     }
 
     @media (max-width: 48rem) {
-      padding: 2rem $padding-horizontal-mobile;
-      gap: 1.5rem;
+      padding: 5rem $padding-horizontal-mobile 5rem;
+      gap: 2.5rem;
     }
   }
 
   &__specs-heading {
     font-family: $font-family;
     font-weight: 300;
-    font-size: 1.25rem; // 20px
-    line-height: 1.5rem; // 24px
+    font-size: 1.25rem;
+    line-height: 1.5rem;
     text-transform: capitalize;
     color: $color-text;
     margin: 0;
@@ -191,13 +212,13 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding: 1rem 0; // 16px 0
-    gap: 3rem; // 48px
+    padding: 1rem 0;
+    gap: 3rem;
     width: 100%;
-    border-bottom: 0.03125rem solid $color-primary; // 0.5px solid #000
+    border-bottom: 0.03125rem solid $color-primary;
 
     &:first-child {
-      border-top: 0.03125rem solid $color-primary; // first row also has top border
+      border-top: 0.03125rem solid $color-primary;
     }
 
     @media (max-width: 48rem) {
@@ -207,12 +228,12 @@
   }
 
   &__spec-label {
-    width: 18.75rem; // 300px
+    width: 18.75rem;
     flex-shrink: 0;
     font-family: $font-family;
     font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    font-size: $font-size-card;
+    line-height: 0.9375rem;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -226,8 +247,8 @@
     flex: 1;
     font-family: $font-family;
     font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    font-size: $font-size-card;
+    line-height: 0.9375rem;
     color: $color-text;
     margin: 0;
   }

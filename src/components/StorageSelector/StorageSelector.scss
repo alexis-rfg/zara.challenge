@@ -3,13 +3,13 @@
 .storage-selector {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; // 24px
+  gap: 1.5rem;
 
   &__label {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem; // 17px
+    font-size: 0.875rem;
+    line-height: 1.0625rem;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -28,15 +28,15 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem; // 24px
-    height: 4.0625rem; // 65px
-    border: 0.0625rem solid $color-disabled; // 1px solid #CCCCCC
+    padding: 1.5rem;
+    height: 4.0625rem;
+    border: 0.0625rem solid $color-disabled;
     background: transparent;
     cursor: pointer;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem; // 17px
+    font-size: 0.875rem;
+    line-height: 1.0625rem;
     text-transform: capitalize;
     color: $color-text;
     transition: border-color 200ms ease;
@@ -48,7 +48,7 @@
     }
 
     &--selected {
-      border-color: $color-primary; // #000000
+      border-color: $color-primary;
       z-index: 1;
     }
 

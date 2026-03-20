@@ -3,13 +3,13 @@
 .color-selector {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; // 24px — between label and options only (2 flex children)
+  gap: 1.5rem;
 
   &__label {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem; // 17px
+    font-size: 0.875rem;
+    line-height: 1.0625rem;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -21,7 +21,7 @@
     align-items: center;
     gap: 1rem; // 16px
     position: relative;
-    padding-bottom: 1.5625rem; // 25px = 10px gap + 15px name height
+    padding-bottom: 1.5625rem;
   }
 
   &__option {
@@ -32,14 +32,14 @@
     padding: 0;
     width: 1.5rem; // 24px
     height: 1.5rem; // 24px
-    border: 0.0625rem solid $color-disabled; // 1px solid #CCCCCC
+    border: 0.0625rem solid $color-disabled;
     background: transparent;
     cursor: pointer;
     flex-shrink: 0;
     transition: border-color 200ms ease;
 
     &--selected {
-      border-color: $color-primary; // 1px solid #000 — keep 1px, just change color
+      border-color: $color-primary;
     }
 
     &:focus-visible {
@@ -50,8 +50,8 @@
 
   &__swatch {
     display: block;
-    width: 1.25rem; // 20px
-    height: 1.25rem; // 20px
+    width: 1.25rem;
+    height: 1.25rem;
     flex-shrink: 0;
     pointer-events: none;
   }
@@ -60,11 +60,11 @@
   &__name {
     position: absolute;
     left: 0;
-    top: 2.125rem; // 34px: 24px swatch height + 10px gap
+    top: 2.125rem;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 0.75rem; // 12px
-    line-height: 0.9375rem; // 15px
+    font-size: 0.75rem;
+    line-height: 0.9375rem;
     color: $color-text;
     white-space: nowrap;
     min-height: 0.9375rem;

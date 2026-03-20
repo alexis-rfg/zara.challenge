@@ -8,7 +8,7 @@
   );
 
   width: 100%;
-  padding-bottom: 6.5rem;
+  padding-bottom: 6.5rem; // 104px desktop (Figma spec)
   overflow-x: clip;
 
   @media (max-width: 64rem) {
@@ -17,6 +17,7 @@
 
   @media (max-width: 48rem) {
     --similar-products-inline-padding: #{$padding-horizontal-mobile};
+    padding-bottom: 5rem; // 80px mobile (Figma mobile spec)
   }
 
   &__content {
