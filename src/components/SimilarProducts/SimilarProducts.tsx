@@ -4,10 +4,27 @@ import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import { getCarouselScrollbarMetrics, hasHorizontalOverflow } from '@/utils/carouselScroll';
 import './SimilarProducts.scss';
 
+/**
+ * Props for the SimilarProducts component.
+ */
 type SimilarProductsProps = {
+  /** Array of similar product summaries to display in the carousel */
   products: ProductSummary[];
 };
 
+/**
+ * Horizontal carousel component displaying similar products with a custom scrollbar.
+ * Features smooth horizontal scrolling with a visual scrollbar indicator that tracks scroll position.
+ * The scrollbar only appears when content overflows horizontally.
+ *
+ * @param props - Component props
+ * @returns A horizontal scrollable carousel of product cards with custom scrollbar
+ *
+ * @example
+ * ```tsx
+ * <SimilarProducts products={product.similarProducts} />
+ * ```
+ */
 export const SimilarProducts = ({ products }: SimilarProductsProps) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);

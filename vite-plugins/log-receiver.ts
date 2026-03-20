@@ -1,6 +1,10 @@
 import type { Plugin } from 'vite';
 import type { LogEntry, LogLevel } from '../src/utils/logger.types';
 
+/**
+ * ANSI escape codes for terminal text formatting and colors.
+ * Used to colorize and style log output in the terminal.
+ */
 const ANSI = {
   reset: '\x1b[0m',
   dim: '\x1b[2m',
@@ -11,8 +15,21 @@ const ANSI = {
   error: '\x1b[31m',  // red
 } as const;
 
+/**
+ * Returns the ANSI color code for a given log level.
+ *
+ * @param level - The log level (debug, info, warn, error)
+ * @returns The corresponding ANSI color escape code
+ */
 const colorForLevel = (level: LogLevel): string => ANSI[level];
 
+/**
+ * Formats a log entry into a colorized, human-readable string for terminal output.
+ * Includes level, scope, event name, duration, tags, context, and error details.
+ *
+ * @param entry - The log entry to format
+ * @returns A formatted string with ANSI color codes for terminal display
+ */
 const formatEntry = (entry: LogEntry): string => {
   const color = colorForLevel(entry.level);
   const level = `${color}${ANSI.bold}[${entry.level.toUpperCase()}]${ANSI.reset}`;
@@ -40,6 +57,28 @@ const formatEntry = (entry: LogEntry): string => {
   return line;
 };
 
+/**
+ * Vite plugin that receives log entries from the browser during development
+ * and outputs them to the terminal with formatted, colorized display.
+ *
+ * This plugin creates a `/api/dev-log` endpoint that accepts POST requests
+ * with log entries in JSON format. The logs are then formatted and written
+ * to the terminal's stdout.
+ *
+ * Only active during development (`apply: 'serve'`).
+ *
+ * @returns A Vite plugin configuration object
+ *
+ * @example
+ * ```ts
+ * // vite.config.ts
+ * import { logReceiverPlugin } from './vite-plugins/log-receiver';
+ *
+ * export default defineConfig({
+ *   plugins: [logReceiverPlugin()],
+ * });
+ * ```
+ */
 export function logReceiverPlugin(): Plugin {
   return {
     name: 'log-receiver',

@@ -2,12 +2,34 @@ import { useState } from 'react';
 import type { ColorOption } from '@/types/product.types';
 import './ColorSelector.scss';
 
+/**
+ * Props for the ColorSelector component.
+ */
 type ColorSelectorProps = {
+  /** Array of available color options */
   colors: ColorOption[];
+  /** Index of the currently selected color, or null if none selected */
   selectedIndex: number | null;
+  /** Callback fired when a color is selected */
   onSelect: (index: number) => void;
 };
 
+/**
+ * Color selector component with visual swatches and hover preview.
+ * Displays color options as clickable swatches with the selected/hovered color name below.
+ *
+ * @param props - Component props
+ * @returns A color selection interface with swatches and name display
+ *
+ * @example
+ * ```tsx
+ * <ColorSelector
+ *   colors={product.colorOptions}
+ *   selectedIndex={selectedColorIndex}
+ *   onSelect={setSelectedColorIndex}
+ * />
+ * ```
+ */
 export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelectorProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
