@@ -8,22 +8,35 @@ $color-border: #e0e0e0;
 $color-error: #d32f2f;
 $color-disabled: #cccccc;
 
-// Spacing
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
-$spacing-2xl: 48px;
+// Figma design tokens
+$color-brand-text: #79736d; // card brand label
+$color-placeholder: #aaaaaa; // search placeholder
 
-// Typography
+// Spacing (using rem for accessibility - scales with user's browser font size)
+$spacing-xs: 0.25rem; // 4px
+$spacing-sm: 0.5rem; // 8px
+$spacing-md: 1rem; // 16px
+$spacing-lg: 1.5rem; // 24px
+$spacing-xl: 2rem; // 32px
+$spacing-2xl: 3rem; // 48px
+
+// Figma page layout
+$header-height: 5rem; // 80px
+$padding-horizontal: 6.25rem; // 100px (desktop side padding)
+$padding-horizontal-tablet: 2.5rem; // 40px
+$padding-horizontal-mobile: 1rem; // 16px
+$card-size: 21.5rem; // 344px
+
+// Typography (using rem for accessibility)
 $font-family: Helvetica, Arial, sans-serif;
-$font-size-sm: 14px;
-$font-size-base: 16px;
-$font-size-lg: 18px;
-$font-size-xl: 24px;
-$font-size-2xl: 32px;
+$font-size-xs: 0.625rem; // 10px - card brand
+$font-size-card: 0.75rem; // 12px - card name / price / results count
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.5rem; // 24px
+$font-size-2xl: 2rem; // 32px
 
 // Layout
-$max-width: 1200px;
-$border-radius: 4px;
+$max-width: 75rem; // 1200px
+$border-radius: 0.25rem; // 4px

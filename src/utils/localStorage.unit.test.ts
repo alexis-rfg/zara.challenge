@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getCart, saveCart, clearCart } from './localStorage';
+import { clearLogEntries, getLogEntries } from './logger';
 import type { CartItem } from '@/types/cart.types';
 
 describe('localStorage utilities - Unit Tests', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    clearLogEntries();
   });
 
   describe('getCart', () => {
@@ -36,16 +38,16 @@ describe('localStorage utilities - Unit Tests', () => {
     it('should return empty array when localStorage data is corrupted', () => {
       localStorage.setItem('zara-cart', 'invalid-json');
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const result = getCart();
 
       expect(result).toEqual([]);
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error parsing cart from localStorage:',
-        expect.any(Error),
+      expect(getLogEntries()).toContainEqual(
+        expect.objectContaining({
+          scope: 'storage.cart',
+          event: 'read_failed',
+          tags: ['storage', 'cart', 'load', 'error'],
+        }),
       );
-
-      consoleSpy.mockRestore();
     });
   });
 
@@ -71,7 +73,6 @@ describe('localStorage utilities - Unit Tests', () => {
 
     it('should handle errors when saving fails', () => {
       const mockItems: CartItem[] = [];
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       // Mock localStorage.setItem to throw
       vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
@@ -80,12 +81,13 @@ describe('localStorage utilities - Unit Tests', () => {
 
       saveCart(mockItems);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error saving cart to localStorage:',
-        expect.any(Error),
+      expect(getLogEntries()).toContainEqual(
+        expect.objectContaining({
+          scope: 'storage.cart',
+          event: 'write_failed',
+          tags: ['storage', 'cart', 'save', 'error'],
+        }),
       );
-
-      consoleSpy.mockRestore();
     });
   });
 
@@ -99,8 +101,6 @@ describe('localStorage utilities - Unit Tests', () => {
     });
 
     it('should handle errors when clearing fails', () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       // Mock localStorage.removeItem to throw
       vi.spyOn(Storage.prototype, 'removeItem').mockImplementationOnce(() => {
         throw new Error('Storage error');
@@ -108,12 +108,13 @@ describe('localStorage utilities - Unit Tests', () => {
 
       clearCart();
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to clear cart from localStorage:',
-        expect.any(Error),
+      expect(getLogEntries()).toContainEqual(
+        expect.objectContaining({
+          scope: 'storage.cart',
+          event: 'clear_failed',
+          tags: ['storage', 'cart', 'clear', 'error'],
+        }),
       );
-
-      consoleSpy.mockRestore();
     });
   });
 });

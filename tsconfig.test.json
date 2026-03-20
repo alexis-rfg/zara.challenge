@@ -2,7 +2,12 @@
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "composite": false,
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "incremental": true,
+    // "types" completely overrides the parent tsconfig.app.json array (it does not merge).
+    // "vite/client" must be repeated here so that import.meta.env is typed when TypeScript
+    // resolves test files that import src/env.ts or src/utils/logger.ts.
+    // Without it the compiler reports: Property 'env' does not exist on type 'ImportMeta'.
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [
     "src/**/__tests__/**/*",

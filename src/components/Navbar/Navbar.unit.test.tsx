@@ -16,7 +16,7 @@ const renderNavbar = () => {
 };
 
 describe('Navbar - Unit Tests', () => {
-  it('should render home and cart links', () => {
+  it('should render logo and cart link', () => {
     vi.spyOn(useCartHook, 'useCart').mockReturnValue({
       items: [],
       addItem: vi.fn(),
@@ -28,7 +28,7 @@ describe('Navbar - Unit Tests', () => {
 
     renderNavbar();
 
-    expect(screen.getByLabelText('Go to home page')).toBeInTheDocument();
+    expect(screen.getByAltText('MBST')).toBeInTheDocument();
     expect(screen.getByLabelText('Shopping cart with 0 items')).toBeInTheDocument();
   });
 
@@ -49,7 +49,7 @@ describe('Navbar - Unit Tests', () => {
     expect(badge).toHaveTextContent('3');
   });
 
-  it('should not display cart count badge when cart is empty', () => {
+  it('should display cart count badge even when cart is empty', () => {
     vi.spyOn(useCartHook, 'useCart').mockReturnValue({
       items: [],
       addItem: vi.fn(),
@@ -61,10 +61,11 @@ describe('Navbar - Unit Tests', () => {
 
     renderNavbar();
 
-    expect(screen.queryByLabelText(/items in cart/)).not.toBeInTheDocument();
+    expect(screen.getByLabelText('0 items in cart')).toBeInTheDocument();
+    expect(screen.getByLabelText('0 items in cart')).toHaveTextContent('0');
   });
 
-  it('should have correct navigation links', () => {
+  it('should have correct cart navigation link', () => {
     vi.spyOn(useCartHook, 'useCart').mockReturnValue({
       items: [],
       addItem: vi.fn(),
@@ -76,10 +77,7 @@ describe('Navbar - Unit Tests', () => {
 
     renderNavbar();
 
-    const homeLink = screen.getByLabelText('Go to home page');
     const cartLink = screen.getByLabelText('Shopping cart with 0 items');
-
-    expect(homeLink).toHaveAttribute('href', '/');
     expect(cartLink).toHaveAttribute('href', '/cart');
   });
 });

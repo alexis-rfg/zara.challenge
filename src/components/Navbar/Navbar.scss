@@ -1,54 +1,68 @@
 @use "@/styles/variables" as *;
+
 .navbar {
   background-color: $color-background;
-  border-bottom: 1px solid $color-border;
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
 
   &__container {
-    max-width: $max-width;
-    margin: 0 auto;
-    padding: $spacing-md $spacing-lg;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 1.5rem $padding-horizontal;
+    height: $header-height;
 
-    @media (max-width: 768px) {
-      padding: $spacing-md;
+    @media (max-width: 64rem) {
+      padding: 1.5rem $padding-horizontal-tablet;
+    }
+
+    @media (max-width: 48rem) {
+      padding: 1rem $padding-horizontal-mobile;
     }
   }
 
-  &__home,
-  &__cart {
+  &__home {
     display: flex;
     align-items: center;
-    color: $color-text;
-    transition: color 0.2s;
+    cursor: default;
+  }
 
-    &:hover {
-      color: $color-secondary;
-    }
+  &__logo {
+    display: block;
+    width: 4.625rem;
+    height: 1.5rem;
+    object-fit: contain;
   }
 
   &__cart {
-    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0;
+    color: $color-text;
+  }
 
-    &-count {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background-color: $color-primary;
-      color: $color-background;
-      font-size: 12px;
-      font-weight: bold;
-      min-width: 20px;
-      height: 20px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 6px;
-    }
+  &__cart-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1.125rem;
+    height: 1.125rem;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  &__cart-count {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: $font-size-base; // 16px
+    line-height: 1rem; // 16px
+    letter-spacing: 0;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: $color-text;
   }
 }

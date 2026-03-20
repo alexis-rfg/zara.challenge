@@ -26,9 +26,8 @@
     "test:ui": "vitest --ui",
     "type-check": "tsc --noEmit",
     "verify": "tsc --noEmit && eslint . --max-warnings 0 && vitest run --passWithNoTests",
-    "docs": "typedoc && start docs/index.html",
-    "docs:watch": "typedoc --watch",
-    "docs:generate": "typedoc",
+    "typedoc": "typedoc",
+    "typedoc:watch": "typedoc --watch",
     "prepare": "husky"
   },
   "lint-staged": {

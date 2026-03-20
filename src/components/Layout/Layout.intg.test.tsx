@@ -27,7 +27,6 @@ describe('Layout - Integration Tests', () => {
 
     // Navbar should be present
     expect(screen.getByRole('navigation')).toBeInTheDocument();
-    expect(screen.getByLabelText('Go to home page')).toBeInTheDocument();
     expect(screen.getByLabelText('Shopping cart with 0 items')).toBeInTheDocument();
   });
 
@@ -43,6 +42,6 @@ describe('Layout - Integration Tests', () => {
 
     // Cart count should be 0 initially (from CartProvider)
     expect(screen.getByLabelText('Shopping cart with 0 items')).toBeInTheDocument();
-    expect(screen.queryByLabelText(/\d+ items in cart/)).not.toBeInTheDocument();
+    expect(screen.getByLabelText('0 items in cart')).toBeInTheDocument();
   });
 });
