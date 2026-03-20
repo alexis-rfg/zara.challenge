@@ -35,6 +35,28 @@
     display: none;
   }
 
+  &__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: $color-text;
+    flex-shrink: 0;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:focus-visible {
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
+    }
+  }
+
   &__input {
     flex: 1;
     border: none;

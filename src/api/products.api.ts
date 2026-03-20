@@ -1,6 +1,19 @@
 import type { ProductDetail, ProductSummary } from '@/types/product.types';
 import { apiClient } from './client';
 
+/**
+ * Removes duplicate products from an array, keeping only the first occurrence
+ * of each `id`.
+ *
+ * The catalog API occasionally returns the same product multiple times in a
+ * single response (observed in `/products` and in the `similarProducts` array
+ * of `/products/:id`). Deduplication is applied at the API boundary so that
+ * every consumer receives a clean, stable list.
+ *
+ * @template T - Any object shape that has a string `id` property.
+ * @param products - Raw array that may contain duplicate `id` values.
+ * @returns New array with at most one entry per `id`, in original order.
+ */
 const dedupeProductsById = <T extends { id: string }>(products: T[]): T[] => {
   const seenProductIds = new Set<string>();
 
@@ -15,61 +28,75 @@ const dedupeProductsById = <T extends { id: string }>(products: T[]): T[] => {
 };
 
 /**
- * Fetches a list of products from the API with optional filtering and pagination.
+ * Fetches a paginated / filtered list of products from `GET /products`.
  *
- * @param params - Optional query parameters
- * @param params.search - Search term to filter products by name or brand
- * @param params.limit - Maximum number of products to return
- * @param params.offset - Number of products to skip for pagination
- * @returns Promise resolving to an array of product summaries
- * @throws {ApiError} When the API request fails
+ * ### Param semantics
+ * - **No params** — returns `/products` (all products, server default).
+ * - **`limit`** — caps the result set; use `'20'` for the initial home-page load.
+ * - **`search`** — server-side full-text filter by name or brand; no `limit`
+ *   is applied so all matching results are returned.
+ * - **`offset`** — skips the first N results (pagination); not used in the
+ *   current UI but exposed for completeness.
+ *
+ * Duplicate products (same `id`) are removed before the array is returned.
+ *
+ * @param params - Optional query parameters forwarded to the API.
+ * @param signal - Optional `AbortSignal`; when fired the underlying fetch is
+ *   cancelled and a `DOMException(AbortError)` propagates to the caller.
+ * @returns Deduplicated array of {@link ProductSummary} objects.
+ * @throws {ApiError} The server responded with a non-2xx status.
+ * @throws {DOMException} The request was cancelled via `signal`.
  *
  * @example
- * ```typescript
- * // Get first 20 products
+ * ```ts
+ * // Initial home-page load — first 20 products
  * const products = await getProducts({ limit: '20' });
  *
- * // Search for products
+ * // Search — all matching results, no limit
  * const results = await getProducts({ search: 'iPhone' });
  * ```
  */
-export const getProducts = async (params?: {
-  search?: string;
-  limit?: string;
-  offset?: number;
-}): Promise<ProductSummary[]> => {
-  const queryParms = new URLSearchParams();
-  if (params?.search) {
-    queryParms.append('search', params.search);
-  }
-  if (params?.limit) {
-    queryParms.append('limit', params.limit);
-  }
-  if (params?.offset) {
-    queryParms.append('offset', params.offset.toString());
-  }
-  const query = queryParms.toString();
+export const getProducts = async (
+  params?: { search?: string; limit?: string; offset?: number },
+  signal?: AbortSignal,
+): Promise<ProductSummary[]> => {
+  const queryParams = new URLSearchParams();
+  if (params?.search) queryParams.append('search', params.search);
+  if (params?.limit) queryParams.append('limit', params.limit);
+  if (params?.offset) queryParams.append('offset', params.offset.toString());
+
+  const query = queryParams.toString();
   const endpoint = query ? `/products?${query}` : '/products';
-  const products = await apiClient<ProductSummary[]>(endpoint);
+  const products = await apiClient<ProductSummary[]>(endpoint, signal);
 
   return dedupeProductsById(products);
 };
 
 /**
- * Fetches detailed information for a specific product by its ID.
+ * Fetches the full detail record for a single product from `GET /products/:id`.
  *
- * @param id - The unique identifier of the product
- * @returns Promise resolving to the complete product details including specs, colors, storage options, and similar products
- * @throws {ApiError} When the API request fails or product is not found
+ * The response already includes the `similarProducts` array — no additional
+ * network call is needed to render the "Productos similares" section.
+ * Duplicate entries in `similarProducts` are removed before returning.
+ *
+ * @param id - Unique product identifier (e.g. `'APL-IP15P'`).
+ * @param signal - Optional `AbortSignal`; when fired the underlying fetch is
+ *   cancelled and a `DOMException(AbortError)` propagates to the caller.
+ * @returns Full {@link ProductDetail} including specs, color options, storage
+ *   options, and deduplicated similar products.
+ * @throws {ApiError} The server responded with a non-2xx status (including 404
+ *   when the product ID does not exist).
+ * @throws {DOMException} The request was cancelled via `signal`.
  *
  * @example
- * ```typescript
- * const product = await getProductById('iphone-15-pro');
- * console.log(product.name, product.basePrice);
+ * ```ts
+ * const detail = await getProductById('APL-IP15P');
+ * console.log(detail.name);            // "iPhone 15 Pro"
+ * console.log(detail.similarProducts); // deduplicated array
  * ```
  */
-export const getProductById = async (id: string): Promise<ProductDetail> => {
-  const product = await apiClient<ProductDetail>(`/products/${id}`);
+export const getProductById = async (id: string, signal?: AbortSignal): Promise<ProductDetail> => {
+  const product = await apiClient<ProductDetail>(`/products/${id}`, signal);
 
   return {
     ...product,

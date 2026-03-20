@@ -43,7 +43,7 @@ describe('products.api', () => {
 
     const products = await getProducts({ search: 'pro' });
 
-    expect(mockedApiClient).toHaveBeenCalledWith('/products?search=pro');
+    expect(mockedApiClient).toHaveBeenCalledWith('/products?search=pro', undefined);
     expect(products).toEqual([duplicatedProducts[0], duplicatedProducts[2]]);
   });
 
@@ -103,7 +103,7 @@ describe('products.api', () => {
 
     const result = await getProductById('SMG-S24U');
 
-    expect(mockedApiClient).toHaveBeenCalledWith('/products/SMG-S24U');
+    expect(mockedApiClient).toHaveBeenCalledWith('/products/SMG-S24U', undefined);
     expect(result.similarProducts).toEqual([
       duplicateSimilarProduct,
       productDetail.similarProducts[2],

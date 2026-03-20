@@ -6,9 +6,10 @@ import './CartPage.scss';
 export const CartPage = () => {
   const navigate = useNavigate();
   const { items, removeItem, totalItems, totalPrice } = useCart();
+  const hasItems = items.length > 0;
 
   useEffect(() => {
-    document.title = 'Cart — MBST';
+    document.title = 'Cart - MBST';
     return () => {
       document.title = 'MBST';
     };
@@ -24,8 +25,10 @@ export const CartPage = () => {
       <div className="cart-page__content">
         <h1 className="cart-page__heading">Cart ({totalItems})</h1>
 
-        {items.length === 0 ? (
-          <p className="cart-page__empty">Tu carrito está vacío</p>
+        {!hasItems ? (
+          <p className="cart-page__empty sr-only" role="status">
+            Tu carrito está vacío
+          </p>
         ) : (
           <ul className="cart-page__list" aria-label="Cart items">
             {items.map((item, index) => (
@@ -64,19 +67,25 @@ export const CartPage = () => {
         )}
       </div>
 
-      <div className="cart-page__footer">
+      <div className={`cart-page__footer${hasItems ? '' : ' cart-page__footer--empty'}`}>
+        {hasItems && (
+          <div className="cart-page__summary">
+            <div className="cart-page__total-group">
+              <span className="cart-page__total-label">Total</span>
+              <span className="cart-page__total-price">{formattedTotal} EUR</span>
+            </div>
+          </div>
+        )}
+
         <button className="cart-page__continue" onClick={() => navigate('/')}>
           Continuar comprando
         </button>
-        <div className="cart-page__total-area">
-          <div className="cart-page__total-group">
-            <span className="cart-page__total-label">Total</span>
-            <span className="cart-page__total-price">{formattedTotal} EUR</span>
-          </div>
+
+        {hasItems && (
           <button className="cart-page__pay" aria-label="Proceder al pago">
             Pay
           </button>
-        </div>
+        )}
       </div>
     </main>
   );

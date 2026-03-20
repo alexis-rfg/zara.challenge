@@ -5,70 +5,65 @@
   flex-direction: column;
   min-height: calc(100vh - #{$header-height});
 
-  // ─── Content ──────────────────────────────────────────────────────────────
   &__content {
     flex: 1;
-    padding: 2.5rem $padding-horizontal;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    padding: 2.5rem $padding-horizontal 0;
 
     @media (max-width: $breakpoint-tablet) {
-      padding: $spacing-xl $padding-horizontal-tablet;
+      padding: $spacing-xl $padding-horizontal-tablet 0;
     }
 
     @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-lg $padding-horizontal-mobile;
+      padding: $spacing-lg $padding-horizontal-mobile 0;
     }
   }
 
   &__heading {
+    margin: 0;
     font-family: $font-family;
     font-weight: $font-weight-light;
-    font-size: $font-size-base;
-    line-height: $line-height-base;
+    font-size: $font-size-heading;
+    line-height: $line-height-lg;
     text-transform: uppercase;
     color: $color-text;
-    margin: 0 0 $spacing-xl 0;
   }
 
   &__empty {
-    font-family: $font-family;
-    font-weight: $font-weight-light;
-    font-size: $font-size-card;
-    text-transform: uppercase;
-    color: $color-text-light;
-    margin: 4rem 0;
+    margin: 0;
   }
 
-  // ─── List ─────────────────────────────────────────────────────────────────
   &__list {
     list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: $spacing-md;
+    gap: $spacing-lg;
+    margin: 0;
+    padding: 0;
   }
 
-  // ─── Item (Figma: flex-row gap:40px, 548×324) ─────────────────────────────
   &__item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 2.5rem; // 40px (Figma spec)
+    gap: 2.5rem;
 
     @media (max-width: $breakpoint-mobile) {
-      gap: $spacing-md;
+      align-items: flex-start;
+      gap: $spacing-lg;
     }
   }
 
-  // Image wrapper: 262×324
   &__item-image-wrapper {
-    width: 16.375rem; // 262px (Figma spec)
-    height: 20.25rem; // 324px (Figma spec)
+    width: 16.375rem;
+    height: 20.25rem;
     flex-shrink: 0;
 
     @media (max-width: $breakpoint-mobile) {
-      width: 8rem;
-      height: 10rem;
+      width: 10rem;
+      height: 12.36625rem;
     }
   }
 
@@ -78,37 +73,33 @@
     object-fit: contain;
   }
 
-  // Info+delete: 246×324, padding 40px 0, gap 40px, flex-grow:1
   &__item-info-delete {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 2.5rem 0; // 40px (Figma spec)
-    gap: 2.5rem; // 40px (Figma spec)
-    width: 15.375rem; // 246px (Figma spec)
-    height: 20.25rem; // 324px (Figma spec)
-    flex-shrink: 0;
     align-self: stretch;
+    gap: 2.5rem;
+    width: 15.375rem;
+    min-width: 0;
+    height: 20.25rem;
+    padding: 2.5rem 0;
     flex-grow: 1;
 
     @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-md 0;
-      height: auto;
       width: auto;
+      height: 12.36625rem;
     }
   }
 
-  // Info: flex-col gap:20px
   &__item-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem; // 20px (Figma spec)
+    gap: 1.25rem;
     width: 100%;
   }
 
-  // Name group: flex-col gap:4px
   &__item-name-group {
     display: flex;
     flex-direction: column;
@@ -117,48 +108,32 @@
     width: 100%;
   }
 
-  &__item-name {
+  &__item-name,
+  &__item-specs,
+  &__item-price,
+  &__item-remove {
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-card;
     line-height: $line-height-tight;
-    text-transform: uppercase;
-    color: $color-text;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  &__item-specs {
-    font-family: $font-family;
-    font-weight: $font-weight-light;
-    font-size: $font-size-card;
-    line-height: $line-height-tight;
-    text-transform: uppercase;
-    color: $color-text;
+  &__item-name,
+  &__item-specs,
+  &__item-price {
     margin: 0;
+    color: $color-text;
+    text-transform: uppercase;
   }
 
   &__item-price {
-    font-family: $font-family;
-    font-weight: $font-weight-light;
-    font-size: $font-size-card;
-    line-height: $line-height-tight;
     text-transform: capitalize;
-    color: $color-text;
-    margin: 0;
   }
 
   &__item-remove {
-    background: none;
     border: none;
     padding: 0;
-    cursor: pointer;
-    font-family: $font-family;
-    font-weight: $font-weight-light;
-    font-size: $font-size-card;
-    line-height: $line-height-tight;
+    background: none;
     color: $color-delete;
 
     &:focus-visible {
@@ -167,80 +142,70 @@
     }
   }
 
-  // ─── Footer bar (Figma: padding 24px 100px 56px) ──────────────────────────
   &__footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: $btn-width minmax(0, 1fr) $btn-width;
+    grid-template-areas: "continue summary pay";
     align-items: center;
-    padding: $spacing-lg $padding-horizontal 3.5rem; // 24px 100px 56px (Figma spec)
+    column-gap: 5rem;
+    row-gap: $spacing-lg;
+    padding: $spacing-lg $padding-horizontal 3.5rem;
     background: $color-background;
 
     @media (max-width: $breakpoint-tablet) {
+      column-gap: $spacing-xl;
       padding: $spacing-lg $padding-horizontal-tablet 3.5rem;
     }
 
     @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-md $padding-horizontal-mobile $spacing-xl;
-      flex-wrap: wrap;
-      gap: $spacing-md;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "summary summary"
+        "continue pay";
+      column-gap: 0.75rem;
+      row-gap: $spacing-lg;
+      padding: $spacing-md $padding-horizontal-mobile $spacing-lg;
+    }
+
+    &--empty {
+      grid-template-columns: $btn-width;
+      grid-template-areas: "continue";
+      justify-content: start;
+
+      @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
   }
 
-  // Continue Shopping — outlined, 260×56, border 0.5px
-  &__continue {
-    box-sizing: border-box;
+  &__summary {
+    grid-area: summary;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
-    width: $btn-width;
-    height: $btn-height;
-    border: $border-width-hairline solid $color-brand-dark;
-    background: $color-background;
-    font-family: $font-family;
-    font-weight: $font-weight-light;
-    font-size: $font-size-card;
-    line-height: $spacing-md;
-    letter-spacing: $letter-spacing-wide;
-    text-transform: uppercase;
-    color: $color-text;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color $transition-fast;
-
-    &:hover {
-      background: $color-hover-light;
-    }
-
-    &:focus-visible {
-      outline: $outline-width solid $color-primary;
-      outline-offset: $outline-width;
-    }
-  }
-
-  // Right side: flex-grow:1, justify-content:flex-end, gap:80px
-  &__total-area {
-    display: flex;
-    flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    flex: 1;
-    gap: 5rem; // 80px (Figma spec)
+    min-width: 0;
+
+    @media (max-width: $breakpoint-mobile) {
+      justify-content: stretch;
+    }
   }
 
-  // Total group: label + price, gap 24px
   &__total-group {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: $spacing-lg;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 
-  &__total-label {
+  &__total-label,
+  &__total-price {
     font-family: $font-family;
-    font-weight: $font-weight-regular; // Figma: 400
+    font-weight: $font-weight-regular;
     font-size: $font-size-sm;
     line-height: $line-height-label;
     text-transform: uppercase;
@@ -248,45 +213,55 @@
   }
 
   &__total-price {
-    font-family: $font-family;
-    font-weight: $font-weight-regular; // Figma: 400
-    font-size: $font-size-sm;
-    line-height: $line-height-label;
-    text-transform: uppercase;
-    color: $color-text;
     white-space: nowrap;
   }
 
-  // Pay button — filled, 260×56
+  &__continue,
   &__pay {
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
     width: $btn-width;
     height: $btn-height;
-    background: $color-brand-dark;
-    border: none;
+    padding: 1.25rem $spacing-xl;
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-card;
     line-height: $spacing-md;
     letter-spacing: $letter-spacing-wide;
     text-transform: uppercase;
-    color: $color-background;
-    cursor: pointer;
-    flex-shrink: 0;
     transition: background-color $transition-fast;
 
-    &:hover {
-      background: $color-hover-dark;
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
     }
 
     &:focus-visible {
       outline: $outline-width solid $color-primary;
       outline-offset: $outline-width;
+    }
+  }
+
+  &__continue {
+    grid-area: continue;
+    border: $border-width-hairline solid $color-brand-dark;
+    background: $color-background;
+    color: $color-text;
+
+    &:hover {
+      background: $color-hover-light;
+    }
+  }
+
+  &__pay {
+    grid-area: pay;
+    border: none;
+    background: $color-brand-dark;
+    color: $color-background;
+
+    &:hover {
+      background: $color-hover-dark;
     }
   }
 }

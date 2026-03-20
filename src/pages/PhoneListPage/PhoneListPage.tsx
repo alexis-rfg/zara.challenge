@@ -5,7 +5,7 @@ import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import './PhoneListPage.scss';
 
 export const PhoneListPage = () => {
-  const { products, loading, error, searchTerm, setSearchTerm, resultCount } = useProducts();
+  const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
 
   useEffect(() => {
     document.title = 'Zara Mobile Phones';
@@ -27,8 +27,8 @@ export const PhoneListPage = () => {
 
       <div className="phone-list-page__sticky-header">
         <SearchBar
-          value={searchTerm}
-          onChange={setSearchTerm}
+          onSearch={submitSearch}
+          committedSearch={committedSearch}
           resultCount={resultCount}
           loading={loading}
         />
@@ -41,7 +41,7 @@ export const PhoneListPage = () => {
         </div>
       ) : products.length === 0 ? (
         <div className="phone-list-page__empty" role="status">
-          <p>No products found{searchTerm && ` for "${searchTerm}"`}</p>
+          <p>No products found{committedSearch && ` for "${committedSearch}"`}</p>
         </div>
       ) : (
         <div className="phone-list-page__grid-shell">
