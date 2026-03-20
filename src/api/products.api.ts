@@ -1,19 +1,6 @@
 import type { ProductDetail, ProductSummary } from '@/types/product.types';
 import { apiClient } from './client';
 
-const dedupeProductsById = <T extends { id: string }>(products: T[]): T[] => {
-  const seenProductIds = new Set<string>();
-
-  return products.filter((product) => {
-    if (seenProductIds.has(product.id)) {
-      return false;
-    }
-
-    seenProductIds.add(product.id);
-    return true;
-  });
-};
-
 /**
  * Fetches a list of products from the API with optional filtering and pagination.
  *
@@ -50,9 +37,7 @@ export const getProducts = async (params?: {
   }
   const query = queryParms.toString();
   const endpoint = query ? `/products?${query}` : '/products';
-  const products = await apiClient<ProductSummary[]>(endpoint);
-
-  return dedupeProductsById(products);
+  return apiClient<ProductSummary[]>(endpoint);
 };
 
 /**
@@ -69,10 +54,5 @@ export const getProducts = async (params?: {
  * ```
  */
 export const getProductById = async (id: string): Promise<ProductDetail> => {
-  const product = await apiClient<ProductDetail>(`/products/${id}`);
-
-  return {
-    ...product,
-    similarProducts: dedupeProductsById(product.similarProducts),
-  };
+  return apiClient<ProductDetail>(`/products/${id}`);
 };

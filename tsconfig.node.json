@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts", "vite-plugins/**/*.ts", "src/utils/logger.types.ts"]
+  "include": ["vite.config.ts"]
 }

@@ -1,11 +1,10 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path';
-import { logReceiverPlugin } from './vite-plugins/log-receiver';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), logReceiverPlugin()],
+  plugins: [react()],
   resolve: {
     alias: {
       // Allow imports relative to src directory
@@ -24,28 +23,14 @@ export default defineConfig({
     // Runs before every test suite
     // Extends expect with @testing-library/jest-dom matchers
     setupFiles: ['./src/test/setup.ts'], 
-    // Include all test types by default
-    include: [
-      'src/**/*.test.{ts,tsx}',
-      'src/**/*.unit.test.{ts,tsx}',
-      'src/**/*.intg.test.{ts,tsx}',
-      'src/**/__tests__/**/*.{ts,tsx}',
-    ],
-    // Exclude e2e tests from unit/integration test runs
-    exclude: [
-      'src/**/*.e2e.{ts,tsx}',
-      'e2e/**',
-      'node_modules/**',
-    ],
     coverage: {
       provider: 'v8',
       // Include source files in coverage report
       include: ['src/**/*.{ts,tsx}'],
       // Exclude test files, spec files, test directory, main entry point, type files, and barrel index files
       exclude: [
-        'src/**/*.{test,unit,intg,e2e}.{ts,tsx}',
+        'src/**/*.test.{ts,tsx}',
         'src/**/*.spec.{ts,tsx}',
-        'src/**/__tests__/**',
         'src/test/**',
         'src/main.tsx',
         'src/types/**',

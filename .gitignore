@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Generated TypeDoc documentation
-typedoc/
+# Generated documentation
+docs/
 
 # Requirements documentation
 requirements/
@@ -34,4 +34,3 @@ requirements/
 .claude/*
 claude.md
 .CLAUDE.md
-AGENTS.md

@@ -79,7 +79,7 @@ catalogs:
       specifier: ^6.26.2
       version: 6.30.3
     sass:
-      specifier: 'catalog:'
+      specifier: ^1.82.0
       version: 1.98.0
     typedoc:
       specifier: ^0.26.11

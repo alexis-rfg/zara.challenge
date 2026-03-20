@@ -28,7 +28,7 @@ catalog:
   typescript-eslint: ^8.16.0
   '@vitejs/plugin-react': ^4.3.4
   prettier: ^3.4.2
-  sass: 'catalog:'
+  sass: ^1.82.0
   typedoc: ^0.26.11
   typescript: ^5.7.2
   vite: ^6.0.3

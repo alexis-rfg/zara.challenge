@@ -1,14 +1,6 @@
 import type { CartItem } from '@/types/cart.types';
-import { createLogger } from './logger';
 
 const CART_KEY = 'zara-cart';
-const storageLogger = createLogger({
-  scope: 'storage.cart',
-  tags: ['storage', 'cart'],
-  context: {
-    storageKey: CART_KEY,
-  },
-});
 
 /**
  * Retrieves the shopping cart from localStorage.
@@ -24,28 +16,10 @@ const storageLogger = createLogger({
 export const getCart = (): CartItem[] => {
   try {
     const stored = localStorage.getItem(CART_KEY);
-    if (!stored) {
-      storageLogger.debug('read_empty', {
-        tags: ['load'],
-      });
-      return [];
-    }
-
-    const items = JSON.parse(stored) as CartItem[];
-
-    storageLogger.debug('read_success', {
-      tags: ['load'],
-      context: {
-        itemCount: items.length,
-      },
-    });
-
-    return items;
+    if (!stored) return [];
+    return JSON.parse(stored) as CartItem[];
   } catch (error) {
-    storageLogger.error('read_failed', {
-      tags: ['load', 'error'],
-      error,
-    });
+    console.error('Error parsing cart from localStorage:', error);
     return [];
   }
 };
@@ -64,20 +38,8 @@ export const getCart = (): CartItem[] => {
 export const saveCart = (items: CartItem[]): void => {
   try {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
-    storageLogger.debug('write_success', {
-      tags: ['save'],
-      context: {
-        itemCount: items.length,
-      },
-    });
   } catch (error) {
-    storageLogger.error('write_failed', {
-      tags: ['save', 'error'],
-      context: {
-        itemCount: items.length,
-      },
-      error,
-    });
+    console.error('Error saving cart to localStorage:', error);
   }
 };
 
@@ -93,13 +55,7 @@ export const saveCart = (items: CartItem[]): void => {
 export const clearCart = (): void => {
   try {
     localStorage.removeItem(CART_KEY);
-    storageLogger.info('clear_success', {
-      tags: ['clear'],
-    });
   } catch (error) {
-    storageLogger.error('clear_failed', {
-      tags: ['clear', 'error'],
-      error,
-    });
+    console.error('Failed to clear cart from localStorage:', error);
   }
 };
