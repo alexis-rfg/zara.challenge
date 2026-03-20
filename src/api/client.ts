@@ -1,7 +1,12 @@
 import { env } from '@/env';
+import { createLogger } from '@/utils/logger';
 
 const API_BASE_URL = env().baseUrl;
 const API_KEY = env().apiKey;
+const apiLogger = createLogger({
+  scope: 'api.client',
+  tags: ['api', 'http'],
+});
 
 /**
  * Custom error class for API-related errors.
@@ -39,6 +44,15 @@ export class ApiError extends Error {
  */
 export const apiClient = async <T>(endpoint: string): Promise<T> => {
   const url = `${API_BASE_URL}${endpoint}`;
+  const requestSpan = apiLogger.startSpan('request', {
+    tags: ['fetch'],
+    context: {
+      endpoint,
+      method: 'GET',
+      url,
+    },
+  });
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -46,17 +60,55 @@ export const apiClient = async <T>(endpoint: string): Promise<T> => {
       },
     });
     if (!response.ok) {
-      throw new ApiError(
+      const apiError = new ApiError(
         `API request failded: ${response.status} ${response.statusText}`,
         response.status,
         response.statusText,
       );
+
+      requestSpan.fail(apiError, {
+        tags: ['response', 'error'],
+        context: {
+          endpoint,
+          method: 'GET',
+          status: response.status,
+          statusText: response.statusText,
+        },
+      });
+
+      throw apiError;
     }
-    return (await response.json()) as T;
+
+    const data = (await response.json()) as T;
+
+    requestSpan.finish({
+      tags: ['response', 'success'],
+      context: {
+        endpoint,
+        method: 'GET',
+        status: response.status,
+        statusText: response.statusText,
+      },
+    });
+
+    return data;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
     }
-    throw new Error(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+    const networkError = new Error(
+      `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+
+    requestSpan.fail(networkError, {
+      tags: ['network', 'error'],
+      context: {
+        endpoint,
+        method: 'GET',
+      },
+    });
+
+    throw networkError;
   }
 };

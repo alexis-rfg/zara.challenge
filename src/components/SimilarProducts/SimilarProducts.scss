@@ -1,0 +1,120 @@
+@use "@/styles/variables" as *;
+
+.similar-products {
+  --similar-products-inline-padding: #{$padding-horizontal};
+  --similar-products-viewport-inset: max(
+    var(--similar-products-inline-padding),
+    calc((100dvw - #{$max-width}) / 2 + var(--similar-products-inline-padding))
+  );
+
+  width: 100%;
+  padding-bottom: 6.5rem;
+  overflow-x: clip;
+
+  @media (max-width: 64rem) {
+    --similar-products-inline-padding: #{$padding-horizontal-tablet};
+  }
+
+  @media (max-width: 48rem) {
+    --similar-products-inline-padding: #{$padding-horizontal-mobile};
+  }
+
+  &__content {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 0 $padding-horizontal;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+
+    @media (max-width: 64rem) {
+      padding: 0 $padding-horizontal-tablet;
+    }
+
+    @media (max-width: 48rem) {
+      padding: 0 $padding-horizontal-mobile;
+    }
+  }
+
+  &__heading {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    text-transform: capitalize;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__carousel-wrapper {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100dvw;
+    height: $card-size;
+    margin-left: calc(var(--similar-products-viewport-inset) * -1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__carousel {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0; // no gap - cards share borders
+    width: max-content;
+    height: 100%;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 0 0 var(--similar-products-viewport-inset);
+      height: 100%;
+    }
+
+    // Cards in carousel: square, all 4 borders
+    .phone-card {
+      flex-shrink: 0;
+      width: $card-size;
+      height: $card-size;
+      aspect-ratio: 1 !important;
+      border: 0.03125rem solid $color-primary !important;
+    }
+
+    .phone-card__image-wrapper {
+      flex: 1 !important;
+      height: auto !important;
+    }
+  }
+
+  &__item {
+    flex-shrink: 0;
+  }
+
+  // Scrollbar indicator — sits below the carousel
+  &__scrollbar {
+    display: block;
+    width: 100%;
+    height: 0.0625rem;
+    background: #cccccc;
+    position: relative;
+    margin-top: 0.5rem;
+  }
+
+  &__scrollbar-track {
+    width: 9.375rem;
+    height: 0.0625rem;
+    background: #000000;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: left 0.1s ease-out;
+  }
+}
