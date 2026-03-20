@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import type { LogEntry, LogLevel } from '../src/utils/logger';
+import type { LogEntry, LogLevel } from '../src/utils/logger.types';
 
 const ANSI = {
   reset: '\x1b[0m',

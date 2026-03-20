@@ -1,25 +1,6 @@
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+import type { LogLevel, LogContext, SerializedError, LogEntry } from './logger.types';
 
-export type LogContext = Record<string, unknown>;
-
-export type SerializedError = {
-  name: string;
-  message: string;
-  stack?: string;
-};
-
-export type LogEntry = {
-  id: string;
-  timestamp: string;
-  level: LogLevel;
-  scope: string;
-  event: string;
-  tags: string[];
-  context?: LogContext;
-  correlationId?: string;
-  durationMs?: number;
-  error?: SerializedError;
-};
+export type { LogLevel, LogContext, SerializedError, LogEntry };
 
 type LogListener = (entry: LogEntry) => void;
 
@@ -90,7 +71,7 @@ const serializeError = (error: unknown): SerializedError | undefined => {
     return {
       name: error.name,
       message: error.message,
-      stack: error.stack,
+      ...(error.stack ? { stack: error.stack } : {}),
     };
   }
 
@@ -112,6 +93,7 @@ const mergeTags = (...tagSets: Array<string[] | undefined>): string[] => {
 };
 
 const shouldForwardToTerminal = (): boolean => {
+  if (typeof import.meta.env === 'undefined') return false;
   return import.meta.env.DEV && import.meta.env.MODE !== 'test';
 };
 
@@ -160,18 +142,22 @@ const buildEntry = (
         }
       : undefined;
 
-  return {
+  const entry: LogEntry = {
     id: createLogId(),
     timestamp: new Date().toISOString(),
     level,
     scope: config.scope,
     event,
     tags: mergeTags(config.tags, options?.tags),
-    context: mergedContext,
-    correlationId: options?.correlationId,
-    durationMs: options?.durationMs,
-    error: serializeError(options?.error),
   };
+
+  if (mergedContext) entry.context = mergedContext;
+  if (options?.correlationId) entry.correlationId = options.correlationId;
+  if (options?.durationMs !== undefined) entry.durationMs = options.durationMs;
+  const serializedError = serializeError(options?.error);
+  if (serializedError) entry.error = serializedError;
+
+  return entry;
 };
 
 const createLoggerApi = (config: LoggerConfig): LoggerApi => {
