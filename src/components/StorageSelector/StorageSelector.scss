@@ -3,13 +3,13 @@
 .storage-selector {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: $spacing-lg;
 
   &__label {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.875rem;
-    line-height: 1.0625rem;
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -28,23 +28,23 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem;
-    height: 4.0625rem;
-    border: 0.0625rem solid $color-disabled;
+    padding: $spacing-lg;
+    height: 4.0625rem; // 65px (Figma spec)
+    border: $border-width solid $color-disabled;
     background: transparent;
     cursor: pointer;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.875rem;
-    line-height: 1.0625rem;
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: capitalize;
     color: $color-text;
-    transition: border-color 200ms ease;
+    transition: border-color $transition-fast;
     position: relative;
 
     // Adjacent border collapse
     & + & {
-      margin-left: -0.0625rem; // share border with previous option
+      margin-left: -$border-width; // share border with previous option
     }
 
     &--selected {
@@ -58,8 +58,8 @@
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
       z-index: 2;
     }
   }

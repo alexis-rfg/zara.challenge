@@ -10,28 +10,28 @@
     flex: 1;
     padding: 2.5rem $padding-horizontal;
 
-    @media (max-width: 64rem) {
-      padding: 2rem $padding-horizontal-tablet;
+    @media (max-width: $breakpoint-tablet) {
+      padding: $spacing-xl $padding-horizontal-tablet;
     }
 
-    @media (max-width: 48rem) {
-      padding: 1.5rem $padding-horizontal-mobile;
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-lg $padding-horizontal-mobile;
     }
   }
 
   &__heading {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-base; // 16px
-    line-height: 1.25rem;
+    font-weight: $font-weight-light;
+    font-size: $font-size-base;
+    line-height: $line-height-base;
     text-transform: uppercase;
     color: $color-text;
-    margin: 0 0 2rem 0;
+    margin: 0 0 $spacing-xl 0;
   }
 
   &__empty {
     font-family: $font-family;
-    font-weight: 300;
+    font-weight: $font-weight-light;
     font-size: $font-size-card;
     text-transform: uppercase;
     color: $color-text-light;
@@ -45,28 +45,28 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: $spacing-md;
   }
 
-  // ─── Item (Figma: flex-row gap:40px, 548×324) ────────────────────────────
+  // ─── Item (Figma: flex-row gap:40px, 548×324) ─────────────────────────────
   &__item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 2.5rem; // 40px
+    gap: 2.5rem; // 40px (Figma spec)
 
-    @media (max-width: 48rem) {
-      gap: 1rem;
+    @media (max-width: $breakpoint-mobile) {
+      gap: $spacing-md;
     }
   }
 
   // Image wrapper: 262×324
   &__item-image-wrapper {
-    width: 16.375rem; // 262px
-    height: 20.25rem; // 324px
+    width: 16.375rem; // 262px (Figma spec)
+    height: 20.25rem; // 324px (Figma spec)
     flex-shrink: 0;
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       width: 8rem;
       height: 10rem;
     }
@@ -84,16 +84,16 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 2.5rem 0; // 40px 0
-    gap: 2.5rem; // 40px
-    width: 15.375rem; // 246px
-    height: 20.25rem; // 324px
+    padding: 2.5rem 0; // 40px (Figma spec)
+    gap: 2.5rem; // 40px (Figma spec)
+    width: 15.375rem; // 246px (Figma spec)
+    height: 20.25rem; // 324px (Figma spec)
     flex-shrink: 0;
     align-self: stretch;
     flex-grow: 1;
 
-    @media (max-width: 48rem) {
-      padding: 1rem 0;
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-md 0;
       height: auto;
       width: auto;
     }
@@ -104,7 +104,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem; // 20px
+    gap: 1.25rem; // 20px (Figma spec)
     width: 100%;
   }
 
@@ -113,17 +113,17 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25rem; // 4px
+    gap: $spacing-xs;
     width: 100%;
   }
 
   &__item-name {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -132,21 +132,21 @@
 
   &__item-specs {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
     margin: 0;
   }
 
   &__item-price {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: capitalize;
-    color: #000000;
+    color: $color-text;
     margin: 0;
   }
 
@@ -156,14 +156,14 @@
     padding: 0;
     cursor: pointer;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
-    color: #df0000;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
+    color: $color-delete;
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 
@@ -173,17 +173,17 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem $padding-horizontal 3.5rem; // 24px 100px 56px
+    padding: $spacing-lg $padding-horizontal 3.5rem; // 24px 100px 56px (Figma spec)
     background: $color-background;
 
-    @media (max-width: 64rem) {
-      padding: 1.5rem $padding-horizontal-tablet 3.5rem;
+    @media (max-width: $breakpoint-tablet) {
+      padding: $spacing-lg $padding-horizontal-tablet 3.5rem;
     }
 
-    @media (max-width: 48rem) {
-      padding: 1rem $padding-horizontal-mobile 2rem;
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-md $padding-horizontal-mobile $spacing-xl;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: $spacing-md;
     }
   }
 
@@ -194,29 +194,29 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
-    width: 16.25rem; // 260px
-    height: 3.5rem; // 56px
-    border: 0.03125rem solid #1b1a18; // 0.5px
+    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
+    width: $btn-width;
+    height: $btn-height;
+    border: $border-width-hairline solid $color-brand-dark;
     background: $color-background;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem;
-    letter-spacing: 0.08em;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $spacing-md;
+    letter-spacing: $letter-spacing-wide;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
     cursor: pointer;
     flex-shrink: 0;
-    transition: background-color 200ms ease;
+    transition: background-color $transition-fast;
 
     &:hover {
-      background: #f5f5f5;
+      background: $color-hover-light;
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 
@@ -227,7 +227,7 @@
     justify-content: flex-end;
     align-items: center;
     flex: 1;
-    gap: 5rem; // 80px
+    gap: 5rem; // 80px (Figma spec)
   }
 
   // Total group: label + price, gap 24px
@@ -235,58 +235,58 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1.5rem; // 24px
+    gap: $spacing-lg;
   }
 
   &__total-label {
     font-family: $font-family;
-    font-weight: 400; // Figma: 400
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem;
+    font-weight: $font-weight-regular; // Figma: 400
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
   }
 
   &__total-price {
     font-family: $font-family;
-    font-weight: 400; // Figma: 400
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem;
+    font-weight: $font-weight-regular; // Figma: 400
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
     white-space: nowrap;
   }
 
-  // Pay button — filled black, 260×56
+  // Pay button — filled, 260×56
   &__pay {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
-    width: 16.25rem; // 260px
-    height: 3.5rem; // 56px
-    background: #1b1a18;
+    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
+    width: $btn-width;
+    height: $btn-height;
+    background: $color-brand-dark;
     border: none;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem;
-    letter-spacing: 0.08em;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $spacing-md;
+    letter-spacing: $letter-spacing-wide;
     text-transform: uppercase;
-    color: #ffffff;
+    color: $color-background;
     cursor: pointer;
     flex-shrink: 0;
-    transition: background-color 200ms ease;
+    transition: background-color $transition-fast;
 
     &:hover {
-      background: #333;
+      background: $color-hover-dark;
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 }

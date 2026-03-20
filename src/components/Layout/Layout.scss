@@ -12,7 +12,7 @@
     margin: 0 auto;
     padding: $spacing-lg;
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       padding: $spacing-md;
     }
   }

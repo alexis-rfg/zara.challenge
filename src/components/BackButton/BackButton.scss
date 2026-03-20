@@ -5,20 +5,20 @@
   flex-direction: row;
   align-items: center;
   padding: 0;
-  gap: 0.25rem;
+  gap: $spacing-xs;
   background: transparent;
   border: none;
   cursor: pointer;
   flex-shrink: 0;
-  transition: opacity 200ms ease;
+  transition: opacity $transition-fast;
 
   &:hover {
     opacity: 0.7;
   }
 
   &:focus-visible {
-    outline: 0.125rem solid $color-primary;
-    outline-offset: -0.125rem;
+    outline: $outline-width solid $color-primary;
+    outline-offset: -$outline-width;
   }
 
   &__icon {
@@ -28,10 +28,10 @@
   }
 
   &__text {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.75rem;
-    line-height: 0.9375rem;
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: uppercase;
     color: $color-text;
   }
