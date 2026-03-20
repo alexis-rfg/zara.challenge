@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import type { ProductSummary } from '@/types/product.types';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
+import { getCarouselScrollbarMetrics, hasHorizontalOverflow } from '@/utils/carouselScroll';
 import './SimilarProducts.scss';
 
 type SimilarProductsProps = {
@@ -18,8 +19,12 @@ export const SimilarProducts = ({ products }: SimilarProductsProps) => {
     if (!carousel) return;
 
     const checkOverflow = () => {
-      const isOverflowing = carousel.scrollWidth > carousel.clientWidth;
-      setHasOverflow(isOverflowing);
+      setHasOverflow(
+        hasHorizontalOverflow({
+          scrollWidth: carousel.scrollWidth,
+          clientWidth: carousel.clientWidth,
+        }),
+      );
     };
 
     // Check overflow on mount and resize
@@ -38,21 +43,15 @@ export const SimilarProducts = ({ products }: SimilarProductsProps) => {
     if (!carousel || !track || !hasOverflow) return;
 
     const handleScroll = () => {
-      const scrollLeft = carousel.scrollLeft;
-      const scrollWidth = carousel.scrollWidth - carousel.clientWidth;
+      const { trackOffset } = getCarouselScrollbarMetrics({
+        scrollLeft: carousel.scrollLeft,
+        scrollWidth: carousel.scrollWidth,
+        clientWidth: carousel.clientWidth,
+        scrollbarWidth: track.parentElement?.clientWidth ?? carousel.clientWidth,
+        trackWidth: track.offsetWidth,
+      });
 
-      if (scrollWidth === 0) return;
-
-      // Calculate scroll percentage
-      const scrollPercentage = scrollLeft / scrollWidth;
-
-      // Calculate track position (scrollbar width - track width)
-      const scrollbarWidth = track.parentElement?.clientWidth ?? carousel.clientWidth;
-      const trackWidth = track.offsetWidth;
-      const maxTrackPosition = scrollbarWidth - trackWidth;
-
-      // Update track position
-      track.style.left = `${scrollPercentage * maxTrackPosition}px`;
+      track.style.left = `${trackOffset}px`;
     };
 
     carousel.addEventListener('scroll', handleScroll);

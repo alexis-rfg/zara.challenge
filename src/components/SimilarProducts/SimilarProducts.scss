@@ -2,6 +2,10 @@
 
 .similar-products {
   --similar-products-inline-padding: #{$padding-horizontal};
+  --similar-products-viewport-inset: max(
+    var(--similar-products-inline-padding),
+    calc((100dvw - #{$max-width}) / 2 + var(--similar-products-inline-padding))
+  );
 
   width: 100%;
   padding-bottom: 6.5rem; // 104px bottom padding from Figma
@@ -43,16 +47,13 @@
   }
 
   &__carousel-wrapper {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    width: calc(
-      100dvw - max(
-          var(--similar-products-inline-padding),
-          calc((100dvw - #{$max-width}) / 2 + var(--similar-products-inline-padding))
-        )
-    );
+    width: 100dvw;
     height: $card-size; // 344px
+    margin-left: calc(var(--similar-products-viewport-inset) * -1);
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
@@ -69,8 +70,14 @@
     align-items: flex-start;
     gap: 0; // no gap - cards share borders
     width: max-content;
-    min-width: 100%;
     height: 100%;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 0 0 var(--similar-products-viewport-inset);
+      height: 100%;
+    }
 
     // Cards in carousel: square, all 4 borders
     .phone-card {
