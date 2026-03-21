@@ -6,6 +6,12 @@
   padding: 0;
 }
 
+html {
+  // Reserve space for the scrollbar so the viewport width stays constant
+  // when navigating between pages with different content heights.
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   font-family: $font-family;

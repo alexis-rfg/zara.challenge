@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { LazyImage } from '@/components/LazyImage/LazyImage';
 import type { ProductSummary } from '@/types/product.types';
 import './PhoneCard.scss';
 
@@ -17,11 +18,10 @@ export const PhoneCard = ({ product }: PhoneCardProps) => {
     <Link to={`/products/${product.id}`} className="phone-card">
       <article className="phone-card__content">
         <div className="phone-card__image-wrapper">
-          <img
+          <LazyImage
             src={product.imageUrl}
             alt={`${product.brand} ${product.name}`}
             className="phone-card__image"
-            loading="lazy"
           />
         </div>
         <div className="phone-card__info">

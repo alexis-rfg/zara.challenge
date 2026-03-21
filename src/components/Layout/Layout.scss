@@ -23,3 +23,29 @@
     }
   }
 }
+
+// ─── Page transition ──────────────────────────────────────────────────────────
+// Triggered by changing the `key` prop on .page-transition in Layout.tsx.
+// React unmounts → remounts the wrapper on each route change, which replays
+// the `page-enter` animation (fade + subtle upward slide).
+.page-transition {
+  animation: page-enter 300ms ease-out;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
+}

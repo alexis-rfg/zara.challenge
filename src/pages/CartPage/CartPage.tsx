@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/hooks/useCart';
+import { LazyImage } from '@/components/LazyImage/LazyImage';
 import './CartPage.scss';
 
 export const CartPage = () => {
@@ -37,7 +38,7 @@ export const CartPage = () => {
                 className="cart-page__item"
               >
                 <div className="cart-page__item-image-wrapper">
-                  <img
+                  <LazyImage
                     src={item.imageUrl}
                     alt={`${item.brand} ${item.name}`}
                     className="cart-page__item-image"
