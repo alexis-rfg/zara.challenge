@@ -21,7 +21,7 @@ export const CartPage = () => {
   }).format(totalPrice);
 
   return (
-    <main className="cart-page">
+    <section className="cart-page" aria-label="Shopping cart">
       <div className="cart-page__content">
         <h1 className="cart-page__heading">Cart ({totalItems})</h1>
 
@@ -87,6 +87,6 @@ export const CartPage = () => {
           </button>
         )}
       </div>
-    </main>
+    </section>
   );
 };
