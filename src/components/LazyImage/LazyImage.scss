@@ -1,0 +1,36 @@
+// ============================================================================
+// LazyImage — Progressive image reveal with fade-in on load.
+//
+// The image starts fully transparent and transitions to full opacity once the
+// browser fires `onLoad`. This avoids a jarring pop-in and gives the user
+// a visual cue that content is arriving.
+//
+// Modifiers:
+//   --loaded   → opacity: 1 (applied via JS onLoad callback)
+//   --errored  → reduced opacity to signal a broken image gracefully
+//
+// Accessibility:
+//   Respects `prefers-reduced-motion` — disables the transition and shows
+//   the image immediately to avoid motion-triggered discomfort.
+// ============================================================================
+
+.lazy-image {
+  opacity: 0;
+  transition: opacity 400ms ease;
+
+  &--loaded {
+    opacity: 1;
+  }
+
+  &--errored {
+    opacity: 0.3;
+  }
+}
+
+// ─── Reduced motion ─────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .lazy-image {
+    transition: none;
+    opacity: 1;
+  }
+}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProductDetail } from '@/hooks/useProductDetail';
 import { useCart } from '@/hooks/useCart';
+import { LazyImage } from '@/components/LazyImage/LazyImage';
 import { ColorSelector } from '@/components/ColorSelector/ColorSelector';
 import { StorageSelector } from '@/components/StorageSelector/StorageSelector';
 import { SimilarProducts } from '@/components/SimilarProducts/SimilarProducts';
@@ -116,7 +117,8 @@ export const PhoneDetailPage = () => {
       {/* Hero: image + product info */}
       <section className="phone-detail-page__hero" aria-label="Product details">
         <div className="phone-detail-page__image-wrapper">
-          <img
+          <LazyImage
+            eager
             src={currentImageUrl}
             alt={`${product.brand} ${product.name}`}
             className="phone-detail-page__image"
