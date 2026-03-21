@@ -4,20 +4,21 @@
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - #{$header-height});
+  padding-bottom: 0;
 
   &__content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
-    padding: 2.5rem $padding-horizontal 0;
+    padding: 2.5rem $padding-horizontal $spacing-xl;
 
     @media (max-width: $breakpoint-tablet) {
-      padding: $spacing-xl $padding-horizontal-tablet 0;
+      padding: $spacing-xl $padding-horizontal-tablet $spacing-xl;
     }
 
     @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-lg $padding-horizontal-mobile 0;
+      padding: $spacing-lg $padding-horizontal-mobile $spacing-lg;
     }
   }
 
@@ -143,6 +144,9 @@
   }
 
   &__footer {
+    position: sticky;
+    bottom: 0;
+    z-index: $z-index-sticky;
     display: grid;
     grid-template-columns: $btn-width minmax(0, 1fr) $btn-width;
     grid-template-areas: "continue summary pay";
