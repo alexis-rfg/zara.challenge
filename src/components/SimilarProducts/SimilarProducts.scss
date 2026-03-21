@@ -80,13 +80,24 @@
       height: 100%;
     }
 
-    // Cards in carousel: square, all 4 borders
+    // Cards in carousel: top + right + bottom only — no left border to avoid
+    // doubling where adjacent cards touch (same split as the main grid).
     .phone-card {
       flex-shrink: 0;
       width: $card-size;
       height: $card-size;
       aspect-ratio: 1 !important;
-      border: $border-width-hairline solid $color-primary !important;
+      border-top: $border-width-hairline solid $color-primary;
+      border-right: $border-width-hairline solid $color-primary;
+      border-bottom: $border-width-hairline solid $color-primary;
+      border-left: none;
+    }
+
+    // Restore left outer border on the first card only.
+    // Can't use .phone-card:first-child because each card is wrapped in
+    // __item, making it the :first-child of its own wrapper — not of the carousel.
+    .similar-products__item:first-child .phone-card {
+      border-left: $border-width-hairline solid $color-primary;
     }
 
     .phone-card__image-wrapper {
