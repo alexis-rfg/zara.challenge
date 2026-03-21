@@ -1,11 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useProducts } from '@/hooks/useProducts';
+import { useColorFilter } from '@/hooks/useColorFilter';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
+import { ColorFilter } from '@/components/ColorFilter/ColorFilter';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import './PhoneListPage.scss';
 
 export const PhoneListPage = () => {
   const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
+  const colorFilter = useColorFilter();
+  const { filterProducts } = colorFilter;
+
+  const displayProducts = useMemo(() => filterProducts(products), [products, filterProducts]);
 
   useEffect(() => {
     document.title = 'Zara Mobile Phones';
@@ -32,6 +38,19 @@ export const PhoneListPage = () => {
           resultCount={resultCount}
           loading={loading}
         />
+        <ColorFilter
+          resultCount={displayProducts.length}
+          loading={loading}
+          isOpen={colorFilter.isOpen}
+          isFilterLoading={colorFilter.isLoading}
+          availableColors={colorFilter.availableColors}
+          selectedColor={colorFilter.selectedColor}
+          activeCount={colorFilter.activeCount}
+          onOpen={colorFilter.open}
+          onClose={colorFilter.close}
+          onSelect={colorFilter.select}
+          onClear={colorFilter.clear}
+        />
       </div>
 
       {loading ? (
@@ -39,14 +58,14 @@ export const PhoneListPage = () => {
           <div className="phone-list-page__spinner" />
           <p>Loading products...</p>
         </div>
-      ) : products.length === 0 ? (
+      ) : displayProducts.length === 0 ? (
         <div className="phone-list-page__empty" role="status">
           <p>No products found{committedSearch && ` for "${committedSearch}"`}</p>
         </div>
       ) : (
         <div className="phone-list-page__grid-shell">
           <div className="phone-list-page__grid">
-            {products.map((product) => (
+            {displayProducts.map((product) => (
               <PhoneCard key={product.id} product={product} />
             ))}
           </div>
