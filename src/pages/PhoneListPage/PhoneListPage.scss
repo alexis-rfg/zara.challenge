@@ -1,52 +1,132 @@
+// ============================================================================
+// PhoneListPage — Product catalog grid with sticky search header.
+//
+// Layout (top → bottom):
+//   1. __sticky-header  – search bar pinned below the navbar
+//   2. __grid-shell     – horizontal-padding wrapper
+//      └─ __grid        – CSS Grid of PhoneCard components
+//   3. __loading        – spinner + message (conditional)
+//   4. __empty          – "no results" message (conditional)
+//   5. __error          – error heading, message & retry button (conditional)
+//
+// Responsive columns:
+//   Desktop  → 5 columns
+//   Tablet   → 2 columns  (≤ $breakpoint-tablet)
+//   Mobile   → 1 column   (≤ $breakpoint-mobile)
+//
+// Border strategy (scoped explicit borders — zero doubling):
+//   All card borders are scoped inside __grid via .phone-card selectors.
+//   Every card gets border-right + border-bottom. Nth-child rules add
+//   border-top (first row) and border-left (first column). Each breakpoint
+//   fully resets via :nth-child(n) then reapplies its own rules, so no
+//   cascade leaks between breakpoints.
+// ============================================================================
 @use "@/styles/variables" as *;
 
 .phone-list-page {
   width: 100%;
   padding-bottom: $padding-horizontal;
 
-  @media (max-width: 64rem) {
+  @media (max-width: $breakpoint-tablet) {
     padding-bottom: $padding-horizontal-tablet;
   }
 
-  @media (max-width: 48rem) {
+  @media (max-width: $breakpoint-mobile) {
     padding-bottom: $padding-horizontal-mobile;
   }
 
+  // ─── Sticky header ──────────────────────────────────────────────────────────
+  // Stays pinned directly below the navbar so the search bar remains accessible
+  // while the user scrolls through the product grid.
   &__sticky-header {
     position: sticky;
     top: $header-height;
-    z-index: 90;
+    z-index: $z-index-sticky;
     background: $color-background;
   }
 
+  // ─── Grid shell ────────────────────────────────────────────────────────────
+  // Outer wrapper that applies responsive horizontal padding matching the rest
+  // of the page layout (100 px → 40 px → 16 px).
   &__grid-shell {
     width: 100%;
     box-sizing: border-box;
     padding: 0 $padding-horizontal;
 
-    @media (max-width: 64rem) {
+    @media (max-width: $breakpoint-tablet) {
       padding: 0 $padding-horizontal-tablet;
     }
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       padding: 0 $padding-horizontal-mobile;
     }
   }
 
+  // ─── Product grid ──────────────────────────────────────────────────────────
+  // CSS Grid that holds PhoneCard links. Column count adapts per breakpoint.
+  //
+  // Border technique (scoped explicit borders):
+  //   Base: every card gets border-right + border-bottom.
+  //   First row gets border-top, first column gets border-left.
+  //   Each breakpoint resets ALL borders with :nth-child(n) { border: 0 }
+  //   then reapplies for the new column count.
   &__grid {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(5, minmax(0, 1fr));
 
-    @media (max-width: 64rem) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    // Base: every card gets right + bottom
+    .phone-card {
+      border-right: $border-width-hairline solid $color-primary;
+      border-bottom: $border-width-hairline solid $color-primary;
     }
 
-    @media (max-width: 48rem) {
+    // First row (cards 1–5) get top border
+    .phone-card:nth-child(-n + 5) {
+      border-top: $border-width-hairline solid $color-primary;
+    }
+
+    // First column (every 5th+1) gets left border
+    .phone-card:nth-child(5n + 1) {
+      border-left: $border-width-hairline solid $color-primary;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      .phone-card:nth-child(n) {
+        border: 0;
+        border-right: $border-width-hairline solid $color-primary;
+        border-bottom: $border-width-hairline solid $color-primary;
+      }
+
+      .phone-card:nth-child(-n + 2) {
+        border-top: $border-width-hairline solid $color-primary;
+      }
+
+      .phone-card:nth-child(2n + 1) {
+        border-left: $border-width-hairline solid $color-primary;
+      }
+    }
+
+    @media (max-width: $breakpoint-mobile) {
       grid-template-columns: 1fr;
+
+      .phone-card:nth-child(n) {
+        border: 0;
+        border-right: $border-width-hairline solid $color-primary;
+        border-bottom: $border-width-hairline solid $color-primary;
+        border-left: $border-width-hairline solid $color-primary;
+      }
+
+      .phone-card:first-child {
+        border-top: $border-width-hairline solid $color-primary;
+      }
     }
   }
 
+  // ─── Loading state ─────────────────────────────────────────────────────────
+  // Centered spinner + "Loading products…" text shown while the API responds.
   &__loading {
     display: flex;
     flex-direction: column;
@@ -56,36 +136,42 @@
     gap: $spacing-md;
   }
 
+  // Rotating ring spinner (animation defined in global.scss).
   &__spinner {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 0.25rem solid $color-border;
+    width: $spinner-size;
+    height: $spinner-size;
+    border: $spinner-border solid $color-border;
     border-top-color: $color-primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
+  // ─── Empty state ──────────────────────────────────────────────────────────
+  // Shown when the product list returns zero results (initial or after search).
   &__empty {
     text-align: center;
     padding: $spacing-2xl $padding-horizontal;
     color: $color-text-light;
-    font-weight: 300;
+    font-weight: $font-weight-light;
     font-size: $font-size-card;
     text-transform: uppercase;
   }
 
+  // ─── Error state ──────────────────────────────────────────────────────────
+  // Full-width alert with heading, error description, and a "Try Again" button
+  // that triggers a hard page reload.
   &__error {
     text-align: center;
     padding: $spacing-2xl $padding-horizontal;
 
     h2 {
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-base;
       margin-bottom: $spacing-sm;
     }
 
     p {
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-card;
       color: $color-error;
       margin-bottom: $spacing-md;
@@ -97,17 +183,12 @@
       color: $color-background;
       border: none;
       font-family: $font-family;
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-card;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: $letter-spacing-button;
       cursor: pointer;
     }
   }
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// @keyframes spin is defined in global.scss

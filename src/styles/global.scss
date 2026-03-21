@@ -45,3 +45,10 @@ a {
   white-space: nowrap;
   border: 0;
 }
+
+// ─── Shared animations ────────────────────────────────────────────────────────
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

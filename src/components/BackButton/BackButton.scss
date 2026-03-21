@@ -1,48 +1,37 @@
 @use "@/styles/variables" as *;
 
 .back-button {
-  position: fixed;
-  top: 5rem; // 80px (navbar height)
-  left: $padding-horizontal; // 100px from left
   display: inline-flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.75rem 0; // 12px vertical, no horizontal padding
-  gap: 0.25rem; // 4px
+  padding: 0;
+  gap: $spacing-xs;
   background: transparent;
   border: none;
   cursor: pointer;
-  z-index: 50;
-  transition: opacity 200ms ease;
-
-  @media (max-width: 64rem) {
-    left: $padding-horizontal-tablet;
-  }
-
-  @media (max-width: 48rem) {
-    left: $padding-horizontal-mobile;
-  }
+  flex-shrink: 0;
+  transition: opacity $transition-fast;
 
   &:hover {
     opacity: 0.7;
   }
 
   &:focus-visible {
-    outline: 0.125rem solid $color-primary;
-    outline-offset: -0.125rem;
+    outline: $outline-width solid $color-primary;
+    outline-offset: -$outline-width;
   }
 
   &__icon {
-    width: 1.25rem; // 20px
-    height: 1.25rem; // 20px
+    width: 1.25rem;
+    height: 1.25rem;
     flex-shrink: 0;
   }
 
   &__text {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.75rem; // 12px
-    line-height: 0.9375rem; // 15px
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: uppercase;
     color: $color-text;
   }

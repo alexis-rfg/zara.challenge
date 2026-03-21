@@ -3,13 +3,13 @@
 .color-selector {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; // 24px — between label and options only (2 flex children)
+  gap: $spacing-lg;
 
   &__label {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem; // 17px
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
@@ -19,9 +19,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1rem; // 16px
+    gap: $spacing-md;
     position: relative;
-    padding-bottom: 1.5625rem; // 25px = 10px gap + 15px name height
+    padding-bottom: 1.5625rem;
   }
 
   &__option {
@@ -32,26 +32,26 @@
     padding: 0;
     width: 1.5rem; // 24px
     height: 1.5rem; // 24px
-    border: 0.0625rem solid $color-disabled; // 1px solid #CCCCCC
+    border: $border-width solid $color-disabled;
     background: transparent;
     cursor: pointer;
     flex-shrink: 0;
-    transition: border-color 200ms ease;
+    transition: border-color $transition-fast;
 
     &--selected {
-      border-color: $color-primary; // 1px solid #000 — keep 1px, just change color
+      border-color: $color-primary;
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 
   &__swatch {
     display: block;
-    width: 1.25rem; // 20px
-    height: 1.25rem; // 20px
+    width: 1.25rem;
+    height: 1.25rem;
     flex-shrink: 0;
     pointer-events: none;
   }
@@ -60,13 +60,13 @@
   &__name {
     position: absolute;
     left: 0;
-    top: 2.125rem; // 34px: 24px swatch height + 10px gap
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 0.75rem; // 12px
-    line-height: 0.9375rem; // 15px
+    top: 2.125rem;
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     color: $color-text;
     white-space: nowrap;
-    min-height: 0.9375rem;
+    min-height: $line-height-tight;
   }
 }

@@ -3,30 +3,40 @@
 .phone-detail-page {
   width: 100%;
   padding-bottom: 0;
-  padding-top: 2.75rem; // 44px - height of back button
+  padding-top: 0;
 
   // ─── Hero ─────────────────────────────────────────────────────────────────
   &__hero {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
-    max-width: $max-width; // 1200px
+    align-items: center;
+    max-width: $max-width;
     margin: 0 auto;
-    padding: 2.5rem $padding-horizontal; // top+bottom 40px, sides 100px
-    gap: 2rem;
-    min-height: 39.375rem; // 630px
+    padding: 6.875rem $padding-horizontal 0;
+    gap: 10.625rem;
+    min-height: 39.375rem;
 
-    @media (max-width: 64rem) {
-      padding: 2rem $padding-horizontal-tablet;
+    // Prevent overflow on viewports between 1024px and 1400px
+    @media (max-width: $breakpoint-wide) {
+      gap: $spacing-xl;
+      padding-left: $spacing-xl;
+      padding-right: $spacing-xl;
+    }
+
+    // Tablet: keep horizontal layout like desktop
+    @media (max-width: $breakpoint-tablet) {
+      padding: $spacing-xl $padding-horizontal-tablet 0;
+      gap: $spacing-xl;
+    }
+
+    // Mobile: switch to vertical layout
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-lg $padding-horizontal-mobile 0;
       flex-direction: column;
       align-items: flex-start;
       min-height: auto;
-    }
-
-    @media (max-width: 48rem) {
-      padding: 1.5rem $padding-horizontal-mobile;
-      gap: 1.5rem;
+      gap: 2.5rem; // 40px gap between image and product info (Figma mobile spec)
     }
   }
 
@@ -34,17 +44,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 31.875rem; // 510px
-    height: 39.375rem; // 630px
+    width: 31.875rem; // 510px (Figma spec)
+    height: 39.375rem; // 630px (Figma spec)
     flex-shrink: 0;
 
-    @media (max-width: 64rem) {
-      width: 100%;
-      height: 25rem; // 400px
+    @media (max-width: $breakpoint-tablet) {
+      width: 50%; // flexible width in tablet horizontal layout
+      height: 26rem;
+      flex-shrink: 1;
     }
 
-    @media (max-width: 48rem) {
-      height: 18.75rem; // 300px
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      height: 18.75rem;
     }
   }
 
@@ -57,19 +69,24 @@
   &__product-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4rem;
-    width: 23.75rem;
+    width: 23.75rem; // 380px (Figma spec)
+    min-height: 39.375rem;
     flex-shrink: 0;
-    margin-top: 3.5rem;
+    margin-top: 0;
 
-    @media (max-width: 64rem) {
-      width: 100%;
+    @media (max-width: $breakpoint-tablet) {
+      width: 50%; // flexible width in tablet horizontal layout
       gap: 2.5rem;
+      min-height: auto;
+      flex-shrink: 1;
       margin-top: 0;
     }
 
-    @media (max-width: 48rem) {
-      gap: 2rem;
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      gap: $spacing-xl;
       margin-top: 0;
     }
   }
@@ -77,24 +94,24 @@
   &__title-price {
     display: flex;
     flex-direction: column;
-    gap: 0.6875rem; // 11px
+    gap: 0.6875rem; // 11px (Figma spec)
   }
 
   &__title {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 1.5rem; // 24px
-    line-height: 100%; // 24px - Figma spec
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-xl;
+    line-height: 100%;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
   }
 
   &__price {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 1.25rem; // 20px
-    line-height: 1.25rem; // 20px
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-heading;
+    line-height: $font-size-heading;
     color: $color-text;
     margin: 0;
 
@@ -106,7 +123,11 @@
   &__selectors {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px
+    gap: 2.5rem; // 40px (Figma spec)
+
+    @media (max-width: $breakpoint-mobile) {
+      gap: $spacing-xl; // 32px gap between selectors on mobile (Figma mobile spec)
+    }
   }
 
   &__add-btn {
@@ -114,24 +135,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
+    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
     width: 100%;
-    height: 3.5rem; // 56px
+    height: $btn-height;
     border: none;
     cursor: default;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem; // 16px
-    letter-spacing: 0.08em;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $spacing-md;
+    letter-spacing: $letter-spacing-wide;
     text-transform: uppercase;
     transition:
-      background-color 200ms ease,
-      color 200ms ease;
+      background-color $transition-fast,
+      color $transition-fast;
 
     // Disabled / not ready state
-    background: #f3f2f2;
-    color: #c2bfbc;
+    background: $color-btn-disabled-bg;
+    color: $color-btn-disabled-text;
 
     &:not(:disabled) {
       background: $color-primary;
@@ -139,13 +160,13 @@
       cursor: pointer;
 
       &:hover {
-        background: #333;
+        background: $color-hover-dark;
       }
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 
@@ -153,26 +174,25 @@
   &__specs {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px
-    max-width: $max-width; // 1200px
+    gap: 2.5rem; // 40px (Figma spec)
+    max-width: $max-width;
     margin: 0 auto;
-    padding: 2.5rem $padding-horizontal;
+    padding: 9.625rem $padding-horizontal; // 154px (Figma spec)
 
-    @media (max-width: 64rem) {
-      padding: 2.5rem $padding-horizontal-tablet;
+    @media (max-width: $breakpoint-tablet) {
+      padding: 5.5rem $padding-horizontal-tablet;
     }
 
-    @media (max-width: 48rem) {
-      padding: 2rem $padding-horizontal-mobile;
-      gap: 1.5rem;
+    @media (max-width: $breakpoint-mobile) {
+      padding: 5rem $padding-horizontal-mobile;
     }
   }
 
   &__specs-heading {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: 1.25rem; // 20px
-    line-height: 1.5rem; // 24px
+    font-weight: $font-weight-light;
+    font-size: $font-size-heading;
+    line-height: $line-height-lg;
     text-transform: capitalize;
     color: $color-text;
     margin: 0;
@@ -191,33 +211,33 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding: 1rem 0; // 16px 0
-    gap: 3rem; // 48px
+    padding: $spacing-md 0;
+    gap: 3rem;
     width: 100%;
-    border-bottom: 0.03125rem solid $color-primary; // 0.5px solid #000
+    border-bottom: $border-width-hairline solid $color-primary;
 
     &:first-child {
-      border-top: 0.03125rem solid $color-primary; // first row also has top border
+      border-top: $border-width-hairline solid $color-primary;
     }
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       flex-direction: column;
-      gap: 0.25rem;
+      gap: $spacing-xs;
     }
   }
 
   &__spec-label {
-    width: 18.75rem; // 300px
+    width: 18.75rem; // 300px (Figma spec)
     flex-shrink: 0;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       width: 100%;
     }
   }
@@ -225,9 +245,9 @@
   &__spec-value {
     flex: 1;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem; // 15px
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
     color: $color-text;
     margin: 0;
   }
@@ -246,7 +266,7 @@
 
     p {
       font-family: $font-family;
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-card;
       text-transform: uppercase;
       color: $color-text-light;
@@ -257,7 +277,7 @@
   &__error {
     h2 {
       font-family: $font-family;
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-base;
       text-transform: uppercase;
       margin: 0;
@@ -270,26 +290,21 @@
       color: $color-background;
       border: none;
       font-family: $font-family;
-      font-weight: 300;
+      font-weight: $font-weight-light;
       font-size: $font-size-card;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: $letter-spacing-button;
       cursor: pointer;
     }
   }
 
   &__spinner {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 0.25rem solid $color-border;
+    width: $spinner-size;
+    height: $spinner-size;
+    border: $spinner-border solid $color-border;
     border-top-color: $color-primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// @keyframes spin is defined in global.scss

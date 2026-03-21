@@ -5,8 +5,8 @@ import { SearchBar } from './SearchBar';
 
 describe('SearchBar', () => {
   const defaultProps = {
-    value: '',
-    onChange: vi.fn(),
+    onSearch: vi.fn(),
+    committedSearch: '',
     resultCount: 0,
     loading: false,
   };
@@ -14,30 +14,71 @@ describe('SearchBar', () => {
   it('renders search input with placeholder', () => {
     render(<SearchBar {...defaultProps} />);
 
-    const input = screen.getByPlaceholderText('Search for a smartphone...');
-    expect(input).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
-  it('displays the current search value', () => {
-    render(<SearchBar {...defaultProps} value="iPhone" />);
-
-    const input = screen.getByDisplayValue('iPhone');
-    expect(input).toBeInTheDocument();
-  });
-
-  it('calls onChange when user types', async () => {
+  it('does not call onSearch while the user types', async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
+    const onSearch = vi.fn();
 
-    render(<SearchBar {...defaultProps} onChange={onChange} />);
+    render(<SearchBar {...defaultProps} onSearch={onSearch} />);
+
+    await user.type(screen.getByPlaceholderText('Search for a smartphone...'), 'Samsung');
+
+    expect(onSearch).not.toHaveBeenCalled();
+  });
+
+  it('calls onSearch with trimmed value when Enter is pressed', async () => {
+    const user = userEvent.setup();
+    const onSearch = vi.fn();
+
+    render(<SearchBar {...defaultProps} onSearch={onSearch} />);
 
     const input = screen.getByPlaceholderText('Search for a smartphone...');
     await user.type(input, 'Samsung');
+    await user.keyboard('{Enter}');
 
-    expect(onChange).toHaveBeenCalledTimes(7); // One call per character
-    // Controlled input: onChange fires with e.target.value per keystroke
-    expect(onChange).toHaveBeenNthCalledWith(1, 'S');
-    expect(onChange).toHaveBeenLastCalledWith('g');
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(onSearch).toHaveBeenCalledWith('Samsung');
+  });
+
+  it('trims whitespace before calling onSearch', async () => {
+    const user = userEvent.setup();
+    const onSearch = vi.fn();
+
+    render(<SearchBar {...defaultProps} onSearch={onSearch} />);
+
+    const input = screen.getByPlaceholderText('Search for a smartphone...');
+    await user.type(input, '  iPhone  ');
+    await user.keyboard('{Enter}');
+
+    expect(onSearch).toHaveBeenCalledWith('iPhone');
+  });
+
+  it('shows the clear button only when input has text', async () => {
+    const user = userEvent.setup();
+
+    render(<SearchBar {...defaultProps} />);
+
+    expect(screen.queryByLabelText('Clear search')).not.toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText('Search for a smartphone...'), 'x');
+
+    expect(screen.getByLabelText('Clear search')).toBeInTheDocument();
+  });
+
+  it('clears input and calls onSearch with empty string when clear button is clicked', async () => {
+    const user = userEvent.setup();
+    const onSearch = vi.fn();
+
+    render(<SearchBar {...defaultProps} onSearch={onSearch} />);
+
+    const input = screen.getByPlaceholderText('Search for a smartphone...');
+    await user.type(input, 'Apple');
+    await user.click(screen.getByLabelText('Clear search'));
+
+    expect(input).toHaveValue('');
+    expect(onSearch).toHaveBeenCalledWith('');
   });
 
   it('displays result count with singular form', () => {
@@ -52,8 +93,8 @@ describe('SearchBar', () => {
     expect(screen.getByText('5 results')).toBeInTheDocument();
   });
 
-  it('displays search term in result count when searching', () => {
-    render(<SearchBar {...defaultProps} value="iPhone" resultCount={3} />);
+  it('shows committedSearch in result count label, not the current input', () => {
+    render(<SearchBar {...defaultProps} committedSearch="iPhone" resultCount={3} />);
 
     expect(screen.getByText(/3 results for "iPhone"/)).toBeInTheDocument();
   });
@@ -67,12 +108,17 @@ describe('SearchBar', () => {
   it('has proper accessibility attributes', () => {
     render(<SearchBar {...defaultProps} />);
 
-    const input = screen.getByLabelText('Search products');
-    expect(input).toBeInTheDocument();
+    expect(screen.getByLabelText('Search products')).toBeInTheDocument();
 
     const resultsRegion = screen.getByRole('status');
     expect(resultsRegion).toHaveAttribute('aria-live', 'polite');
     expect(resultsRegion).toHaveAttribute('aria-atomic', 'true');
+  });
+
+  it('renders as a form with role="search"', () => {
+    render(<SearchBar {...defaultProps} />);
+
+    expect(screen.getByRole('search')).toBeInTheDocument();
   });
 
   it('search icon is hidden from screen readers', () => {
@@ -80,15 +126,5 @@ describe('SearchBar', () => {
 
     const icon = container.querySelector('svg');
     expect(icon).toHaveAttribute('aria-hidden', 'true');
-  });
-
-  it('clears input when value prop changes to empty string', () => {
-    const { rerender } = render(<SearchBar {...defaultProps} value="test" />);
-
-    expect(screen.getByDisplayValue('test')).toBeInTheDocument();
-
-    rerender(<SearchBar {...defaultProps} value="" />);
-
-    expect(screen.queryByDisplayValue('test')).not.toBeInTheDocument();
   });
 });

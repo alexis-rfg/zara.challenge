@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { PhoneListPage } from './PhoneListPage';
@@ -27,20 +27,22 @@ const renderWithRouter = (ui: React.ReactElement) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
 };
 
+const mockHookBase = {
+  products: [],
+  loading: false,
+  error: null,
+  committedSearch: '',
+  submitSearch: vi.fn(),
+  resultCount: 0,
+};
+
 describe('PhoneListPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders page title', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
 
     renderWithRouter(<PhoneListPage />);
 
@@ -48,14 +50,7 @@ describe('PhoneListPage', () => {
   });
 
   it('renders search bar', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
 
     renderWithRouter(<PhoneListPage />);
 
@@ -63,14 +58,7 @@ describe('PhoneListPage', () => {
   });
 
   it('displays loading state', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: true,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
 
     renderWithRouter(<PhoneListPage />);
 
@@ -79,11 +67,8 @@ describe('PhoneListPage', () => {
 
   it('displays products in grid', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
       products: mockProducts,
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
       resultCount: 2,
     });
 
@@ -96,28 +81,17 @@ describe('PhoneListPage', () => {
   });
 
   it('displays empty state when no products found', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
 
     renderWithRouter(<PhoneListPage />);
 
     expect(screen.getByText('No products found')).toBeInTheDocument();
   });
 
-  it('displays empty state with search term when no results', () => {
+  it('displays empty state with committed search term when no results', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: 'Nokia',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
+      ...mockHookBase,
+      committedSearch: 'Nokia',
     });
 
     renderWithRouter(<PhoneListPage />);
@@ -127,12 +101,8 @@ describe('PhoneListPage', () => {
 
   it('displays error state', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
+      ...mockHookBase,
       error: 'Failed to load products. Please try again.',
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
     });
 
     renderWithRouter(<PhoneListPage />);
@@ -150,50 +120,57 @@ describe('PhoneListPage', () => {
     });
 
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
+      ...mockHookBase,
       error: 'Network error',
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
     });
 
     renderWithRouter(<PhoneListPage />);
 
-    const retryButton = screen.getByRole('button', { name: 'Try Again' });
-    expect(retryButton).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
   });
 
-  it('calls setSearchTerm when user types in search bar', async () => {
+  it('calls submitSearch when user types and presses Enter', async () => {
     const user = userEvent.setup();
-    const setSearchTerm = vi.fn();
+    const submitSearch = vi.fn();
 
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
       products: mockProducts,
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm,
       resultCount: 2,
+      submitSearch,
     });
 
     renderWithRouter(<PhoneListPage />);
 
     const searchInput = screen.getByPlaceholderText('Search for a smartphone...');
     await user.type(searchInput, 'iPhone');
+    await user.keyboard('{Enter}');
 
-    await waitFor(() => {
-      expect(setSearchTerm).toHaveBeenCalled();
+    expect(submitSearch).toHaveBeenCalledWith('iPhone');
+  });
+
+  it('does not call submitSearch while the user is only typing', async () => {
+    const user = userEvent.setup();
+    const submitSearch = vi.fn();
+
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
+      products: mockProducts,
+      resultCount: 2,
+      submitSearch,
     });
+
+    renderWithRouter(<PhoneListPage />);
+
+    await user.type(screen.getByPlaceholderText('Search for a smartphone...'), 'iPhone');
+
+    expect(submitSearch).not.toHaveBeenCalled();
   });
 
   it('displays correct result count in search bar', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
       products: mockProducts,
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
       resultCount: 2,
     });
 
@@ -203,14 +180,7 @@ describe('PhoneListPage', () => {
   });
 
   it('sets document title on mount', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
 
     renderWithRouter(<PhoneListPage />);
 
@@ -219,11 +189,8 @@ describe('PhoneListPage', () => {
 
   it('renders product cards as links', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
       products: mockProducts,
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
       resultCount: 2,
     });
 
@@ -236,14 +203,7 @@ describe('PhoneListPage', () => {
   });
 
   it('loading state has proper accessibility attributes', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: true,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
 
     renderWithRouter(<PhoneListPage />);
 
@@ -252,14 +212,7 @@ describe('PhoneListPage', () => {
   });
 
   it('empty state has proper accessibility attributes', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
-      products: [],
-      loading: false,
-      error: null,
-      searchTerm: '',
-      setSearchTerm: vi.fn(),
-      resultCount: 0,
-    });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
 
     renderWithRouter(<PhoneListPage />);
 

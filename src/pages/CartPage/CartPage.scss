@@ -5,70 +5,65 @@
   flex-direction: column;
   min-height: calc(100vh - #{$header-height});
 
-  // ─── Content ──────────────────────────────────────────────────────────────
   &__content {
     flex: 1;
-    padding: 2.5rem $padding-horizontal;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    padding: 2.5rem $padding-horizontal 0;
 
-    @media (max-width: 64rem) {
-      padding: 2rem $padding-horizontal-tablet;
+    @media (max-width: $breakpoint-tablet) {
+      padding: $spacing-xl $padding-horizontal-tablet 0;
     }
 
-    @media (max-width: 48rem) {
-      padding: 1.5rem $padding-horizontal-mobile;
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-lg $padding-horizontal-mobile 0;
     }
   }
 
   &__heading {
+    margin: 0;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-base; // 16px
-    line-height: 1.25rem;
+    font-weight: $font-weight-light;
+    font-size: $font-size-heading;
+    line-height: $line-height-lg;
     text-transform: uppercase;
     color: $color-text;
-    margin: 0 0 2rem 0;
   }
 
   &__empty {
-    font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card;
-    text-transform: uppercase;
-    color: $color-text-light;
-    margin: 4rem 0;
+    margin: 0;
   }
 
-  // ─── List ─────────────────────────────────────────────────────────────────
   &__list {
     list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: $spacing-lg;
+    margin: 0;
+    padding: 0;
   }
 
-  // ─── Item (Figma: flex-row gap:40px, 548×324) ────────────────────────────
   &__item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 2.5rem; // 40px
+    gap: 2.5rem;
 
-    @media (max-width: 48rem) {
-      gap: 1rem;
+    @media (max-width: $breakpoint-mobile) {
+      align-items: flex-start;
+      gap: $spacing-lg;
     }
   }
 
-  // Image wrapper: 262×324
   &__item-image-wrapper {
-    width: 16.375rem; // 262px
-    height: 20.25rem; // 324px
+    width: 16.375rem;
+    height: 20.25rem;
     flex-shrink: 0;
 
-    @media (max-width: 48rem) {
-      width: 8rem;
-      height: 10rem;
+    @media (max-width: $breakpoint-mobile) {
+      width: 10rem;
+      height: 12.36625rem;
     }
   }
 
@@ -78,215 +73,195 @@
     object-fit: contain;
   }
 
-  // Info+delete: 246×324, padding 40px 0, gap 40px, flex-grow:1
   &__item-info-delete {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 2.5rem 0; // 40px 0
-    gap: 2.5rem; // 40px
-    width: 15.375rem; // 246px
-    height: 20.25rem; // 324px
-    flex-shrink: 0;
     align-self: stretch;
+    gap: 2.5rem;
+    width: 15.375rem;
+    min-width: 0;
+    height: 20.25rem;
+    padding: 2.5rem 0;
     flex-grow: 1;
 
-    @media (max-width: 48rem) {
-      padding: 1rem 0;
-      height: auto;
+    @media (max-width: $breakpoint-mobile) {
       width: auto;
+      height: 12.36625rem;
     }
   }
 
-  // Info: flex-col gap:20px
   &__item-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem; // 20px
+    gap: 1.25rem;
     width: 100%;
   }
 
-  // Name group: flex-col gap:4px
   &__item-name-group {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25rem; // 4px
+    gap: $spacing-xs;
     width: 100%;
   }
 
-  &__item-name {
+  &__item-name,
+  &__item-specs,
+  &__item-price,
+  &__item-remove {
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
-    text-transform: uppercase;
-    color: #000000;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $line-height-tight;
   }
 
-  &__item-specs {
-    font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
-    text-transform: uppercase;
-    color: #000000;
+  &__item-name,
+  &__item-specs,
+  &__item-price {
     margin: 0;
+    color: $color-text;
+    text-transform: uppercase;
   }
 
   &__item-price {
-    font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
     text-transform: capitalize;
-    color: #000000;
-    margin: 0;
   }
 
   &__item-remove {
-    background: none;
     border: none;
     padding: 0;
-    cursor: pointer;
-    font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 0.9375rem;
-    color: #df0000;
+    background: none;
+    color: $color-delete;
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
     }
   }
 
-  // ─── Footer bar (Figma: padding 24px 100px 56px) ──────────────────────────
   &__footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: $btn-width minmax(0, 1fr) $btn-width;
+    grid-template-areas: "continue summary pay";
     align-items: center;
-    padding: 1.5rem $padding-horizontal 3.5rem; // 24px 100px 56px
+    column-gap: 5rem;
+    row-gap: $spacing-lg;
+    padding: $spacing-lg $padding-horizontal 3.5rem;
     background: $color-background;
 
-    @media (max-width: 64rem) {
-      padding: 1.5rem $padding-horizontal-tablet 3.5rem;
+    @media (max-width: $breakpoint-tablet) {
+      column-gap: $spacing-xl;
+      padding: $spacing-lg $padding-horizontal-tablet 3.5rem;
     }
 
-    @media (max-width: 48rem) {
-      padding: 1rem $padding-horizontal-mobile 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
+    @media (max-width: $breakpoint-mobile) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "summary summary"
+        "continue pay";
+      column-gap: 0.75rem;
+      row-gap: $spacing-lg;
+      padding: $spacing-md $padding-horizontal-mobile $spacing-lg;
+    }
+
+    &--empty {
+      grid-template-columns: $btn-width;
+      grid-template-areas: "continue";
+      justify-content: start;
+
+      @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
   }
 
-  // Continue Shopping — outlined, 260×56, border 0.5px
-  &__continue {
-    box-sizing: border-box;
+  &__summary {
+    grid-area: summary;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
-    width: 16.25rem; // 260px
-    height: 3.5rem; // 56px
-    border: 0.03125rem solid #1b1a18; // 0.5px
-    background: $color-background;
-    font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #000000;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 200ms ease;
-
-    &:hover {
-      background: #f5f5f5;
-    }
-
-    &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
-    }
-  }
-
-  // Right side: flex-grow:1, justify-content:flex-end, gap:80px
-  &__total-area {
-    display: flex;
-    flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    flex: 1;
-    gap: 5rem; // 80px
+    min-width: 0;
+
+    @media (max-width: $breakpoint-mobile) {
+      justify-content: stretch;
+    }
   }
 
-  // Total group: label + price, gap 24px
   &__total-group {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1.5rem; // 24px
+    gap: $spacing-lg;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 
-  &__total-label {
+  &__total-label,
+  &__total-price {
     font-family: $font-family;
-    font-weight: 400; // Figma: 400
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem;
+    font-weight: $font-weight-regular;
+    font-size: $font-size-sm;
+    line-height: $line-height-label;
     text-transform: uppercase;
-    color: #000000;
+    color: $color-text;
   }
 
   &__total-price {
-    font-family: $font-family;
-    font-weight: 400; // Figma: 400
-    font-size: 0.875rem; // 14px
-    line-height: 1.0625rem;
-    text-transform: uppercase;
-    color: #000000;
     white-space: nowrap;
   }
 
-  // Pay button — filled black, 260×56
+  &__continue,
   &__pay {
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem 2rem; // 20px 32px
-    width: 16.25rem; // 260px
-    height: 3.5rem; // 56px
-    background: #1b1a18;
-    border: none;
+    width: $btn-width;
+    height: $btn-height;
+    padding: 1.25rem $spacing-xl;
     font-family: $font-family;
-    font-weight: 300;
-    font-size: $font-size-card; // 12px
-    line-height: 1rem;
-    letter-spacing: 0.08em;
+    font-weight: $font-weight-light;
+    font-size: $font-size-card;
+    line-height: $spacing-md;
+    letter-spacing: $letter-spacing-wide;
     text-transform: uppercase;
-    color: #ffffff;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 200ms ease;
+    transition: background-color $transition-fast;
 
-    &:hover {
-      background: #333;
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
     }
 
     &:focus-visible {
-      outline: 0.125rem solid $color-primary;
-      outline-offset: 0.125rem;
+      outline: $outline-width solid $color-primary;
+      outline-offset: $outline-width;
+    }
+  }
+
+  &__continue {
+    grid-area: continue;
+    border: $border-width-hairline solid $color-brand-dark;
+    background: $color-background;
+    color: $color-text;
+
+    &:hover {
+      background: $color-hover-light;
+    }
+  }
+
+  &__pay {
+    grid-area: pay;
+    border: none;
+    background: $color-brand-dark;
+    color: $color-background;
+
+    &:hover {
+      background: $color-hover-dark;
     }
   }
 }

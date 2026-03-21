@@ -8,15 +8,16 @@
   );
 
   width: 100%;
-  padding-bottom: 6.5rem;
+  padding-bottom: 6.5rem; // 104px desktop (Figma spec)
   overflow-x: clip;
 
-  @media (max-width: 64rem) {
+  @media (max-width: $breakpoint-tablet) {
     --similar-products-inline-padding: #{$padding-horizontal-tablet};
   }
 
-  @media (max-width: 48rem) {
+  @media (max-width: $breakpoint-mobile) {
     --similar-products-inline-padding: #{$padding-horizontal-mobile};
+    padding-bottom: 5rem; // 80px mobile (Figma spec)
   }
 
   &__content {
@@ -25,22 +26,22 @@
     padding: 0 $padding-horizontal;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 2.5rem; // 40px (Figma spec — between $spacing-xl and $spacing-2xl)
 
-    @media (max-width: 64rem) {
+    @media (max-width: $breakpoint-tablet) {
       padding: 0 $padding-horizontal-tablet;
     }
 
-    @media (max-width: 48rem) {
+    @media (max-width: $breakpoint-mobile) {
       padding: 0 $padding-horizontal-mobile;
     }
   }
 
   &__heading {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    font-size: 1.25rem;
-    line-height: 1.5rem;
+    font-family: $font-family;
+    font-weight: $font-weight-light;
+    font-size: $font-size-heading;
+    line-height: $line-height-lg;
     text-transform: capitalize;
     color: $color-text;
     margin: 0;
@@ -68,7 +69,7 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    gap: 0; // no gap - cards share borders
+    gap: 0; // no gap — cards share borders
     width: max-content;
     height: 100%;
 
@@ -79,13 +80,24 @@
       height: 100%;
     }
 
-    // Cards in carousel: square, all 4 borders
+    // Cards in carousel: top + right + bottom only — no left border to avoid
+    // doubling where adjacent cards touch (same split as the main grid).
     .phone-card {
       flex-shrink: 0;
       width: $card-size;
       height: $card-size;
       aspect-ratio: 1 !important;
-      border: 0.03125rem solid $color-primary !important;
+      border-top: $border-width-hairline solid $color-primary;
+      border-right: $border-width-hairline solid $color-primary;
+      border-bottom: $border-width-hairline solid $color-primary;
+      border-left: none;
+    }
+
+    // Restore left outer border on the first card only.
+    // Can't use .phone-card:first-child because each card is wrapped in
+    // __item, making it the :first-child of its own wrapper — not of the carousel.
+    .similar-products__item:first-child .phone-card {
+      border-left: $border-width-hairline solid $color-primary;
     }
 
     .phone-card__image-wrapper {
@@ -102,16 +114,16 @@
   &__scrollbar {
     display: block;
     width: 100%;
-    height: 0.0625rem;
-    background: #cccccc;
+    height: $border-width;
+    background: $color-disabled;
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: $spacing-sm;
   }
 
   &__scrollbar-track {
-    width: 9.375rem;
-    height: 0.0625rem;
-    background: #000000;
+    width: 9.375rem; // 150px (Figma spec)
+    height: $border-width;
+    background: $color-primary;
     position: absolute;
     left: 0;
     top: 0;
