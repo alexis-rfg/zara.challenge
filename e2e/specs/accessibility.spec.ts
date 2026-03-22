@@ -47,6 +47,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });
@@ -67,6 +68,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });
@@ -90,6 +92,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });
@@ -109,6 +112,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });
@@ -129,6 +133,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });
@@ -147,6 +152,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
         id: v.id,
         impact: v.impact,
         description: v.description,
+        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
       })),
     ).toEqual([]);
   });

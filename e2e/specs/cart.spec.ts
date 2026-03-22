@@ -57,6 +57,8 @@ test.describe('CartPage', () => {
       detailPage = new PhoneDetailPage(page);
       cartPage = new CartPage(page);
       await addIPhone15ToCart(detailPage, page);
+      // Wait for the cart items list to render before running any assertions
+      await cartPage.cartItems.first().waitFor({ timeout: 5_000 });
     });
 
     test('cart heading shows Cart (1)', async () => {
