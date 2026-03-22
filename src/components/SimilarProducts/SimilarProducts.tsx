@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ProductSummary } from '@/types/product.types';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import { getCarouselScrollbarMetrics, hasHorizontalOverflow } from '@/utils/carouselScroll';
@@ -7,7 +8,7 @@ import './SimilarProducts.scss';
 /**
  * Props for the SimilarProducts component.
  */
-type SimilarProductsProps = {
+export type SimilarProductsProps = {
   /** Array of similar product summaries to display in the carousel */
   products: ProductSummary[];
 };
@@ -26,6 +27,7 @@ type SimilarProductsProps = {
  * ```
  */
 export const SimilarProducts = ({ products }: SimilarProductsProps) => {
+  const { t } = useTranslation();
   const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
@@ -84,9 +86,9 @@ export const SimilarProducts = ({ products }: SimilarProductsProps) => {
   if (products.length === 0) return null;
 
   return (
-    <section className="similar-products" aria-label="Similar products">
+    <section className="similar-products" aria-label={t('similarProducts.ariaLabel')}>
       <div className="similar-products__content">
-        <h2 className="similar-products__heading">SIMILAR ITEMS</h2>
+        <h2 className="similar-products__heading">{t('similarProducts.heading')}</h2>
         <div className="similar-products__carousel-wrapper" ref={carouselRef}>
           <div className="similar-products__carousel">
             {products.map((product) => (

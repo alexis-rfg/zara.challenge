@@ -17,7 +17,7 @@ async function addIPhone15ToCart(detailPage: PhoneDetailPage, page: import('@pla
 
 test.describe('CartPage', () => {
   test.describe('empty cart', () => {
-    test('shows "Tu carrito está vacío" status message and Continuar comprando button', async ({
+    test('shows "Your cart is empty" status message and Continue shopping button', async ({
       page,
     }) => {
       const cartPage = new CartPage(page);
@@ -25,7 +25,7 @@ test.describe('CartPage', () => {
 
       // Empty-state message uses role="status"
       await expect(cartPage.emptyMessage).toBeVisible();
-      await expect(cartPage.emptyMessage).toContainText('Tu carrito está vacío');
+      await expect(cartPage.emptyMessage).toContainText('Your cart is empty');
 
       // "Continuar comprando" is always present
       await expect(cartPage.continueShoppingButton).toBeVisible();
@@ -57,6 +57,8 @@ test.describe('CartPage', () => {
       detailPage = new PhoneDetailPage(page);
       cartPage = new CartPage(page);
       await addIPhone15ToCart(detailPage, page);
+      // Wait for the cart items list to render before running any assertions
+      await cartPage.cartItems.first().waitFor({ timeout: 5_000 });
     });
 
     test('cart heading shows Cart (1)', async () => {
@@ -95,7 +97,7 @@ test.describe('CartPage', () => {
 
       // After removal the list disappears and the empty-state message appears
       await expect(cartPage.emptyMessage).toBeVisible();
-      await expect(cartPage.emptyMessage).toContainText('Tu carrito está vacío');
+      await expect(cartPage.emptyMessage).toContainText('Your cart is empty');
       await expect(await cartPage.getItemCount()).toBe(0);
     });
   });

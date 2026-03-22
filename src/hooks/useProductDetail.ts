@@ -5,7 +5,7 @@ import type { ProductDetail } from '@/types/product.types';
 /**
  * Shape returned by {@link useProductDetail}.
  */
-type UseProductDetailResult = {
+export type UseProductDetailResult = {
   /**
    * The fetched product details, or `null` while loading or when an error
    * has occurred.

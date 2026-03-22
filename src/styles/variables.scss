@@ -9,8 +9,8 @@ $color-error: #d32f2f;
 $color-disabled: #cccccc;
 
 // Figma design tokens
-$color-brand-text: #79736d; // card brand label
-$color-placeholder: #aaaaaa; // search placeholder
+$color-brand-text: #706b66; // card brand label (WCAG AA ≥ 4.5:1 on white — darkened from Figma #79736d)
+$color-placeholder: #767676; // search placeholder (WCAG AA ≥ 4.5:1 on white)
 $color-brand-dark: #1b1a18; // cart CTA buttons (warm near-black)
 $color-hover-dark: #333333; // dark button hover state
 $color-hover-light: #f5f5f5; // outlined button hover state

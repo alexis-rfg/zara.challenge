@@ -44,13 +44,13 @@ describe('ColorFilter — closed (default) state', () => {
 
   it('shows FILTRAR button when no active filters', () => {
     render(<ColorFilter {...baseProps} />);
-    expect(screen.getByRole('button', { name: /open color filter/i })).toHaveTextContent('FILTRAR');
+    expect(screen.getByRole('button', { name: /open color filter/i })).toHaveTextContent('FILTER');
   });
 
   it('shows FILTRAR (N) when a filter is active', () => {
     render(<ColorFilter {...baseProps} activeCount={1} />);
     expect(screen.getByRole('button', { name: /1 filter applied/i })).toHaveTextContent(
-      'FILTRAR (1)',
+      'FILTER (1)',
     );
   });
 
@@ -104,7 +104,7 @@ describe('ColorFilter — open state', () => {
 
   it('shows CERRAR button when open', () => {
     render(<ColorFilter {...baseProps} isOpen={true} />);
-    expect(screen.getByRole('button', { name: /close filter/i })).toHaveTextContent('CERRAR');
+    expect(screen.getByRole('button', { name: /close filter/i })).toHaveTextContent('CLOSE');
   });
 
   it('calls onClose when CERRAR is clicked', async () => {

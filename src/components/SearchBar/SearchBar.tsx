@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SearchBar.scss';
 
 /** Props for the {@link SearchBar} component. */
-type SearchBarProps = {
+export type SearchBarProps = {
   /** Called when the user submits via Enter or clears the input with the ✕ button. */
   onSearch: (term: string) => void;
   /** The term currently active in the API / driving the displayed results. Used to render the results label (e.g. `3 results for "iphone"`). */
@@ -27,6 +28,7 @@ type SearchBarProps = {
  * @param props - Component props.
  */
 export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: SearchBarProps) => {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -61,10 +63,10 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
         <input
           type="text"
           className="search-bar__input"
-          placeholder="Search for a smartphone..."
+          placeholder={t('searchBar.placeholder')}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          aria-label="Search products"
+          aria-label={t('searchBar.ariaLabel')}
         />
 
         {inputValue && (
@@ -72,7 +74,7 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
             type="button"
             className="search-bar__clear"
             onClick={handleClear}
-            aria-label="Clear search"
+            aria-label={t('searchBar.clearAriaLabel')}
           >
             <svg
               width="16"
@@ -94,11 +96,12 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
 
       <div className="search-bar__results" role="status" aria-live="polite" aria-atomic="true">
         {loading ? (
-          <span>Searching...</span>
+          <span>{t('searchBar.searching')}</span>
         ) : (
           <span>
-            {resultCount} {resultCount === 1 ? 'result' : 'results'}
-            {committedSearch && ` for "${committedSearch}"`}
+            {committedSearch
+              ? t('searchBar.resultCountFor', { count: resultCount, term: committedSearch })
+              : t('searchBar.resultCount', { count: resultCount })}
           </span>
         )}
       </div>

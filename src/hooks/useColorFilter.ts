@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { getProducts, getProductById } from '@/api/products.api';
+import { fetchAllProducts, fetchProductDetail } from '@/services/product.service';
 import type { ProductSummary, ColorOption } from '@/types/product.types';
 
 /**
@@ -13,7 +13,7 @@ export type FilterColor = {
 /**
  * Shape returned by {@link useColorFilter}.
  */
-type UseColorFilterResult = {
+export type UseColorFilterResult = {
   /** Unique colors available across all catalog products. */
   availableColors: FilterColor[];
   /** Currently selected color hex code, or `null` when no filter is active. */
@@ -78,11 +78,11 @@ export const useColorFilter = (): UseColorFilterResult => {
 
     try {
       // 1. Get ALL product IDs (no limit param → server returns full catalog)
-      const allProducts = await getProducts({}, controller.signal);
+      const allProducts = await fetchAllProducts(controller.signal);
 
       // 2. Fetch details in parallel to read colorOptions
       const details = await Promise.all(
-        allProducts.map((p) => getProductById(p.id, controller.signal)),
+        allProducts.map((p) => fetchProductDetail(p.id, controller.signal)),
       );
 
       // 3. Build maps

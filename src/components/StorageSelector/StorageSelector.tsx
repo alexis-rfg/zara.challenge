@@ -1,10 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import type { StorageOption } from '@/types/product.types';
 import './StorageSelector.scss';
 
 /**
  * Props for the StorageSelector component.
  */
-type StorageSelectorProps = {
+export type StorageSelectorProps = {
   /** Array of available storage options with capacity and price */
   options: StorageOption[];
   /** Index of the currently selected storage option, or null if none selected */
@@ -30,13 +31,15 @@ type StorageSelectorProps = {
  * ```
  */
 export const StorageSelector = ({ options, selectedIndex, onSelect }: StorageSelectorProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="storage-selector">
-      <p className="storage-selector__label">Storage ¿How much space do you need?</p>
+      <p className="storage-selector__label">{t('storageSelector.label')}</p>
       <div
         className="storage-selector__options"
         role="radiogroup"
-        aria-label="Select storage capacity"
+        aria-label={t('storageSelector.ariaLabel')}
       >
         {options.map((option, index) => (
           <button

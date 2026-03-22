@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ColorOption } from '@/types/product.types';
 import './ColorSelector.scss';
 
 /**
  * Props for the ColorSelector component.
  */
-type ColorSelectorProps = {
+export type ColorSelectorProps = {
   /** Array of available color options */
   colors: ColorOption[];
   /** Index of the currently selected color, or null if none selected */
@@ -31,6 +32,7 @@ type ColorSelectorProps = {
  * ```
  */
 export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelectorProps) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const displayName =
@@ -42,8 +44,12 @@ export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelector
 
   return (
     <div className="color-selector">
-      <p className="color-selector__label">Color. Pick your favorite</p>
-      <div className="color-selector__options" role="radiogroup" aria-label="Select color">
+      <p className="color-selector__label">{t('colorSelector.label')}</p>
+      <div
+        className="color-selector__options"
+        role="radiogroup"
+        aria-label={t('colorSelector.ariaLabel')}
+      >
         {colors.map((color, index) => (
           <button
             key={color.name}
