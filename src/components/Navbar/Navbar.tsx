@@ -45,13 +45,15 @@ export const Navbar = () => {
       <div className="navbar__main">
         <div className="navbar__container">
           <div className="navbar__home">
-            <img
-              src="/logo/Frame 1.png"
-              alt={t('nav.logoAlt')}
-              className="navbar__logo"
-              width="74"
-              height="24"
-            />
+            <Link to="/" className="navbar__logo-link">
+              <img
+                src="/logo/Frame 1.png"
+                alt={t('nav.logoAlt')}
+                className="navbar__logo"
+                width="74"
+                height="24"
+              />
+            </Link>
             <LanguageSwitcher />
           </div>
           {cartLink}
