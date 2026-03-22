@@ -5,7 +5,7 @@
 //   1. __sticky-header  – search bar pinned below the navbar
 //   2. __grid-shell     – horizontal-padding wrapper
 //      └─ __grid        – CSS Grid of PhoneCard components
-//   3. __loading        – spinner + message (conditional)
+//   3. __progress       – indeterminate progress line (conditional)
 //   4. __empty          – "no results" message (conditional)
 //   5. __error          – error heading, message & retry button (conditional)
 //
@@ -125,25 +125,41 @@
     }
   }
 
-  // ─── Loading state ─────────────────────────────────────────────────────────
-  // Centered spinner + "Loading products…" text shown while the API responds.
-  &__loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: $spacing-2xl $padding-horizontal;
-    gap: $spacing-md;
+  // ─── Loading progress line ─────────────────────────────────────────────────
+  // Matches the SimilarProducts scrollbar: a $border-width-hairline track with
+  // a $color-primary segment that slides left → right. Sits directly below the
+  // navbar border so the page appears otherwise empty while loading.
+  &__progress-wrapper {
+    width: 100%;
   }
 
-  // Rotating ring spinner (animation defined in global.scss).
-  &__spinner {
-    width: $spinner-size;
-    height: $spinner-size;
-    border: $spinner-border solid $color-border;
-    border-top-color: $color-primary;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  &__progress {
+    display: block;
+    width: 100%;
+    height: $border-width-hairline;
+    background: $color-disabled;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 30%;
+      height: 100%;
+      background: $color-primary;
+      animation: progress-slide 1.2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes progress-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(433%);
+    }
   }
 
   // ─── Empty state ──────────────────────────────────────────────────────────
