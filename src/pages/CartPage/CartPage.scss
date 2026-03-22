@@ -3,15 +3,20 @@
 .cart-page {
   display: flex;
   flex-direction: column;
-  min-height: calc(100dvh - #{$header-height});
+  height: calc(100dvh - #{$header-height});
   padding-bottom: 0;
+  overflow: hidden;
 
   &__content {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
     padding: $cart-content-padding-top-desktop $padding-horizontal $spacing-xl;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
 
     @media (max-width: $breakpoint-tablet) {
       padding: $spacing-xl $padding-horizontal-tablet $spacing-xl;
@@ -144,9 +149,7 @@
   }
 
   &__footer {
-    position: sticky;
-    bottom: 0;
-    z-index: $z-index-sticky;
+    flex-shrink: 0;
     display: grid;
     grid-template-columns: $btn-width minmax(0, 1fr) $btn-width;
     grid-template-areas: "continue summary pay";
