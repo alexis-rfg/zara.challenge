@@ -57,12 +57,28 @@ describe('PhoneListPage', () => {
     expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
-  it('displays loading state', () => {
+  it('displays loading progress bar', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
 
     renderWithRouter(<PhoneListPage />);
 
-    expect(screen.getByText('Loading products...')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: /loading products/i })).toBeInTheDocument();
+  });
+
+  it('hides progress bar when not loading', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue(mockHookBase);
+
+    renderWithRouter(<PhoneListPage />);
+
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+  });
+
+  it('hides search bar while loading', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
+
+    renderWithRouter(<PhoneListPage />);
+
+    expect(screen.queryByPlaceholderText('Search for a smartphone...')).not.toBeInTheDocument();
   });
 
   it('displays products in grid', () => {
@@ -202,13 +218,13 @@ describe('PhoneListPage', () => {
     expect(links[1]).toHaveAttribute('href', '/products/phone-2');
   });
 
-  it('loading state has proper accessibility attributes', () => {
+  it('loading progress bar has accessible label', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
 
     renderWithRouter(<PhoneListPage />);
 
-    const loadingRegion = screen.getByText('Loading products...').parentElement;
-    expect(loadingRegion).toHaveAttribute('aria-live', 'polite');
+    const progress = screen.getByRole('progressbar');
+    expect(progress).toHaveAttribute('aria-label', 'Loading products');
   });
 
   it('empty state has proper accessibility attributes', () => {
