@@ -1,7 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import type { FilterColor } from '@/hooks/useColorFilter';
 import './ColorFilter.scss';
 
-type ColorFilterProps = {
+export type ColorFilterProps = {
   /** Number of products currently displayed (after filtering). */
   resultCount: number;
   /** Whether the product list is loading. */
@@ -49,13 +50,19 @@ export const ColorFilter = ({
   onSelect,
   onClear,
 }: ColorFilterProps) => {
+  const { t } = useTranslation();
+
   // ─── Open state: swatches + CERRAR ──────────────────────────────────────────
   if (isOpen) {
     return (
-      <div className="color-filter" aria-label="Color filter">
-        <div className="color-filter__swatches" role="radiogroup" aria-label="Filter by color">
+      <div className="color-filter" aria-label={t('colorFilter.ariaLabel')}>
+        <div
+          className="color-filter__swatches"
+          role="radiogroup"
+          aria-label={t('colorFilter.swatchesAriaLabel')}
+        >
           {isFilterLoading ? (
-            <span className="color-filter__loading">Loading...</span>
+            <span className="color-filter__loading">{t('colorFilter.loading')}</span>
           ) : (
             availableColors.map((color) => (
               <button
@@ -80,9 +87,9 @@ export const ColorFilter = ({
           type="button"
           className="color-filter__action"
           onClick={onClose}
-          aria-label="Close filter"
+          aria-label={t('colorFilter.closeAriaLabel')}
         >
-          CERRAR
+          {t('colorFilter.closeBtn')}
         </button>
       </div>
     );
@@ -90,10 +97,10 @@ export const ColorFilter = ({
 
   // ─── Default / Applied state: results count + FILTRAR ───────────────────────
   return (
-    <div className="color-filter" aria-label="Color filter">
+    <div className="color-filter" aria-label={t('colorFilter.ariaLabel')}>
       <span className="color-filter__count" role="status" aria-live="polite" aria-atomic="true">
-        {loading && 'Searching...'}
-        {!loading && `${resultCount} ${resultCount === 1 ? 'RESULT' : 'RESULTS'}`}
+        {loading && t('colorFilter.searching')}
+        {!loading && t('colorFilter.result', { count: resultCount })}
       </span>
 
       <div className="color-filter__actions">
@@ -102,10 +109,14 @@ export const ColorFilter = ({
           className="color-filter__action"
           onClick={onOpen}
           aria-label={
-            activeCount > 0 ? `${activeCount} filter applied, open filter` : 'Open color filter'
+            activeCount > 0
+              ? t('colorFilter.filterAppliedAriaLabel', { count: activeCount })
+              : t('colorFilter.filterOpenAriaLabel')
           }
         >
-          {activeCount > 0 ? `FILTRAR (${activeCount})` : 'FILTRAR'}
+          {activeCount > 0
+            ? t('colorFilter.filterBtnActive', { count: activeCount })
+            : t('colorFilter.filterBtn')}
         </button>
 
         {activeCount > 0 && (
@@ -113,7 +124,7 @@ export const ColorFilter = ({
             type="button"
             className="color-filter__clear"
             onClick={onClear}
-            aria-label="Clear all filters"
+            aria-label={t('colorFilter.clearAriaLabel')}
           >
             ×
           </button>

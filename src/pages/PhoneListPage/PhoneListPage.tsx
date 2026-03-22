@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useProducts } from '@/hooks/useProducts';
 import { useColorFilter } from '@/hooks/useColorFilter';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
@@ -38,6 +39,7 @@ const getPageState = (loading: boolean, error: string | null, productCount: numb
 };
 
 export const PhoneListPage = () => {
+  const { t } = useTranslation();
   const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
   const colorFilter = useColorFilter();
   const { filterProducts } = colorFilter;
@@ -46,17 +48,17 @@ export const PhoneListPage = () => {
   const pageState = getPageState(loading, error, displayProducts.length);
 
   useEffect(() => {
-    document.title = 'Zara Mobile Phones';
-  }, []);
+    document.title = t('phoneListPage.title');
+  }, [t]);
 
   const renderContent = () => {
     switch (pageState) {
       case 'error':
         return (
           <div className="phone-list-page__error" role="alert">
-            <h2>Error Loading Products</h2>
+            <h2>{t('phoneListPage.errorHeading')}</h2>
             <p>{error}</p>
-            <button onClick={() => window.location.reload()}>Try Again</button>
+            <button onClick={() => window.location.reload()}>{t('phoneListPage.tryAgain')}</button>
           </div>
         );
 
@@ -66,7 +68,7 @@ export const PhoneListPage = () => {
             <div
               className="phone-list-page__progress"
               role="progressbar"
-              aria-label="Loading products"
+              aria-label={t('phoneListPage.loadingAriaLabel')}
             />
           </div>
         );
@@ -74,29 +76,12 @@ export const PhoneListPage = () => {
       case 'empty':
         return (
           <div className="page-transition">
-            <div className="phone-list-page__sticky-header">
-              <SearchBar
-                onSearch={submitSearch}
-                committedSearch={committedSearch}
-                resultCount={resultCount}
-                loading={loading}
-              />
-              <ColorFilter
-                resultCount={displayProducts.length}
-                loading={loading}
-                isOpen={colorFilter.isOpen}
-                isFilterLoading={colorFilter.isLoading}
-                availableColors={colorFilter.availableColors}
-                selectedColor={colorFilter.selectedColor}
-                activeCount={colorFilter.activeCount}
-                onOpen={colorFilter.open}
-                onClose={colorFilter.close}
-                onSelect={colorFilter.select}
-                onClear={colorFilter.clear}
-              />
-            </div>
             <div className="phone-list-page__empty" role="status">
-              <p>No products found{committedSearch && ` for "${committedSearch}"`}</p>
+              <p>
+                {committedSearch
+                  ? t('phoneListPage.noProductsFor', { term: committedSearch })
+                  : t('phoneListPage.noProducts')}
+              </p>
             </div>
           </div>
         );
@@ -104,27 +89,6 @@ export const PhoneListPage = () => {
       case 'populated':
         return (
           <div className="page-transition">
-            <div className="phone-list-page__sticky-header">
-              <SearchBar
-                onSearch={submitSearch}
-                committedSearch={committedSearch}
-                resultCount={resultCount}
-                loading={loading}
-              />
-              <ColorFilter
-                resultCount={displayProducts.length}
-                loading={loading}
-                isOpen={colorFilter.isOpen}
-                isFilterLoading={colorFilter.isLoading}
-                availableColors={colorFilter.availableColors}
-                selectedColor={colorFilter.selectedColor}
-                activeCount={colorFilter.activeCount}
-                onOpen={colorFilter.open}
-                onClose={colorFilter.close}
-                onSelect={colorFilter.select}
-                onClear={colorFilter.clear}
-              />
-            </div>
             <div className="phone-list-page__grid-shell">
               <div className="phone-list-page__grid">
                 {displayProducts.map((product) => (
@@ -139,7 +103,28 @@ export const PhoneListPage = () => {
 
   return (
     <div className="phone-list-page">
-      <h1 className="sr-only">Mobile Phones</h1>
+      <h1 className="sr-only">{t('phoneListPage.heading')}</h1>
+      <div className="phone-list-page__sticky-header">
+        <SearchBar
+          onSearch={submitSearch}
+          committedSearch={committedSearch}
+          resultCount={resultCount}
+          loading={loading}
+        />
+        <ColorFilter
+          resultCount={displayProducts.length}
+          loading={loading}
+          isOpen={colorFilter.isOpen}
+          isFilterLoading={colorFilter.isLoading}
+          availableColors={colorFilter.availableColors}
+          selectedColor={colorFilter.selectedColor}
+          activeCount={colorFilter.activeCount}
+          onOpen={colorFilter.open}
+          onClose={colorFilter.close}
+          onSelect={colorFilter.select}
+          onClear={colorFilter.clear}
+        />
+      </div>
       {renderContent()}
     </div>
   );

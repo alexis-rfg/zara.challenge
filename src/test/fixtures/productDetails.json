@@ -60,5 +60,48 @@
       { "capacity": "256 GB", "price": 899 }
     ],
     "similarProducts": []
+  },
+  "pixel8": {
+    "id": "GGL-P8",
+    "brand": "Google",
+    "name": "Pixel 8",
+    "description": "The Google Pixel 8 features the next-generation Google Tensor G3 chip, an advanced camera system with photo editing powered by AI, and seven years of OS, security, and Pixel Drop updates.",
+    "basePrice": 699,
+    "rating": 4.7,
+    "specs": {
+      "screen": "6.2\" Actua OLED",
+      "resolution": "2400 x 1080 pixels",
+      "processor": "Google Tensor G3",
+      "mainCamera": "50 MP",
+      "selfieCamera": "10.5 MP",
+      "battery": "4575 mAh",
+      "os": "Android 14",
+      "screenRefreshRate": "120 Hz"
+    },
+    "colorOptions": [
+      { "name": "Obsidian", "hexCode": "#3D3D3B", "imageUrl": "/img/p8-obsidian.webp" },
+      { "name": "Hazel", "hexCode": "#7B7D6D", "imageUrl": "/img/p8-hazel.webp" },
+      { "name": "Rose", "hexCode": "#D4A5A0", "imageUrl": "/img/p8-rose.webp" }
+    ],
+    "storageOptions": [
+      { "capacity": "128 GB", "price": 699 },
+      { "capacity": "256 GB", "price": 799 }
+    ],
+    "similarProducts": [
+      {
+        "id": "APL-IP15",
+        "brand": "Apple",
+        "name": "iPhone 15",
+        "basePrice": 899,
+        "imageUrl": "/img/ip15-black.webp"
+      },
+      {
+        "id": "SMG-S24",
+        "brand": "Samsung",
+        "name": "Galaxy S24",
+        "basePrice": 799,
+        "imageUrl": "/img/s24-black.webp"
+      }
+    ]
   }
 }

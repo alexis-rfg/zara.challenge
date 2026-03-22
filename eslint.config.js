@@ -4,11 +4,10 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tseslint from 'typescript-eslint'
-import { defineConfig, globalIgnores } from 'eslint/config'
 import vitest from 'eslint-plugin-vitest'
 
-export default defineConfig([
-  globalIgnores(['dist', 'coverage', '**/*.d.ts']),
+export default tseslint.config(
+  { ignores: ['dist', 'coverage', '**/*.d.ts'] },
 
   // All source files
   {
@@ -61,4 +60,4 @@ export default defineConfig([
       // no-non-null-assertion stays ON — RTL getBy* throws on failure, so ! is never needed
     },
   },
-])
+)

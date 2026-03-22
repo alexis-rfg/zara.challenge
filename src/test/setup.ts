@@ -1,5 +1,20 @@
 // Enables jest-dom matchers for Vitest
 import '@testing-library/jest-dom';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import en from '@/i18n/locales/en.json';
+
+/**
+ * Initialize i18next synchronously for the test environment so that
+ * components using `useTranslation()` render with real English strings
+ * rather than falling back to key names.
+ */
+void i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  resources: { en: { translation: en } },
+  interpolation: { escapeValue: false },
+});
 
 /**
  * Suppress React Router v6 future-flag warnings in tests.

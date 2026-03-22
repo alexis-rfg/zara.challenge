@@ -73,12 +73,12 @@ describe('PhoneListPage', () => {
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
-  it('hides search bar while loading', () => {
+  it('shows search bar while loading', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
 
     renderWithRouter(<PhoneListPage />);
 
-    expect(screen.queryByPlaceholderText('Search for a smartphone...')).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
   it('displays products in grid', () => {

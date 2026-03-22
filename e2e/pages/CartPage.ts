@@ -13,7 +13,7 @@ export class CartPage {
     // Individual cart item <li> elements inside the list
     this.cartItems = page.getByRole('list', { name: 'Cart items' }).getByRole('listitem');
     this.totalPrice = page.locator('.cart-page__total-price');
-    this.continueShoppingButton = page.getByRole('button', { name: 'Continuar comprando' });
+    this.continueShoppingButton = page.getByRole('button', { name: 'Continue shopping' });
     this.emptyMessage = page.getByRole('status');
     this.cartHeading = page.locator('.cart-page__heading');
   }
@@ -25,14 +25,14 @@ export class CartPage {
 
   async removeItem(productName: string) {
     await this.page
-      .getByRole('button', { name: new RegExp(`Eliminar ${productName}`, 'i') })
+      .getByRole('button', { name: new RegExp(`Remove ${productName}`, 'i') })
       .click();
   }
 
   async removeItemAt(index: number) {
     await this.cartItems
       .nth(index)
-      .getByRole('button', { name: /Eliminar/i })
+      .getByRole('button', { name: /Remove/i })
       .click();
   }
 

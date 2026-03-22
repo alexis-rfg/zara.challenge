@@ -1,6 +1,6 @@
 import type { CartItem, CartState, CartAction, CartContextType } from '@/types/cart.types';
 import { CartActionType } from '@/types/cart.types';
-import { useEffect, useReducer, useMemo, useCallback } from 'react';
+import { useEffect, useReducer, useMemo, useCallback, useRef } from 'react';
 import { getCart, saveCart } from '@/utils/localStorage';
 import { createLogger } from '@/utils/logger';
 import { CartContext } from './createCartContext';
@@ -75,22 +75,28 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
  * @param children - React node(s) that will have access to the cart context.
  */
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
-
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    const savedCart: CartItem[] = getCart();
+  const [state, dispatch] = useReducer(cartReducer, undefined, () => {
+    const savedCart = getCart();
     cartLogger.info('hydrate', {
       tags: ['load'],
       context: {
         itemCount: savedCart.length,
       },
     });
-    dispatch({ type: CartActionType.LOAD_CART, payload: savedCart });
-  }, []);
+    return { items: savedCart };
+  });
+
+  // Guard: skip the very first save effect so we never overwrite
+  // localStorage with stale state during React 19 StrictMode's
+  // double-invocation of effects.
+  const isHydrated = useRef(false);
 
   // Save cart to localStorage whenever items change
   useEffect(() => {
+    if (!isHydrated.current) {
+      isHydrated.current = true;
+      return;
+    }
     saveCart(state.items);
     cartLogger.debug('persist', {
       tags: ['save'],

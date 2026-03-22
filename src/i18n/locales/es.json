@@ -1,0 +1,103 @@
+{
+  "nav": {
+    "logoAlt": "MBST",
+    "cartLabel": "Carrito de compras con {{count}} artículos",
+    "cartCountLabel": "{{count}} artículos en el carrito",
+    "mainNavLabel": "Navegación principal",
+    "languageToggleLabel": "Idioma: {{lang}}",
+    "selectLanguage": "Seleccionar idioma"
+  },
+  "backButton": {
+    "text": "volver",
+    "ariaLabel": "Volver al inicio"
+  },
+  "searchBar": {
+    "placeholder": "Buscar un smartphone...",
+    "ariaLabel": "Buscar productos",
+    "clearAriaLabel": "Limpiar búsqueda",
+    "searching": "Buscando...",
+    "resultCount_one": "{{count}} resultado",
+    "resultCount_other": "{{count}} resultados",
+    "resultCountFor_one": "{{count}} resultado para \"{{term}}\"",
+    "resultCountFor_other": "{{count}} resultados para \"{{term}}\""
+  },
+  "colorFilter": {
+    "ariaLabel": "Filtro de color",
+    "swatchesAriaLabel": "Filtrar por color",
+    "loading": "Cargando...",
+    "searching": "Buscando...",
+    "result_one": "{{count}} RESULTADO",
+    "result_other": "{{count}} RESULTADOS",
+    "filterBtn": "FILTRAR",
+    "filterBtnActive": "FILTRAR ({{count}})",
+    "filterOpenAriaLabel": "Abrir filtro de color",
+    "filterAppliedAriaLabel": "{{count}} filtro aplicado, abrir filtro",
+    "clearAriaLabel": "Limpiar todos los filtros",
+    "closeBtn": "CERRAR",
+    "closeAriaLabel": "Cerrar filtro"
+  },
+  "colorSelector": {
+    "label": "Color. Elige tu favorito",
+    "ariaLabel": "Seleccionar color"
+  },
+  "storageSelector": {
+    "label": "Almacenamiento. ¿Cuánto espacio necesitas?",
+    "ariaLabel": "Seleccionar capacidad de almacenamiento"
+  },
+  "similarProducts": {
+    "heading": "PRODUCTOS SIMILARES",
+    "ariaLabel": "Productos similares"
+  },
+  "phoneListPage": {
+    "title": "Zara Móviles",
+    "heading": "Móviles",
+    "loadingAriaLabel": "Cargando productos",
+    "errorHeading": "Error al cargar productos",
+    "tryAgain": "Reintentar",
+    "noProducts": "No se encontraron productos",
+    "noProductsFor": "No se encontraron productos para \"{{term}}\""
+  },
+  "phoneDetailPage": {
+    "loadingAriaLabel": "Cargando producto",
+    "loading": "Cargando...",
+    "notFoundHeading": "Producto no encontrado",
+    "notFoundMessage": "El producto que buscas no existe.",
+    "backToHome": "Volver al inicio",
+    "heroAriaLabel": "Detalles del producto",
+    "priceFrom": "desde {{price}} EUR",
+    "specsAriaLabel": "Especificaciones",
+    "specsHeading": "ESPECIFICACIONES",
+    "addToCart": "Añadir al carrito",
+    "specs": {
+      "brand": "Marca",
+      "name": "Nombre",
+      "description": "Descripción",
+      "screen": "Pantalla",
+      "resolution": "Resolución",
+      "processor": "Procesador",
+      "mainCamera": "Cámara principal",
+      "selfieCamera": "Cámara selfie",
+      "battery": "Batería",
+      "os": "Sistema operativo",
+      "screenRefreshRate": "Tasa de refresco de pantalla"
+    }
+  },
+  "cartPage": {
+    "title": "Carrito - MBST",
+    "heading": "Carrito ({{count}})",
+    "cartAriaLabel": "Carrito de compras",
+    "cartItemsAriaLabel": "Artículos del carrito",
+    "emptyMessage": "Tu carrito está vacío",
+    "removeAriaLabel": "Eliminar {{name}} del carrito",
+    "removeBtn": "Eliminar",
+    "totalLabel": "Total",
+    "continueBtn": "Continuar comprando",
+    "payAriaLabel": "Proceder al pago",
+    "payBtn": "Pagar"
+  },
+  "notFoundPage": {
+    "heading": "404 - Página no encontrada",
+    "message": "La página que buscas no existe.",
+    "backHome": "Volver al inicio"
+  }
+}

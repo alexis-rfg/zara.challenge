@@ -170,32 +170,32 @@ describe('PhoneDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('"Añadir" button is disabled before selections are made', () => {
+    it('"Add to cart" button is disabled before selections are made', () => {
       renderDetailPage();
-      const btn = screen.getByRole('button', { name: /añadir/i });
+      const btn = screen.getByRole('button', { name: /add to cart/i });
       expect(btn).toBeDisabled();
       expect(btn).toHaveAttribute('aria-disabled', 'true');
     });
 
-    it('"Añadir" button enables after both color and storage are selected', async () => {
+    it('"Add to cart" button enables after both color and storage are selected', async () => {
       const user = userEvent.setup();
       renderDetailPage();
 
       await user.click(screen.getByRole('radio', { name: 'Black' }));
       await user.click(screen.getByRole('radio', { name: '128 GB' }));
 
-      const btn = screen.getByRole('button', { name: /añadir/i });
+      const btn = screen.getByRole('button', { name: /add to cart/i });
       expect(btn).not.toBeDisabled();
       expect(btn).toHaveAttribute('aria-disabled', 'false');
     });
 
-    it('adds item and navigates to cart when "Añadir" is clicked', async () => {
+    it('adds item and navigates to cart when "Add to cart" is clicked', async () => {
       const user = userEvent.setup();
       renderDetailPage();
 
       await user.click(screen.getByRole('radio', { name: 'Black' }));
       await user.click(screen.getByRole('radio', { name: '128 GB' }));
-      await user.click(screen.getByRole('button', { name: /añadir/i }));
+      await user.click(screen.getByRole('button', { name: /add to cart/i }));
 
       expect(mockAddItem).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -216,7 +216,7 @@ describe('PhoneDetailPage', () => {
 
       // Button should now be enabled (color was auto-selected)
       await waitFor(() =>
-        expect(screen.getByRole('button', { name: /añadir/i })).not.toBeDisabled(),
+        expect(screen.getByRole('button', { name: /add to cart/i })).not.toBeDisabled(),
       );
     });
 

@@ -1,7 +1,7 @@
 /**
  * Input parameters for checking horizontal overflow.
  */
-type HorizontalOverflowInput = {
+export type HorizontalOverflowInput = {
   /** Total scrollable width of the content */
   scrollWidth: number;
   /** Visible width of the container */
@@ -12,7 +12,7 @@ type HorizontalOverflowInput = {
  * Input parameters for calculating scroll progress.
  * Extends HorizontalOverflowInput with current scroll position.
  */
-type ScrollProgressInput = HorizontalOverflowInput & {
+export type ScrollProgressInput = HorizontalOverflowInput & {
   /** Current horizontal scroll position */
   scrollLeft: number;
 };
@@ -20,7 +20,7 @@ type ScrollProgressInput = HorizontalOverflowInput & {
 /**
  * Input parameters for calculating scrollbar track offset.
  */
-type ScrollbarTrackOffsetInput = {
+export type ScrollbarTrackOffsetInput = {
   /** Scroll progress as a value between 0 and 1 */
   scrollProgress: number;
   /** Total width of the scrollbar container */

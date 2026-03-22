@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useProductDetail } from '@/hooks/useProductDetail';
 import { useCart } from '@/hooks/useCart';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
@@ -13,9 +14,9 @@ import './PhoneDetailPage.scss';
  * before the technical spec rows. Keys map directly to {@link ProductDetail} fields.
  */
 const SPEC_ROWS = [
-  { label: 'Brand', key: 'brand' as const },
-  { label: 'Name', key: 'name' as const },
-  { label: 'Description', key: 'description' as const },
+  { key: 'brand' as const },
+  { key: 'name' as const },
+  { key: 'description' as const },
 ] as const;
 
 /**
@@ -24,14 +25,14 @@ const SPEC_ROWS = [
  * the display order in the UI.
  */
 const TECH_SPEC_ROWS = [
-  { label: 'Screen', key: 'screen' as const },
-  { label: 'Resolution', key: 'resolution' as const },
-  { label: 'Processor', key: 'processor' as const },
-  { label: 'Main Camera', key: 'mainCamera' as const },
-  { label: 'Selfie Camera', key: 'selfieCamera' as const },
-  { label: 'Battery', key: 'battery' as const },
-  { label: 'OS', key: 'os' as const },
-  { label: 'Screen Refresh Rate', key: 'screenRefreshRate' as const },
+  { key: 'screen' as const },
+  { key: 'resolution' as const },
+  { key: 'processor' as const },
+  { key: 'mainCamera' as const },
+  { key: 'selfieCamera' as const },
+  { key: 'battery' as const },
+  { key: 'os' as const },
+  { key: 'screenRefreshRate' as const },
 ] as const;
 
 /**
@@ -61,6 +62,7 @@ const TECH_SPEC_ROWS = [
  * - **Loaded** — full page content.
  */
 export const PhoneDetailPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { product, loading, error } = useProductDetail(id);
@@ -104,9 +106,13 @@ export const PhoneDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="phone-detail-page__loading" aria-live="polite" aria-label="Loading product">
+      <div
+        className="phone-detail-page__loading"
+        aria-live="polite"
+        aria-label={t('phoneDetailPage.loadingAriaLabel')}
+      >
         <div className="phone-detail-page__spinner" role="status" />
-        <p>Loading...</p>
+        <p>{t('phoneDetailPage.loading')}</p>
       </div>
     );
   }
@@ -114,9 +120,9 @@ export const PhoneDetailPage = () => {
   if (error || !product) {
     return (
       <div className="phone-detail-page__error" role="alert">
-        <h2>Product not found</h2>
-        <p>{error ?? 'The product you are looking for does not exist.'}</p>
-        <button onClick={() => navigate('/')}>Back to Home</button>
+        <h2>{t('phoneDetailPage.notFoundHeading')}</h2>
+        <p>{error ?? t('phoneDetailPage.notFoundMessage')}</p>
+        <button onClick={() => navigate('/')}>{t('phoneDetailPage.backToHome')}</button>
       </div>
     );
   }
@@ -164,7 +170,7 @@ export const PhoneDetailPage = () => {
   return (
     <main className="phone-detail-page">
       {/* Hero: image + product info */}
-      <section className="phone-detail-page__hero" aria-label="Product details">
+      <section className="phone-detail-page__hero" aria-label={t('phoneDetailPage.heroAriaLabel')}>
         <div className="phone-detail-page__image-wrapper">
           <LazyImage
             eager
@@ -177,7 +183,9 @@ export const PhoneDetailPage = () => {
         <div className="phone-detail-page__product-info">
           <div className="phone-detail-page__title-price">
             <h1 className="phone-detail-page__title">{product.name}</h1>
-            <p className="phone-detail-page__price">from {formattedPrice} EUR</p>
+            <p className="phone-detail-page__price">
+              {t('phoneDetailPage.priceFrom', { price: formattedPrice })}
+            </p>
           </div>
 
           <div className="phone-detail-page__selectors">
@@ -199,24 +207,27 @@ export const PhoneDetailPage = () => {
             disabled={!canAddToCart}
             aria-disabled={!canAddToCart}
           >
-            Añadir
+            {t('phoneDetailPage.addToCart')}
           </button>
         </div>
       </section>
 
       {/* Specifications */}
-      <section className="phone-detail-page__specs" aria-label="Specifications">
-        <h2 className="phone-detail-page__specs-heading">SPECIFICATIONS</h2>
+      <section
+        className="phone-detail-page__specs"
+        aria-label={t('phoneDetailPage.specsAriaLabel')}
+      >
+        <h2 className="phone-detail-page__specs-heading">{t('phoneDetailPage.specsHeading')}</h2>
         <dl className="phone-detail-page__specs-list">
-          {SPEC_ROWS.map(({ label, key }) => (
+          {SPEC_ROWS.map(({ key }) => (
             <div key={key} className="phone-detail-page__spec-row">
-              <dt className="phone-detail-page__spec-label">{label}</dt>
+              <dt className="phone-detail-page__spec-label">{t(`phoneDetailPage.specs.${key}`)}</dt>
               <dd className="phone-detail-page__spec-value">{product[key]}</dd>
             </div>
           ))}
-          {TECH_SPEC_ROWS.map(({ label, key }) => (
+          {TECH_SPEC_ROWS.map(({ key }) => (
             <div key={key} className="phone-detail-page__spec-row">
-              <dt className="phone-detail-page__spec-label">{label}</dt>
+              <dt className="phone-detail-page__spec-label">{t(`phoneDetailPage.specs.${key}`)}</dt>
               <dd className="phone-detail-page__spec-value">{product.specs[key]}</dd>
             </div>
           ))}

@@ -1,0 +1,31 @@
+# Dockerfile.e2e — deterministic Playwright E2E environment
+# Uses the official Playwright image so browser binaries and OS-level
+# dependencies (fonts, libs) are identical across local dev and CI.
+FROM mcr.microsoft.com/playwright:v1.58.2-noble
+
+WORKDIR /app
+
+# Enable pnpm via corepack (ships with Node 20 in the Playwright image)
+RUN corepack enable && corepack prepare pnpm@10 --activate
+
+# Copy dependency manifests first for better layer caching
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# Install dependencies (frozen lockfile = reproducible)
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the project
+COPY . .
+
+# Vite env vars baked into the bundle at build time.
+# Defaults match CI placeholders; all requests are intercepted by page.route().
+ARG VITE_API_BASE_URL=https://api.example.com
+ARG VITE_API_KEY=e2e-placeholder-key
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_API_KEY=$VITE_API_KEY
+
+# Build the app so vite preview can serve dist/ during E2E runs
+RUN pnpm build
+
+# Default: run the E2E suite
+CMD ["pnpm", "test:e2e"]

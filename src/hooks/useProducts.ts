@@ -12,7 +12,7 @@ const productsLogger = createLogger({
 /**
  * Shape returned by {@link useProducts}.
  */
-type UseProductsResult = {
+export type UseProductsResult = {
   /** Current list of products matching the last committed search (or the initial 20). */
   products: ProductSummary[];
   /** `true` while a fetch is in progress; `false` once settled. */

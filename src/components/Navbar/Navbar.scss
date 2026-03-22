@@ -47,6 +47,7 @@
   &__home {
     display: flex;
     align-items: center;
+    gap: $spacing-sm;
     cursor: default;
   }
 
