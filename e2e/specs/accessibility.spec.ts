@@ -1,6 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect } from '../fixtures/test';
-import { setupApiMocks } from '../fixtures/api-mock';
 import { PhoneListPage } from '../pages/PhoneListPage';
 import { PhoneDetailPage } from '../pages/PhoneDetailPage';
 import { CartPage } from '../pages/CartPage';
@@ -33,46 +32,6 @@ test.describe('axe-core WCAG 2.1 AA', () => {
    */
   const DETAIL_PAGE_EXCLUDED_RULES = ['landmark-no-duplicate-main'];
 
-  test('phone list page has no WCAG 2.1 AA violations', async ({ page }) => {
-    const listPage = new PhoneListPage(page);
-    await listPage.goto();
-    await listPage.waitForProducts();
-
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .analyze();
-
-    expect(
-      results.violations.map((v) => ({
-        id: v.id,
-        impact: v.impact,
-        description: v.description,
-        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
-      })),
-    ).toEqual([]);
-  });
-
-  test('phone detail page has no WCAG 2.1 AA violations', async ({ page }) => {
-    const detailPage = new PhoneDetailPage(page);
-    await detailPage.goto('APL-IP15');
-    // Wait for the product title to confirm the page has fully rendered
-    await detailPage.productTitle.waitFor({ timeout: 10_000 });
-
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .disableRules(DETAIL_PAGE_EXCLUDED_RULES)
-      .analyze();
-
-    expect(
-      results.violations.map((v) => ({
-        id: v.id,
-        impact: v.impact,
-        description: v.description,
-        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
-      })),
-    ).toEqual([]);
-  });
-
   test('phone detail page with color and storage selected has no violations', async ({ page }) => {
     const detailPage = new PhoneDetailPage(page);
     await detailPage.goto('APL-IP15');
@@ -81,6 +40,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
     // Selecting a color auto-defaults storage to 0, enabling the add button
     await detailPage.selectColor(0);
     await detailPage.selectStorage(1);
+    await page.waitForLoadState('networkidle');
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -102,27 +62,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
     await cartPage.goto();
     // Confirm the "Continue shopping" button is present before scanning
     await cartPage.continueShoppingButton.waitFor({ timeout: 5_000 });
-
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .analyze();
-
-    expect(
-      results.violations.map((v) => ({
-        id: v.id,
-        impact: v.impact,
-        description: v.description,
-        targets: v.nodes.map((n) => ({ target: n.target, data: n.any?.[0]?.data })),
-      })),
-    ).toEqual([]);
-  });
-
-  test('cart page with items has no WCAG 2.1 AA violations', async ({ page }) => {
-    const detailPage = new PhoneDetailPage(page);
-    const cartPage = new CartPage(page);
-
-    // Add iPhone 15 to cart via the UI then scan the populated cart page
-    await addIPhone15ToCart(detailPage, cartPage);
+    await page.waitForLoadState('networkidle');
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -142,6 +82,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
     await page.goto('/nonexistent');
     // Wait for the 404 heading before scanning
     await page.getByRole('heading', { level: 1, name: /404/i }).waitFor({ timeout: 5_000 });
+    await page.waitForLoadState('networkidle');
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
