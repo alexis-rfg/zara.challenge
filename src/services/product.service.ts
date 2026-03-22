@@ -1,5 +1,5 @@
-import { getProducts } from '@/api/products.api';
-import type { ProductSummary } from '@/types/product.types';
+import { getProducts, getProductById } from '@/api/products.api';
+import type { ProductDetail, ProductSummary } from '@/types/product.types';
 
 /**
  * Parameters accepted by {@link fetchProducts}.
@@ -57,4 +57,39 @@ export const fetchProducts = async (
 ): Promise<ProductSummary[]> => {
   const defaultParams = params?.search ? { search: params.search } : { limit: '20' };
   return getProducts(defaultParams, signal);
+};
+
+/**
+ * Fetches the **complete** product catalog without any limit.
+ *
+ * Used by features that need the full set of products (e.g. the color-filter
+ * panel which must inspect color options across all catalog entries). Keeping
+ * this in the service layer means hooks never import from the API boundary
+ * directly, preserving the Presentation → Application → Infrastructure flow.
+ *
+ * @param signal - Optional `AbortSignal` forwarded to the underlying fetch.
+ * @returns All {@link ProductSummary} objects in the catalog (deduplicated).
+ */
+export const fetchAllProducts = async (signal?: AbortSignal): Promise<ProductSummary[]> => {
+  return getProducts({}, signal);
+};
+
+/**
+ * Fetches the full detail record for a single product.
+ *
+ * A service-layer thin wrapper around {@link getProductById} that keeps hooks
+ * decoupled from the API boundary. Any cross-cutting concern added to the
+ * service layer (caching policy, telemetry, feature flags) is automatically
+ * inherited by all callers.
+ *
+ * @param id - Unique product identifier (e.g. `'APL-IP15P'`).
+ * @param signal - Optional `AbortSignal`; cancels the underlying fetch when fired.
+ * @returns Full {@link ProductDetail} including specs, color options, storage
+ *   options, and deduplicated similar products.
+ */
+export const fetchProductDetail = async (
+  id: string,
+  signal?: AbortSignal,
+): Promise<ProductDetail> => {
+  return getProductById(id, signal);
 };

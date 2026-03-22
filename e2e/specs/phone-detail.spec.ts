@@ -122,6 +122,6 @@ test.describe('PhoneDetailPage — iPhone 15', () => {
     await expect(errorAlert).toBeVisible();
 
     // The "Back to Home" button is present inside the error state
-    await expect(page.getByRole('button', { name: /Back to Home/i })).toBeVisible();
+    await expect(page.locator('.phone-detail-page__error').getByRole('button', { name: /Back to Home/i })).toBeVisible();
   });
 });

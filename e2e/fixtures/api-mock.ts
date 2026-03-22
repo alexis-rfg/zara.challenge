@@ -11,27 +11,23 @@ const productDetails = JSON.parse(
   readFileSync(resolve(__dirname, '../../src/test/fixtures/productDetails.json'), 'utf-8'),
 ) as Record<string, { id: string; name: string; brand: string }>;
 
-/**
- * Playwright v1.45+ automatically loads .env from the project root and
- * exposes its variables via process.env — no dotenv import needed.
- *
- * In CI the .env file is not present; VITE_API_BASE_URL is injected as a
- * plain (non-secret) env var in ci.yml with the same placeholder value used
- * at build time. Since every request is intercepted by page.route() the URL
- * is never actually contacted, so the placeholder is safe to hardcode here.
- */
-const API_BASE =
-  process.env['VITE_API_BASE_URL'] ?? 'https://api.example.com';
-
 const PRODUCT_LIST = Object.values(products);
 const PRODUCT_DETAILS = Object.values(productDetails);
 
 /**
- * Intercepts all requests to the products API and returns fixture data.
- * Handles both list/search requests (/products?...) and detail requests (/products/:id).
+ * Intercepts all fetch/XHR requests whose path contains "/products" and
+ * returns fixture data. A regex is used instead of a glob so the mock works
+ * regardless of which API base URL is baked into the bundle (real URL in dev,
+ * placeholder in CI). The resourceType check skips page navigations to
+ * /products/:id so only API calls are intercepted.
  */
 export async function setupApiMocks(page: Page): Promise<void> {
-  await page.route(`${API_BASE}/products**`, async (route) => {
+  await page.route(/\/products/, async (route) => {
+    // Skip page navigations (HTML document requests) — only intercept fetch/XHR
+    if (!['fetch', 'xhr'].includes(route.request().resourceType())) {
+      await route.continue();
+      return;
+    }
     const url = new URL(route.request().url());
     const pathMatch = url.pathname.match(/\/products\/(.+)/);
 

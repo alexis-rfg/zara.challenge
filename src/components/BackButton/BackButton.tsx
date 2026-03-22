@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './BackButton.scss';
 
 /**
@@ -13,6 +14,7 @@ import './BackButton.scss';
  * ```
  */
 export const BackButton = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -20,9 +22,9 @@ export const BackButton = () => {
   };
 
   return (
-    <button className="back-button" onClick={handleBack} aria-label="Go back to home">
+    <button className="back-button" onClick={handleBack} aria-label={t('backButton.ariaLabel')}>
       <img src="/icons/chevron-left.png" alt="" className="back-button__icon" />
-      <span className="back-button__text">back</span>
+      <span className="back-button__text">{t('backButton.text')}</span>
     </button>
   );
 };

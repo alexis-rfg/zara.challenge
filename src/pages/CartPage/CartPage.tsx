@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '@/hooks/useCart';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
 import './CartPage.scss';
@@ -24,16 +25,17 @@ import './CartPage.scss';
  * line items while still giving React a stable key.
  */
 export const CartPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { items, removeItem, totalItems, totalPrice } = useCart();
   const hasItems = items.length > 0;
 
   useEffect(() => {
-    document.title = 'Cart - MBST';
+    document.title = t('cartPage.title');
     return () => {
       document.title = 'MBST';
     };
-  }, []);
+  }, [t]);
 
   const formattedTotal = new Intl.NumberFormat('es-ES', {
     style: 'decimal',
@@ -41,16 +43,16 @@ export const CartPage = () => {
   }).format(totalPrice);
 
   return (
-    <section className="cart-page" aria-label="Shopping cart">
+    <section className="cart-page" aria-label={t('cartPage.cartAriaLabel')}>
       <div className="cart-page__content">
-        <h1 className="cart-page__heading">Cart ({totalItems})</h1>
+        <h1 className="cart-page__heading">{t('cartPage.heading', { count: totalItems })}</h1>
 
         {!hasItems ? (
           <p className="cart-page__empty sr-only" role="status">
-            Tu carrito está vacío
+            {t('cartPage.emptyMessage')}
           </p>
         ) : (
-          <ul className="cart-page__list" aria-label="Cart items">
+          <ul className="cart-page__list" aria-label={t('cartPage.cartItemsAriaLabel')}>
             {items.map((item, index) => (
               <li
                 key={`${item.id}-${item.colorName}-${item.storageCapacity}-${index}`}
@@ -76,9 +78,9 @@ export const CartPage = () => {
                   <button
                     className="cart-page__item-remove"
                     onClick={() => removeItem(item.id, item.colorName, item.storageCapacity)}
-                    aria-label={`Eliminar ${item.name} del carrito`}
+                    aria-label={t('cartPage.removeAriaLabel', { name: item.name })}
                   >
-                    Eliminar
+                    {t('cartPage.removeBtn')}
                   </button>
                 </div>
               </li>
@@ -91,19 +93,19 @@ export const CartPage = () => {
         {hasItems && (
           <div className="cart-page__summary">
             <div className="cart-page__total-group">
-              <span className="cart-page__total-label">Total</span>
+              <span className="cart-page__total-label">{t('cartPage.totalLabel')}</span>
               <span className="cart-page__total-price">{formattedTotal} EUR</span>
             </div>
           </div>
         )}
 
         <button className="cart-page__continue" onClick={() => navigate('/')}>
-          Continuar comprando
+          {t('cartPage.continueBtn')}
         </button>
 
         {hasItems && (
-          <button className="cart-page__pay" aria-label="Proceder al pago">
-            Pay
+          <button className="cart-page__pay" aria-label={t('cartPage.payAriaLabel')}>
+            {t('cartPage.payBtn')}
           </button>
         )}
       </div>

@@ -32,6 +32,11 @@ requirements/
 # Test coverage
 coverage/
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
 # Agents
 .agents/*
 .claude/*

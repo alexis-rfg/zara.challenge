@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './NotFoundPage.scss';
 
 /**
@@ -6,12 +7,14 @@ import './NotFoundPage.scss';
  * Displays a simple message and a link back to the home page.
  */
 export const NotFoundPage = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="not-found">
-      <h1>404 - Page Not Found</h1>
-      <p>The page you're looking for doesn't exist.</p>
+      <h1>{t('notFoundPage.heading')}</h1>
+      <p>{t('notFoundPage.message')}</p>
       <Link to="/" className="not-found__link">
-        Go back home
+        {t('notFoundPage.backHome')}
       </Link>
     </div>
   );

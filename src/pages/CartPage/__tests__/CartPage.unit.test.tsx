@@ -43,8 +43,8 @@ describe('CartPage', () => {
     renderCartPage();
 
     expect(screen.getByRole('heading', { name: 'Cart (0)' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Continuar comprando' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Proceder al pago' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Continue shopping' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Proceed to checkout' })).not.toBeInTheDocument();
     expect(screen.queryByText('Total')).not.toBeInTheDocument();
   });
 
@@ -64,7 +64,7 @@ describe('CartPage', () => {
     expect(screen.getByText('Galaxy S24 Ultra')).toBeInTheDocument();
     expect(screen.getByText('512 GB | Violet Titanium')).toBeInTheDocument();
     expect(screen.getByText('Total')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Proceder al pago' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Proceed to checkout' })).toBeInTheDocument();
   });
 
   it('removes an item when delete is clicked', async () => {
@@ -82,7 +82,7 @@ describe('CartPage', () => {
 
     renderCartPage();
 
-    await user.click(screen.getByRole('button', { name: 'Eliminar Galaxy S24 Ultra del carrito' }));
+    await user.click(screen.getByRole('button', { name: 'Remove Galaxy S24 Ultra from cart' }));
 
     expect(removeItem).toHaveBeenCalledWith('SMG-S24U', 'Violet Titanium', '512 GB');
   });

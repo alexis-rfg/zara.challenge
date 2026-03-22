@@ -97,7 +97,7 @@ test.describe('axe-core WCAG 2.1 AA', () => {
   test('empty cart page has no WCAG 2.1 AA violations', async ({ page }) => {
     const cartPage = new CartPage(page);
     await cartPage.goto();
-    // Confirm the "Continuar comprando" button is present before scanning
+    // Confirm the "Continue shopping" button is present before scanning
     await cartPage.continueShoppingButton.waitFor({ timeout: 5_000 });
 
     const results = await new AxeBuilder({ page })
@@ -207,7 +207,7 @@ test.describe('landmarks and semantics', () => {
     await expect(specsSection.locator('dl')).toHaveCount(1);
 
     // "Screen" <dt> and the fixture value <dd> must be present
-    await expect(specsSection.locator('dt', { hasText: 'Screen' })).toBeVisible();
+    await expect(specsSection.locator('dt').filter({ hasText: /^Screen$/ })).toBeVisible();
     await expect(specsSection.locator('dd', { hasText: /6\.1.*Super Retina XDR/i })).toBeVisible();
   });
 });
@@ -290,15 +290,15 @@ test.describe('ARIA attributes', () => {
     );
   });
 
-  test('cart delete button has aria-label containing "Eliminar iPhone 15"', async ({ page }) => {
+  test('cart delete button has aria-label containing "Remove iPhone 15"', async ({ page }) => {
     const detailPage = new PhoneDetailPage(page);
     const cartPage = new CartPage(page);
 
     await addIPhone15ToCart(detailPage, cartPage);
 
-    const deleteButton = page.getByRole('button', { name: /Eliminar iPhone 15/i });
+    const deleteButton = page.getByRole('button', { name: /Remove iPhone 15/i });
     await expect(deleteButton).toBeVisible();
-    await expect(deleteButton).toHaveAttribute('aria-label', /Eliminar iPhone 15/i);
+    await expect(deleteButton).toHaveAttribute('aria-label', /Remove iPhone 15/i);
   });
 
   test('navbar cart link has aria-label matching "Shopping cart with N items"', async ({
@@ -437,7 +437,7 @@ test.describe('keyboard navigation', () => {
     await expect(page).toHaveURL('/cart');
   });
 
-  test('"Continuar comprando" button navigates to / when activated with Enter', async ({
+  test('"Continue shopping" button navigates to / when activated with Enter', async ({
     page,
   }) => {
     const cartPage = new CartPage(page);
@@ -571,9 +571,18 @@ test.describe('color blindness and use-of-color', () => {
   });
 
   test('color filter swatches on list page have accessible names', async ({ page }) => {
+    // ColorFilter is mobile-only (display:none on desktop via CSS).
+    // Skip this test when the viewport is wider than the mobile breakpoint.
+    const viewport = page.viewportSize();
+    if (!viewport || viewport.width > 767) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
     await page.locator('.phone-card').first().waitFor({ timeout: 10_000 });
-    await page.getByRole('button', { name: /FILTRAR/i }).click();
+    // The button aria-label is "Open color filter" (not the visible text "FILTRAR")
+    await page.getByRole('button', { name: /Open color filter/i }).click();
     await page.getByRole('radiogroup', { name: 'Filter by color' }).waitFor({ timeout: 5_000 });
 
     const swatches = page.getByRole('radiogroup', { name: 'Filter by color' }).getByRole('radio');
