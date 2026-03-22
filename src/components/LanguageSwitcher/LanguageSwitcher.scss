@@ -8,8 +8,8 @@
   &__toggle {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
+    gap: $spacing-xs;
+    padding: $spacing-xs;
     background: none;
     border: none;
     cursor: pointer;
@@ -22,47 +22,47 @@
     transition: opacity $transition-fast;
 
     &:hover {
-      opacity: 0.6;
+      opacity: $opacity-hover-medium;
     }
 
     &:focus-visible {
       outline: $outline-width solid $color-text;
-      outline-offset: 0.125rem;
+      outline-offset: $spacing-3xs;
       border-radius: $border-radius;
     }
   }
 
   &__icon {
     flex-shrink: 0;
-    width: 1rem;
-    height: 1rem;
+    width: $icon-size-sm;
+    height: $icon-size-sm;
   }
 
   &__current {
-    min-width: 1.5rem;
+    min-width: $language-min-width;
     text-align: left;
   }
 
   &__dropdown {
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: calc(100% + #{$spacing-sm});
     left: 0;
     list-style: none;
     margin: 0;
     padding: 0;
     background: $color-background;
     border: $border-width solid $color-border;
-    min-width: 7.5rem;
+    min-width: $language-dropdown-min-width;
     z-index: $z-index-navbar + 1;
-    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    box-shadow: 0 $dropdown-shadow-y $dropdown-shadow-blur $color-shadow-soft;
   }
 
   &__option {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: $spacing-sm;
     width: 100%;
-    padding: 0.625rem 0.75rem;
+    padding: $spacing-sm-plus $spacing-md-minus;
     background: none;
     border: none;
     cursor: pointer;
@@ -79,7 +79,7 @@
 
     &:focus-visible {
       outline: $outline-width solid $color-text;
-      outline-offset: -0.125rem;
+      outline-offset: -$spacing-3xs;
     }
 
     &--active {
@@ -92,7 +92,7 @@
     font-weight: inherit;
     letter-spacing: $letter-spacing-button;
     text-transform: uppercase;
-    min-width: 1.5rem;
+    min-width: $language-min-width;
   }
 
   &__option-name {

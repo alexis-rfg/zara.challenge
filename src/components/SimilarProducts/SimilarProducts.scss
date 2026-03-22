@@ -8,7 +8,7 @@
   );
 
   width: 100%;
-  padding-bottom: 6.5rem; // 104px desktop (Figma spec)
+  padding-bottom: $similar-products-padding-bottom-desktop;
   overflow-x: clip;
 
   @media (max-width: $breakpoint-tablet) {
@@ -17,7 +17,7 @@
 
   @media (max-width: $breakpoint-mobile) {
     --similar-products-inline-padding: #{$padding-horizontal-mobile};
-    padding-bottom: 5rem; // 80px mobile (Figma spec)
+    padding-bottom: $similar-products-padding-bottom-mobile;
   }
 
   &__content {
@@ -26,7 +26,7 @@
     padding: 0 $padding-horizontal;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px (Figma spec — between $spacing-xl and $spacing-2xl)
+    gap: $similar-products-content-gap;
 
     @media (max-width: $breakpoint-tablet) {
       padding: 0 $padding-horizontal-tablet;
@@ -121,12 +121,12 @@
   }
 
   &__scrollbar-track {
-    width: 9.375rem; // 150px (Figma spec)
+    width: $similar-products-scrollbar-track-width;
     height: $border-width;
     background: $color-primary;
     position: absolute;
     left: 0;
     top: 0;
-    transition: left 0.1s ease-out;
+    transition: left $transition-scrollbar;
   }
 }

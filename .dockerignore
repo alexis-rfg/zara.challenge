@@ -11,3 +11,6 @@ typedoc
 .agents
 .claude
 *.log
+.env
+.env.local
+.env.*.local

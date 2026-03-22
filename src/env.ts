@@ -13,7 +13,7 @@ export const requireEnv = (key: string): string => {
   const value = import.meta.env[key] as string | undefined;
   if (!value) {
     throw new Error(
-      `Missing environment variable: ${key}. Create a .env file based on .env.example`,
+      `Missing environment variable: ${key}. Create a .env.local file based on .env.example`,
     );
   }
   return value;

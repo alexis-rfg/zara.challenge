@@ -1,13 +1,10 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useScopedLogger } from '@/hooks/useScopedLogger';
 import { Navbar } from '@/components/Navbar/Navbar';
-import { createLogger } from '@/utils/logger';
 import './Layout.scss';
 
-const navigationLogger = createLogger({
-  scope: 'navigation.router',
-  tags: ['navigation', 'router'],
-});
+const NAVIGATION_LOGGER_TAGS = ['navigation', 'router'] as const;
 /**
  * Tracks the last `pathname + search` string that was logged to prevent
  * duplicate `route_view` events from React StrictMode's double-mount in development.
@@ -26,6 +23,7 @@ let lastRouteKeyLogged: string | null = null;
  */
 export const Layout = () => {
   const location = useLocation();
+  const navigationLogger = useScopedLogger('navigation.router', NAVIGATION_LOGGER_TAGS);
 
   useEffect(() => {
     const routeKey = `${location.pathname}${location.search}`;
@@ -43,7 +41,7 @@ export const Layout = () => {
         search: location.search,
       },
     });
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, navigationLogger]);
 
   return (
     <div className="layout">

@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import type { LogEntry, LogLevel } from '../src/utils/logger.types';
+import type { LogEntry, LogLevel } from '../src/types/logger.types';
 
 /**
  * ANSI escape codes for terminal text formatting and colors.

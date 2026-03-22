@@ -3,6 +3,8 @@
 A web application for browsing, searching, and managing a mobile phone catalog.
 Built as the Zara / Inditex frontend technical challenge.
 
+**Live demo**: [https://zara-challenge-jet.vercel.app/](https://zara-challenge-jet.vercel.app/)
+
 ---
 
 ## Table of Contents
@@ -61,6 +63,11 @@ pnpm dev
 ---
 
 ## Running the app
+
+This project explicitly supports the two asset-delivery modes required by the challenge:
+
+- **Development mode**: assets are served unminified by Vite as native ES modules.
+- **Production mode**: assets are bundled (concatenated into optimized chunks) and minified for delivery.
 
 ### Development mode
 

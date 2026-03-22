@@ -3,7 +3,12 @@
 .color-selector {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
+  gap: $detail-selector-group-gap-desktop;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: $detail-selector-group-gap-compact;
+  }
 
   &__label {
     font-family: $font-family;
@@ -13,6 +18,11 @@
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: $font-size-card;
+      line-height: $line-height-tight;
+    }
   }
 
   &__options {
@@ -21,7 +31,7 @@
     align-items: center;
     gap: $spacing-md;
     position: relative;
-    padding-bottom: 1.5625rem;
+    padding-bottom: $spacing-md-2xl;
   }
 
   &__option {
@@ -30,8 +40,8 @@
     justify-content: center;
     align-items: center;
     padding: 0;
-    width: 1.5rem; // 24px
-    height: 1.5rem; // 24px
+    width: $swatch-size;
+    height: $swatch-size;
     border: $border-width solid $color-disabled;
     background: transparent;
     cursor: pointer;
@@ -50,17 +60,17 @@
 
   &__swatch {
     display: block;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: $swatch-inner-size;
+    height: $swatch-inner-size;
     flex-shrink: 0;
     pointer-events: none;
   }
 
-  // Absolutely positioned below the swatch row — matches Figma (top: 34px from options container)
+  // Absolutely positioned below the swatch row to match the design.
   &__name {
     position: absolute;
     left: 0;
-    top: 2.125rem;
+    top: $spacing-xl-plus;
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-card;

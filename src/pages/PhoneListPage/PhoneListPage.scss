@@ -43,6 +43,7 @@
     top: $header-height;
     z-index: $z-index-sticky;
     background: $color-background;
+    padding-bottom: $spacing-page-section;
   }
 
   // ─── Grid shell ────────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@
   &__grid {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat($catalog-columns-desktop, minmax(0, 1fr));
 
     // Base: every card gets right + bottom
     .phone-card {
@@ -82,17 +83,17 @@
     }
 
     // First row (cards 1–5) get top border
-    .phone-card:nth-child(-n + 5) {
+    .phone-card:nth-child(-n + #{$catalog-columns-desktop}) {
       border-top: $border-width-hairline solid $color-primary;
     }
 
     // First column (every 5th+1) gets left border
-    .phone-card:nth-child(5n + 1) {
+    .phone-card:nth-child(#{$catalog-columns-desktop}n + 1) {
       border-left: $border-width-hairline solid $color-primary;
     }
 
     @media (max-width: $breakpoint-tablet) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat($catalog-columns-tablet, minmax(0, 1fr));
 
       .phone-card:nth-child(n) {
         border: 0;
@@ -100,11 +101,11 @@
         border-bottom: $border-width-hairline solid $color-primary;
       }
 
-      .phone-card:nth-child(-n + 2) {
+      .phone-card:nth-child(-n + #{$catalog-columns-tablet}) {
         border-top: $border-width-hairline solid $color-primary;
       }
 
-      .phone-card:nth-child(2n + 1) {
+      .phone-card:nth-child(#{$catalog-columns-tablet}n + 1) {
         border-left: $border-width-hairline solid $color-primary;
       }
     }
@@ -146,10 +147,10 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 30%;
+      width: $progress-indicator-width;
       height: 100%;
       background: $color-primary;
-      animation: progress-slide 1.2s ease-in-out infinite;
+      animation: progress-slide $animation-progress;
     }
   }
 
@@ -158,7 +159,7 @@
       transform: translateX(-100%);
     }
     100% {
-      transform: translateX(433%);
+      transform: translateX($progress-indicator-end-x);
     }
   }
 

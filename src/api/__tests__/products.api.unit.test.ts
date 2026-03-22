@@ -15,7 +15,7 @@ describe('products.api', () => {
   });
 
   it('deduplicates repeated product ids in product lists', async () => {
-    const duplicatedProducts: ProductSummary[] = [
+    const duplicatedProducts = [
       {
         id: 'XMI-RN13P5G',
         brand: 'Xiaomi',
@@ -44,7 +44,16 @@ describe('products.api', () => {
     const products = await getProducts({ search: 'pro' });
 
     expect(mockedApiClient).toHaveBeenCalledWith('/products?search=pro', undefined);
-    expect(products).toEqual([duplicatedProducts[0], duplicatedProducts[2]]);
+    expect(products).toEqual([
+      {
+        ...duplicatedProducts[0],
+        imageUrl: 'https://example.com/redmi-note-13-pro-plus.webp',
+      },
+      {
+        ...duplicatedProducts[2],
+        imageUrl: 'https://example.com/iphone-15-pro.webp',
+      },
+    ]);
   });
 
   it('deduplicates repeated ids in similar products', async () => {
@@ -105,8 +114,40 @@ describe('products.api', () => {
 
     expect(mockedApiClient).toHaveBeenCalledWith('/products/SMG-S24U', undefined);
     expect(result.similarProducts).toEqual([
-      duplicateSimilarProduct,
-      productDetail.similarProducts[2],
+      {
+        ...duplicateSimilarProduct,
+        imageUrl: 'https://example.com/redmi-note-13-pro-plus.webp',
+      },
+      {
+        ...productDetail.similarProducts[2],
+        imageUrl: 'https://example.com/pixel-8-pro.webp',
+      },
     ]);
+  });
+
+  it('upgrades http image URLs to https at the API boundary', async () => {
+    mockedApiClient.mockResolvedValue([
+      {
+        id: 'APL-IP15',
+        brand: 'Apple',
+        name: 'iPhone 15',
+        basePrice: 899,
+        imageUrl: 'http://example.com/iphone-15.webp',
+      },
+    ]);
+
+    const products = await getProducts();
+
+    expect(products[0]).toEqual(
+      expect.objectContaining({
+        imageUrl: 'https://example.com/iphone-15.webp',
+      }),
+    );
+  });
+
+  it('rejects malformed product payloads', async () => {
+    mockedApiClient.mockResolvedValue([{ id: 'APL-IP15' }]);
+
+    await expect(getProducts()).rejects.toThrow('Invalid product API response');
   });
 });

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 /**
  * Represents an item in the shopping cart
  */
@@ -56,4 +58,10 @@ export type CartContextType = {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+};
+
+/** Props accepted by the cart context provider. */
+export type CartProviderProps = {
+  /** Descendant nodes that consume cart state. */
+  children: ReactNode;
 };

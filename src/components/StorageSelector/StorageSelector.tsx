@@ -1,37 +1,26 @@
 import { useTranslation } from 'react-i18next';
-import type { StorageOption } from '@/types/product.types';
+import type { StorageSelectorProps } from '@/types/components.types';
 import './StorageSelector.scss';
-
-/**
- * Props for the StorageSelector component.
- */
-export type StorageSelectorProps = {
-  /** Array of available storage options with capacity and price */
-  options: StorageOption[];
-  /** Index of the currently selected storage option, or null if none selected */
-  selectedIndex: number | null;
-  /** Callback fired when a storage option is selected */
-  onSelect: (index: number) => void;
-};
 
 /**
  * Storage capacity selector component with adjacent button layout.
  * Displays storage options as buttons that share borders for a seamless appearance.
  *
- * @param props - Component props
- * @returns A storage selection interface with capacity buttons
- *
- * @example
- * ```tsx
- * <StorageSelector
- *   options={product.storageOptions}
- *   selectedIndex={selectedStorageIndex}
- *   onSelect={setSelectedStorageIndex}
- * />
- * ```
+ * @param props - Component props.
+ * @returns Storage selection interface.
  */
 export const StorageSelector = ({ options, selectedIndex, onSelect }: StorageSelectorProps) => {
   const { t } = useTranslation();
+
+  /**
+   * Returns the CSS class for a storage option based on selection state.
+   *
+   * @param index - Storage option index.
+   * @returns Button class name with selected modifier when active.
+   */
+  const getOptionClassName = (index: number): string => {
+    return `storage-selector__option${selectedIndex === index ? ' storage-selector__option--selected' : ''}`;
+  };
 
   return (
     <div className="storage-selector">
@@ -47,7 +36,7 @@ export const StorageSelector = ({ options, selectedIndex, onSelect }: StorageSel
             type="button"
             role="radio"
             aria-checked={selectedIndex === index}
-            className={`storage-selector__option${selectedIndex === index ? ' storage-selector__option--selected' : ''}`}
+            className={getOptionClassName(index)}
             onClick={() => onSelect(index)}
           >
             {option.capacity}

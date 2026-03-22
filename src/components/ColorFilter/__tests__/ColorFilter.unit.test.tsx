@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ColorFilter } from '../ColorFilter';
-import type { FilterColor } from '@/hooks/useColorFilter';
+import type { FilterColor } from '@/types/hooks.types';
 import colorOptionsFixtures from '@/test/fixtures/colorOptions.json';
 
 const mockColors: FilterColor[] = [
@@ -148,5 +148,10 @@ describe('ColorFilter — open state', () => {
       <ColorFilter {...baseProps} isOpen={true} isFilterLoading={true} availableColors={[]} />,
     );
     expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  it('shows an empty-state message when no colors are available', () => {
+    render(<ColorFilter {...baseProps} isOpen={true} availableColors={[]} />);
+    expect(screen.getByText('No colors available')).toBeInTheDocument();
   });
 });

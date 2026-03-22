@@ -1,41 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import type { FilterColor } from '@/hooks/useColorFilter';
+import type { ColorFilterProps } from '@/types/components.types';
 import './ColorFilter.scss';
-
-export type ColorFilterProps = {
-  /** Number of products currently displayed (after filtering). */
-  resultCount: number;
-  /** Whether the product list is loading. */
-  loading: boolean;
-  /** Whether the swatch panel is open. */
-  isOpen: boolean;
-  /** Whether color data is being fetched (first open only). */
-  isFilterLoading: boolean;
-  /** Unique colors extracted from the catalog. */
-  availableColors: FilterColor[];
-  /** Currently selected color hex code, or `null`. */
-  selectedColor: string | null;
-  /** Number of active filters (0 or 1). */
-  activeCount: number;
-  /** Open the swatch panel. */
-  onOpen: () => void;
-  /** Close the swatch panel without changing the selection. */
-  onClose: () => void;
-  /** Select a color by hex code (closes the panel automatically). */
-  onSelect: (hexCode: string) => void;
-  /** Clear the active color filter. */
-  onClear: () => void;
-};
 
 /**
  * Mobile-only color filter bar displayed below the search input.
  *
- * ### Three visual states
- * | State | Left side | Right side |
- * |-------|-----------|------------|
- * | **Default** | `N RESULTS` | `FILTRAR` |
- * | **Open** | color swatches | `CERRAR` |
- * | **Applied** | `N RESULTS` | `FILTRAR (N) ×` |
+ * @param props - Component props.
+ * @returns Mobile filter bar JSX.
  */
 export const ColorFilter = ({
   resultCount,
@@ -52,7 +23,61 @@ export const ColorFilter = ({
 }: ColorFilterProps) => {
   const { t } = useTranslation();
 
-  // ─── Open state: swatches + CERRAR ──────────────────────────────────────────
+  /**
+   * Returns the CSS class for a swatch button based on selection state.
+   *
+   * @param hexCode - Swatch hex code.
+   * @returns BEM class name with selected modifier when active.
+   */
+  const getSwatchClassName = (hexCode: string): string => {
+    return `color-filter__swatch${selectedColor === hexCode ? ' color-filter__swatch--selected' : ''}`;
+  };
+
+  const loadingLabel = t('colorFilter.loading');
+  const countLabel = loading
+    ? t('colorFilter.searching')
+    : t('colorFilter.result', { count: resultCount });
+  const filterActionLabel =
+    activeCount > 0
+      ? t('colorFilter.filterBtnActive', { count: activeCount })
+      : t('colorFilter.filterBtn');
+  const filterActionAriaLabel =
+    activeCount > 0
+      ? t('colorFilter.filterAppliedAriaLabel', { count: activeCount })
+      : t('colorFilter.filterOpenAriaLabel');
+
+  const clearButton =
+    activeCount > 0 ? (
+      <button
+        type="button"
+        className="color-filter__clear"
+        onClick={onClear}
+        aria-label={t('colorFilter.clearAriaLabel')}
+      >
+        ×
+      </button>
+    ) : null;
+
+  const swatchesContent = isFilterLoading ? (
+    <span className="color-filter__loading">{loadingLabel}</span>
+  ) : availableColors.length > 0 ? (
+    availableColors.map((color) => (
+      <button
+        key={color.hexCode}
+        type="button"
+        role="radio"
+        aria-checked={selectedColor === color.hexCode}
+        aria-label={color.name}
+        className={getSwatchClassName(color.hexCode)}
+        onClick={() => onSelect(color.hexCode)}
+      >
+        <span className="color-filter__swatch-inner" style={{ backgroundColor: color.hexCode }} />
+      </button>
+    ))
+  ) : (
+    <span className="color-filter__loading">{t('colorFilter.empty')}</span>
+  );
+
   if (isOpen) {
     return (
       <div className="color-filter" aria-label={t('colorFilter.ariaLabel')}>
@@ -61,26 +86,7 @@ export const ColorFilter = ({
           role="radiogroup"
           aria-label={t('colorFilter.swatchesAriaLabel')}
         >
-          {isFilterLoading ? (
-            <span className="color-filter__loading">{t('colorFilter.loading')}</span>
-          ) : (
-            availableColors.map((color) => (
-              <button
-                key={color.hexCode}
-                type="button"
-                role="radio"
-                aria-checked={selectedColor === color.hexCode}
-                aria-label={color.name}
-                className={`color-filter__swatch${selectedColor === color.hexCode ? ' color-filter__swatch--selected' : ''}`}
-                onClick={() => onSelect(color.hexCode)}
-              >
-                <span
-                  className="color-filter__swatch-inner"
-                  style={{ backgroundColor: color.hexCode }}
-                />
-              </button>
-            ))
-          )}
+          {swatchesContent}
         </div>
 
         <button
@@ -95,12 +101,10 @@ export const ColorFilter = ({
     );
   }
 
-  // ─── Default / Applied state: results count + FILTRAR ───────────────────────
   return (
     <div className="color-filter" aria-label={t('colorFilter.ariaLabel')}>
       <span className="color-filter__count" role="status" aria-live="polite" aria-atomic="true">
-        {loading && t('colorFilter.searching')}
-        {!loading && t('colorFilter.result', { count: resultCount })}
+        {countLabel}
       </span>
 
       <div className="color-filter__actions">
@@ -108,27 +112,11 @@ export const ColorFilter = ({
           type="button"
           className="color-filter__action"
           onClick={onOpen}
-          aria-label={
-            activeCount > 0
-              ? t('colorFilter.filterAppliedAriaLabel', { count: activeCount })
-              : t('colorFilter.filterOpenAriaLabel')
-          }
+          aria-label={filterActionAriaLabel}
         >
-          {activeCount > 0
-            ? t('colorFilter.filterBtnActive', { count: activeCount })
-            : t('colorFilter.filterBtn')}
+          {filterActionLabel}
         </button>
-
-        {activeCount > 0 && (
-          <button
-            type="button"
-            className="color-filter__clear"
-            onClick={onClear}
-            aria-label={t('colorFilter.clearAriaLabel')}
-          >
-            ×
-          </button>
-        )}
+        {clearButton}
       </div>
     </div>
   );

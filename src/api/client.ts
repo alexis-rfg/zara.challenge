@@ -1,4 +1,5 @@
 import { env } from '@/env';
+import type { CacheEntry } from '@/types/api.types';
 import { createLogger } from '@/utils/logger';
 
 const API_BASE_URL = env().baseUrl;
@@ -60,14 +61,6 @@ export class ApiError extends Error {
 
 /** How long a cached response is considered fresh before the next network call. */
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-
-/** A single entry stored in {@link responseCache}. */
-interface CacheEntry {
-  /** The parsed JSON response body. Typed as `unknown`; callers cast via the generic. */
-  data: unknown;
-  /** Unix timestamp (ms) after which this entry must be revalidated. */
-  expiresAt: number;
-}
 
 /**
  * Module-level store that maps absolute request URLs to their cached responses.

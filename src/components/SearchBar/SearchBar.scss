@@ -5,20 +5,18 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.75rem $padding-horizontal;
-  margin-bottom: $spacing-xl;
+  gap: $search-bar-padding-y;
+  padding: $search-bar-padding-y $padding-horizontal;
   width: 100%;
-  min-height: 5.4375rem;
+  min-height: $search-bar-min-height;
   background-color: $color-background;
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 0.75rem $padding-horizontal-tablet;
+    padding: $search-bar-padding-y $padding-horizontal-tablet;
   }
 
   @media (max-width: $breakpoint-mobile) {
-    padding: 0.75rem $padding-horizontal-mobile;
-    margin-bottom: 0; // ColorFilter owns the bottom spacing on mobile
+    padding: $search-bar-padding-y $padding-horizontal-mobile;
   }
 
   &__input-wrapper {
@@ -27,7 +25,7 @@
     align-items: flex-start;
     gap: $spacing-lg;
     width: 100%;
-    min-height: 1.6875rem;
+    min-height: $search-bar-row-min-height;
     border-bottom: $border-width-hairline solid $color-primary;
   }
 
@@ -49,7 +47,7 @@
     transition: opacity $transition-fast;
 
     &:hover {
-      opacity: 0.5;
+      opacity: $opacity-hover-strong;
     }
 
     &:focus-visible {
@@ -63,11 +61,11 @@
     border: none;
     outline: none;
     background: transparent;
-    min-height: 1.1875rem;
+    min-height: $search-input-min-height;
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-base;
-    line-height: 1.1875rem;
+    line-height: $line-height-form-control;
     color: $color-text;
 
     &::placeholder {

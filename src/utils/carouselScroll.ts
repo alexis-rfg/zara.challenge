@@ -1,43 +1,10 @@
-/**
- * Input parameters for checking horizontal overflow.
- */
-export type HorizontalOverflowInput = {
-  /** Total scrollable width of the content */
-  scrollWidth: number;
-  /** Visible width of the container */
-  clientWidth: number;
-};
-
-/**
- * Input parameters for calculating scroll progress.
- * Extends HorizontalOverflowInput with current scroll position.
- */
-export type ScrollProgressInput = HorizontalOverflowInput & {
-  /** Current horizontal scroll position */
-  scrollLeft: number;
-};
-
-/**
- * Input parameters for calculating scrollbar track offset.
- */
-export type ScrollbarTrackOffsetInput = {
-  /** Scroll progress as a value between 0 and 1 */
-  scrollProgress: number;
-  /** Total width of the scrollbar container */
-  scrollbarWidth: number;
-  /** Width of the scrollbar track indicator */
-  trackWidth: number;
-};
-
-/**
- * Calculated metrics for positioning a custom scrollbar.
- */
-export type CarouselScrollbarMetrics = {
-  /** Scroll progress as a value between 0 and 1 */
-  scrollProgress: number;
-  /** Horizontal offset position for the scrollbar track in pixels */
-  trackOffset: number;
-};
+import type {
+  CarouselScrollbarMetrics,
+  CarouselScrollbarMetricsInput,
+  HorizontalOverflowInput,
+  ScrollbarTrackOffsetInput,
+  ScrollProgressInput,
+} from '@/types/carousel.types';
 
 /**
  * Clamps a value between a minimum and maximum bound.
@@ -126,8 +93,7 @@ export const getCarouselScrollbarMetrics = ({
   clientWidth,
   scrollbarWidth,
   trackWidth,
-}: ScrollProgressInput &
-  Pick<ScrollbarTrackOffsetInput, 'scrollbarWidth' | 'trackWidth'>): CarouselScrollbarMetrics => {
+}: CarouselScrollbarMetricsInput): CarouselScrollbarMetrics => {
   const scrollProgress = getScrollProgress({
     scrollLeft,
     scrollWidth,
