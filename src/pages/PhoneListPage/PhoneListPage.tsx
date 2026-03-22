@@ -45,6 +45,17 @@ export const PhoneListPage = () => {
     document.title = t('phoneListPage.title');
   }, [t]);
 
+  const loadingProgress =
+    pageState === 'loading' ? (
+      <div className="phone-list-page__progress-wrapper">
+        <div
+          className="phone-list-page__progress"
+          role="progressbar"
+          aria-label={t('phoneListPage.loadingAriaLabel')}
+        />
+      </div>
+    ) : null;
+
   /**
    * Renders the correct content block for the current list-page state.
    *
@@ -62,15 +73,7 @@ export const PhoneListPage = () => {
         );
 
       case 'loading':
-        return (
-          <div className="phone-list-page__progress-wrapper">
-            <div
-              className="phone-list-page__progress"
-              role="progressbar"
-              aria-label={t('phoneListPage.loadingAriaLabel')}
-            />
-          </div>
-        );
+        return null;
 
       case 'empty': {
         const emptyStateMessage = committedSearch
@@ -104,6 +107,7 @@ export const PhoneListPage = () => {
   return (
     <div className="phone-list-page">
       <h1 className="sr-only">{t('phoneListPage.heading')}</h1>
+      {loadingProgress}
       <div className="phone-list-page__sticky-header">
         <SearchBar
           onSearch={submitSearch}

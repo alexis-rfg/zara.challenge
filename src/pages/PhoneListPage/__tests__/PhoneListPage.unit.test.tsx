@@ -81,6 +81,19 @@ describe('PhoneListPage', () => {
     expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
+  it('renders the loading progress bar before the search bar while loading', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
+
+    renderWithRouter(<PhoneListPage />);
+
+    const progress = screen.getByRole('progressbar', { name: /loading products/i });
+    const searchForm = screen.getByRole('search');
+
+    expect(progress.compareDocumentPosition(searchForm) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
   it('displays products in grid', () => {
     vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
       ...mockHookBase,
