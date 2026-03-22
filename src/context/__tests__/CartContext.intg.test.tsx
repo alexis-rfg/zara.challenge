@@ -148,7 +148,7 @@ describe('CartContext', () => {
         result.current.addItem(newItem);
       });
 
-      // Should be called on mount (LOAD_CART) and after ADD_ITEM
+      // Should be called after ADD_ITEM (hydration uses lazy initializer, not effect)
       expect(localStorageUtils.saveCart).toHaveBeenCalled();
       expect(localStorageUtils.saveCart).toHaveBeenCalledWith([newItem]);
     });

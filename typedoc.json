@@ -9,7 +9,8 @@
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/node_modules/**",
-    "**/dist/**"
+    "**/dist/**",
+    "**/env.d.ts"
   ],
   "excludePrivate": true,
   "excludeProtected": false,
@@ -30,5 +31,15 @@
     "private": false,
     "inherited": true,
     "external": false
+  },
+  "highlightLanguages": ["typescript", "javascript", "tsx", "jsx", "json", "css", "scss", "bash", "html"],
+  "externalSymbolLinkMappings": {
+    "typescript": {
+      "Intl.NumberFormat": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat"
+    },
+    "zara-challenge": {
+      "CACHE_TTL_MS": "#",
+      "MAX_BUFFER_SIZE": "#"
+    }
   }
 }

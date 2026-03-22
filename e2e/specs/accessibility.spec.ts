@@ -586,6 +586,7 @@ test.describe('color blindness and use-of-color', () => {
     await page.getByRole('radiogroup', { name: 'Filter by color' }).waitFor({ timeout: 5_000 });
 
     const swatches = page.getByRole('radiogroup', { name: 'Filter by color' }).getByRole('radio');
+    await swatches.first().waitFor({ timeout: 10_000 });
     const count = await swatches.count();
     expect(count).toBeGreaterThan(0);
 

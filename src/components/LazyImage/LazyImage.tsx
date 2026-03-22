@@ -9,7 +9,7 @@ import './LazyImage.scss';
  * replacement. The only addition is `eager` which opts out of lazy loading
  * for above-the-fold images (e.g. the product-detail hero).
  */
-type LazyImageProps = ImgHTMLAttributes<HTMLImageElement> & {
+export type LazyImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   /** When `true`, sets `loading="eager"` (default `false` → `"lazy"`). */
   eager?: boolean;
 };

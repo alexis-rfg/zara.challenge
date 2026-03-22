@@ -8,7 +8,7 @@ import './SimilarProducts.scss';
 /**
  * Props for the SimilarProducts component.
  */
-type SimilarProductsProps = {
+export type SimilarProductsProps = {
   /** Array of similar product summaries to display in the carousel */
   products: ProductSummary[];
 };

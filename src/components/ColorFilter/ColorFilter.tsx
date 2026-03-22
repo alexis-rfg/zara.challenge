@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import type { FilterColor } from '@/hooks/useColorFilter';
 import './ColorFilter.scss';
 
-type ColorFilterProps = {
+export type ColorFilterProps = {
   /** Number of products currently displayed (after filtering). */
   resultCount: number;
   /** Whether the product list is loading. */

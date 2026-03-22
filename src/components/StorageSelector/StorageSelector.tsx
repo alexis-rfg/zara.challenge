@@ -5,7 +5,7 @@ import './StorageSelector.scss';
 /**
  * Props for the StorageSelector component.
  */
-type StorageSelectorProps = {
+export type StorageSelectorProps = {
   /** Array of available storage options with capacity and price */
   options: StorageOption[];
   /** Index of the currently selected storage option, or null if none selected */

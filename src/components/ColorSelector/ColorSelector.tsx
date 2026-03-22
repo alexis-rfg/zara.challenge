@@ -6,7 +6,7 @@ import './ColorSelector.scss';
 /**
  * Props for the ColorSelector component.
  */
-type ColorSelectorProps = {
+export type ColorSelectorProps = {
   /** Array of available color options */
   colors: ColorOption[];
   /** Index of the currently selected color, or null if none selected */

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import './SearchBar.scss';
 
 /** Props for the {@link SearchBar} component. */
-type SearchBarProps = {
+export type SearchBarProps = {
   /** Called when the user submits via Enter or clears the input with the ✕ button. */
   onSearch: (term: string) => void;
   /** The term currently active in the API / driving the displayed results. Used to render the results label (e.g. `3 results for "iphone"`). */

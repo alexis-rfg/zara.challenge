@@ -3,10 +3,10 @@ import type { LogLevel, LogContext, SerializedError, LogEntry } from './logger.t
 export type { LogLevel, LogContext, SerializedError, LogEntry };
 
 /** Callback invoked for every log entry emitted to the in-memory buffer. */
-type LogListener = (entry: LogEntry) => void;
+export type LogListener = (entry: LogEntry) => void;
 
 /** Options accepted by every log method and by `startSpan`. */
-type LogEventOptions = {
+export type LogEventOptions = {
   /** Additional tags merged with the logger's default tags. */
   tags?: string[];
   /** Structured key-value data merged with the logger's default context. */
@@ -20,7 +20,7 @@ type LogEventOptions = {
 };
 
 /** Configuration provided when creating a new logger instance. */
-type LoggerConfig = {
+export type LoggerConfig = {
   /** Dot-separated module path that appears in every entry (e.g. `'api.client'`). */
   scope: string;
   /** Default tags applied to every entry from this logger. */
@@ -30,7 +30,7 @@ type LoggerConfig = {
 };
 
 /** Options accepted by `finish` and `fail` on a span — excludes fields set automatically. */
-type SpanCloseOptions = Omit<LogEventOptions, 'correlationId' | 'durationMs'>;
+export type SpanCloseOptions = Omit<LogEventOptions, 'correlationId' | 'durationMs'>;
 
 /**
  * Public interface exposed by every logger instance created via {@link createLogger}.
@@ -39,7 +39,7 @@ type SpanCloseOptions = Omit<LogEventOptions, 'correlationId' | 'durationMs'>;
  * forward it if needed. `startSpan` returns a span handle whose `finish`/`fail`
  * methods automatically measure elapsed time.
  */
-type LoggerApi = {
+export type LoggerApi = {
   debug: (event: string, options?: LogEventOptions) => LogEntry;
   info: (event: string, options?: LogEventOptions) => LogEntry;
   warn: (event: string, options?: LogEventOptions) => LogEntry;

@@ -4,7 +4,7 @@ import type { ProductSummary } from '@/types/product.types';
 import './PhoneCard.scss';
 
 /** Props for the {@link PhoneCard} component. */
-type PhoneCardProps = {
+export type PhoneCardProps = {
   /** Product data to display in the card. */
   product: ProductSummary;
 };

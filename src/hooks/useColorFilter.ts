@@ -13,7 +13,7 @@ export type FilterColor = {
 /**
  * Shape returned by {@link useColorFilter}.
  */
-type UseColorFilterResult = {
+export type UseColorFilterResult = {
   /** Unique colors available across all catalog products. */
   availableColors: FilterColor[];
   /** Currently selected color hex code, or `null` when no filter is active. */

@@ -6,7 +6,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher
 import './Navbar.scss';
 
 /**
- * Site-wide navigation bar rendered on every page via {@link Layout}.
+ * Site-wide navigation bar rendered on every page via the `Layout` component.
  *
  * ### Behaviour
  * - Always shows the MBST logo (no link — clicking the logo does not navigate).
