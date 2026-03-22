@@ -1,19 +1,27 @@
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
-import products from '../../src/test/fixtures/products.json';
-import productDetails from '../../src/test/fixtures/productDetails.json';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const products = JSON.parse(
+  readFileSync(resolve(__dirname, '../../src/test/fixtures/products.json'), 'utf-8'),
+) as Record<string, { id: string; name: string; brand: string; basePrice: number; imageUrl: string }>;
+const productDetails = JSON.parse(
+  readFileSync(resolve(__dirname, '../../src/test/fixtures/productDetails.json'), 'utf-8'),
+) as Record<string, { id: string; name: string; brand: string }>;
 
 /**
  * Playwright v1.45+ automatically loads .env from the project root and
  * exposes its variables via process.env — no dotenv import needed.
- * VITE_API_BASE_URL is defined in .env and must never be hardcoded here.
+ *
+ * In CI the .env file is not present; VITE_API_BASE_URL is injected as a
+ * plain (non-secret) env var in ci.yml with the same placeholder value used
+ * at build time. Since every request is intercepted by page.route() the URL
+ * is never actually contacted, so the placeholder is safe to hardcode here.
  */
 const API_BASE =
-  process.env['VITE_API_BASE_URL'] ??
-  (() => {
-    throw new Error(
-      'VITE_API_BASE_URL is not set. Make sure .env exists at the project root.',
-    );
-  })();
+  process.env['VITE_API_BASE_URL'] ?? 'https://api.example.com';
 
 const PRODUCT_LIST = Object.values(products);
 const PRODUCT_DETAILS = Object.values(productDetails);

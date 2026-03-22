@@ -50,10 +50,11 @@ export default defineConfig([
     files: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}', 'src/test/**'],
     extends: [vitest.configs.recommended],
     rules: {
-      // vi.fn() / vi.spyOn() return `any` — these rules fire on every mock with no signal
+      // vi.fn() / vi.spyOn() / importOriginal() return `any` — these rules fire on every mock with no signal
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       // warn not off — surfaces accidentally committed console.log debug lines
       'no-console': 'warn',
