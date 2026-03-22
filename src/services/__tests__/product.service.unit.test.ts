@@ -36,8 +36,10 @@ describe('fetchProducts (product.service)', () => {
   it('does NOT include limit when search is provided', async () => {
     await fetchProducts({ search: 'Apple' });
 
-    const call = vi.mocked(productsApi.getProducts).mock.calls[0][0];
-    expect(call).not.toHaveProperty('limit');
+    expect(productsApi.getProducts).toHaveBeenCalledWith(
+      expect.not.objectContaining({ limit: expect.anything() }),
+      undefined,
+    );
   });
 
   it('forwards AbortSignal to getProducts', async () => {

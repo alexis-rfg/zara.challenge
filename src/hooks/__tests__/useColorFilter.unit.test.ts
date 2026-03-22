@@ -97,9 +97,9 @@ describe('useColorFilter', () => {
     // Galaxy S24: #000000, #FFFFFF — iPhone 15: #1C1C1E, #5E6B8B — all 4 are distinct hex codes
     expect(result.current.availableColors.length).toBe(4);
     const hexCodes = result.current.availableColors.map((c) => c.hexCode);
-    expect(hexCodes).toContain(productDetailsFixtures.galaxyS24.colorOptions[0].hexCode); // Black
-    expect(hexCodes).toContain(productDetailsFixtures.galaxyS24.colorOptions[1].hexCode); // White
-    expect(hexCodes).toContain(productDetailsFixtures.iPhone15.colorOptions[1].hexCode); // Blue
+    expect(hexCodes).toContain(productDetailsFixtures.galaxyS24.colorOptions.at(0)?.hexCode); // Black
+    expect(hexCodes).toContain(productDetailsFixtures.galaxyS24.colorOptions.at(1)?.hexCode); // White
+    expect(hexCodes).toContain(productDetailsFixtures.iPhone15.colorOptions.at(1)?.hexCode); // Blue
   });
 
   it('does NOT fetch again on subsequent opens (caches data)', async () => {
@@ -134,7 +134,7 @@ describe('useColorFilter', () => {
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    const blueHex = productDetailsFixtures.iPhone15.colorOptions[1].hexCode; // Blue — only iPhone 15
+    const blueHex = productDetailsFixtures.iPhone15.colorOptions.at(1)?.hexCode ?? ''; // Blue — only iPhone 15
 
     act(() => {
       result.current.select(blueHex);
@@ -143,7 +143,7 @@ describe('useColorFilter', () => {
     const filtered = result.current.filterProducts(mockSummaries);
 
     expect(filtered).toHaveLength(1);
-    expect(filtered[0].id).toBe(productFixtures.iPhone15.id);
+    expect(filtered.at(0)?.id).toBe(productFixtures.iPhone15.id);
   });
 
   it('filterProducts swaps imageUrl to color-specific one', async () => {
@@ -154,15 +154,15 @@ describe('useColorFilter', () => {
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    const blueOption = productDetailsFixtures.iPhone15.colorOptions[1];
+    const blueOption = productDetailsFixtures.iPhone15.colorOptions.find((c) => c.name === 'Blue');
 
     act(() => {
-      result.current.select(blueOption.hexCode);
+      result.current.select(blueOption?.hexCode ?? '');
     });
 
     const filtered = result.current.filterProducts(mockSummaries);
 
-    expect(filtered[0].imageUrl).toBe(blueOption.imageUrl);
+    expect(filtered.at(0)?.imageUrl).toBe(blueOption?.imageUrl);
   });
 
   it('aborts ongoing fetch on unmount', () => {

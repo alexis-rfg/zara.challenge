@@ -57,7 +57,7 @@ describe('SimilarProducts', () => {
   it('scroll event updates scrollbar track position', () => {
     vi.spyOn(carouselScroll, 'hasHorizontalOverflow').mockReturnValue(true);
     vi.spyOn(carouselScroll, 'getCarouselScrollbarMetrics').mockReturnValue({
-      progress: 0.5,
+      scrollProgress: 0.5,
       trackOffset: 80,
     });
 
