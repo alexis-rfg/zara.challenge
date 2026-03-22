@@ -260,7 +260,7 @@ export const PhoneDetailPage = () => {
   };
 
   return (
-    <main className="phone-detail-page">
+    <article className="phone-detail-page">
       <section className="phone-detail-page__hero" aria-label={t('phoneDetailPage.heroAriaLabel')}>
         <div className="phone-detail-page__image-wrapper">
           <LazyImage
@@ -315,6 +315,6 @@ export const PhoneDetailPage = () => {
       </section>
 
       <SimilarProducts products={product.similarProducts} />
-    </main>
+    </article>
   );
 };

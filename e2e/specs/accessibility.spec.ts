@@ -24,14 +24,6 @@ async function addIPhone15ToCart(
 // ─── Group 1: Automated axe-core scans ──────────────────────────────────────
 
 test.describe('axe-core WCAG 2.1 AA', () => {
-  /**
-   * The PhoneDetailPage renders its own <main> element while the Layout also
-   * wraps content in a <main>. This produces a landmark nesting violation
-   * (landmark-no-duplicate-main / landmark-unique) that axe flags.
-   * We exclude that specific rule so the scan focuses on all other WCAG criteria.
-   */
-  const DETAIL_PAGE_EXCLUDED_RULES = ['landmark-no-duplicate-main'];
-
   test('phone detail page with color and storage selected has no violations', async ({ page }) => {
     const detailPage = new PhoneDetailPage(page);
     await detailPage.goto('APL-IP15');
@@ -44,7 +36,6 @@ test.describe('axe-core WCAG 2.1 AA', () => {
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .disableRules(DETAIL_PAGE_EXCLUDED_RULES)
       .analyze();
 
     expect(
@@ -132,6 +123,7 @@ test.describe('landmarks and semantics', () => {
     await detailPage.goto('APL-IP15');
     await detailPage.productTitle.waitFor({ timeout: 10_000 });
 
+    await expect(page.locator('main')).toHaveCount(1);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('iPhone 15');
   });
 
