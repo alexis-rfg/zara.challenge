@@ -1,0 +1,21 @@
+# docker-compose.e2e.yml — run Playwright E2E tests in a deterministic container
+#
+# Usage:
+#   pnpm test:e2e:docker          (uses the script in package.json)
+#   docker compose -f docker-compose.e2e.yml up --build --abort-on-container-exit
+#
+# The container builds the app inside Docker and runs vite preview + Playwright,
+# guaranteeing the same OS libraries, fonts and browser binaries as CI.
+services:
+  e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    environment:
+      - CI=true
+      - VITE_API_BASE_URL=https://api.example.com
+      - VITE_API_KEY=e2e-placeholder-key
+    volumes:
+      # Persist reports on the host for easy inspection
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
