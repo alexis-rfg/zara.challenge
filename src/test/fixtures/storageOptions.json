@@ -1,0 +1,5 @@
+{
+  "128gb": { "capacity": "128 GB", "price": 999 },
+  "256gb": { "capacity": "256 GB", "price": 1099 },
+  "512gb": { "capacity": "512 GB", "price": 1299 }
+}

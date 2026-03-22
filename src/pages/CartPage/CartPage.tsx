@@ -4,6 +4,25 @@ import { useCart } from '@/hooks/useCart';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
 import './CartPage.scss';
 
+/**
+ * Shopping cart page — rendered at `/cart`.
+ *
+ * ### Sections
+ * - **Header** — "Cart (N)" heading.
+ * - **Item list** — each item shows its colour-specific image, name, selected specs
+ *   (storage + colour), price, and a delete button.
+ * - **Footer** — total price summary, "Continuar comprando" button (→ `/`), and a
+ *   placeholder "Pay" button.
+ *
+ * ### Empty state
+ * When the cart has no items the item list is replaced by a visually-hidden
+ * `role="status"` message ("Tu carrito está vacío"), and the footer only shows
+ * the "Continuar comprando" button.
+ *
+ * Each item is keyed by `id + colorName + storageCapacity + index` to allow
+ * duplicate configurations (same phone, different storage or colour) as separate
+ * line items while still giving React a stable key.
+ */
 export const CartPage = () => {
   const navigate = useNavigate();
   const { items, removeItem, totalItems, totalPrice } = useCart();

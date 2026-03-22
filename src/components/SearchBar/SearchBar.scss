@@ -18,6 +18,7 @@
 
   @media (max-width: $breakpoint-mobile) {
     padding: 0.75rem $padding-horizontal-mobile;
+    margin-bottom: 0; // ColorFilter owns the bottom spacing on mobile
   }
 
   &__input-wrapper {
@@ -86,6 +87,11 @@
     align-items: center;
     width: 100%;
     min-height: $spacing-lg;
+
+    // Hidden on mobile — ColorFilter owns the results count + filter button
+    @media (max-width: $breakpoint-mobile) {
+      display: none;
+    }
 
     span {
       font-family: $font-family;

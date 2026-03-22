@@ -1,11 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useProducts } from '@/hooks/useProducts';
+import { useColorFilter } from '@/hooks/useColorFilter';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
+import { ColorFilter } from '@/components/ColorFilter/ColorFilter';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import './PhoneListPage.scss';
 
+/**
+ * Home page — displays the mobile phone catalog.
+ *
+ * ### Layout
+ * - A sticky header containing {@link SearchBar} (desktop / all sizes) and
+ *   {@link ColorFilter} (mobile-only).
+ * - A CSS Grid of {@link PhoneCard} items.
+ *
+ * ### Data flow
+ * - {@link useProducts} owns the API fetch lifecycle. It exposes `submitSearch`
+ *   which `SearchBar` calls on Enter / clear; only then is a network request fired.
+ * - {@link useColorFilter} manages a client-side colour filter that is applied
+ *   on top of the API results via `filterProducts`.
+ * - `displayProducts` is a memoised derived value so the filter is only
+ *   re-computed when either `products` or the active colour changes.
+ *
+ * ### States handled
+ * - **Loading** — spinner + "Loading products…" message.
+ * - **Error** — error banner with a reload button.
+ * - **Empty results** — "No products found" message.
+ * - **Populated** — CSS Grid of cards.
+ */
 export const PhoneListPage = () => {
   const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
+  const colorFilter = useColorFilter();
+  const { filterProducts } = colorFilter;
+
+  const displayProducts = useMemo(() => filterProducts(products), [products, filterProducts]);
 
   useEffect(() => {
     document.title = 'Zara Mobile Phones';
@@ -32,6 +60,19 @@ export const PhoneListPage = () => {
           resultCount={resultCount}
           loading={loading}
         />
+        <ColorFilter
+          resultCount={displayProducts.length}
+          loading={loading}
+          isOpen={colorFilter.isOpen}
+          isFilterLoading={colorFilter.isLoading}
+          availableColors={colorFilter.availableColors}
+          selectedColor={colorFilter.selectedColor}
+          activeCount={colorFilter.activeCount}
+          onOpen={colorFilter.open}
+          onClose={colorFilter.close}
+          onSelect={colorFilter.select}
+          onClear={colorFilter.clear}
+        />
       </div>
 
       {loading ? (
@@ -39,14 +80,14 @@ export const PhoneListPage = () => {
           <div className="phone-list-page__spinner" />
           <p>Loading products...</p>
         </div>
-      ) : products.length === 0 ? (
+      ) : displayProducts.length === 0 ? (
         <div className="phone-list-page__empty" role="status">
           <p>No products found{committedSearch && ` for "${committedSearch}"`}</p>
         </div>
       ) : (
         <div className="phone-list-page__grid-shell">
           <div className="phone-list-page__grid">
-            {products.map((product) => (
+            {displayProducts.map((product) => (
               <PhoneCard key={product.id} product={product} />
             ))}
           </div>

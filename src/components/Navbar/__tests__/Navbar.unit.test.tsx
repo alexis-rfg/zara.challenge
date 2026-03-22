@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { Navbar } from './Navbar';
+import { MemoryRouter } from 'react-router-dom';
+import { Navbar } from '../Navbar';
 import * as useCartHook from '@/hooks/useCart';
 
 // Mock the useCart hook
@@ -9,9 +9,9 @@ vi.mock('@/hooks/useCart');
 
 const renderNavbar = () => {
   return render(
-    <BrowserRouter>
+    <MemoryRouter>
       <Navbar />
-    </BrowserRouter>,
+    </MemoryRouter>,
   );
 };
 

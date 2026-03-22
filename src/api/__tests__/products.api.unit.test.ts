@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getProductById, getProducts } from './products.api';
-import { apiClient } from './client';
+import { getProductById, getProducts } from '../products.api';
+import { apiClient } from '../client';
 import type { ProductDetail, ProductSummary } from '@/types/product.types';
 
-vi.mock('./client', () => ({
+vi.mock('../client', () => ({
   apiClient: vi.fn(),
 }));
 

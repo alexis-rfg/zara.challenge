@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { clearLogEntries, createLogger, getLogEntries, subscribeToLogs } from './logger';
+import { clearLogEntries, createLogger, getLogEntries, subscribeToLogs } from '../logger';
 
 describe('logger observer', () => {
   beforeEach(() => {

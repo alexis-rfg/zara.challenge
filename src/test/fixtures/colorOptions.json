@@ -1,0 +1,18 @@
+{
+  "titaniumViolet": {
+    "name": "Titanium Violet",
+    "hexCode": "#8E6F96",
+    "imageUrl": "/img/violet.webp"
+  },
+  "titaniumBlack": {
+    "name": "Titanium Black",
+    "hexCode": "#1C1C1E",
+    "imageUrl": "/img/black.webp"
+  },
+  "titaniumWhite": {
+    "name": "Titanium White",
+    "hexCode": "#F5F5F0",
+    "imageUrl": "/img/white.webp"
+  },
+  "blue": { "name": "Blue", "hexCode": "#0000FF", "imageUrl": "/img/blue.webp" }
+}

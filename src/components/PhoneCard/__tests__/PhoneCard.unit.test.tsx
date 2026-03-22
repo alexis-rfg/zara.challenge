@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { PhoneCard } from './PhoneCard';
+import { MemoryRouter } from 'react-router-dom';
+import { PhoneCard } from '../PhoneCard';
 import type { ProductSummary } from '@/types/product.types';
 
 const mockProduct: ProductSummary = {
@@ -13,7 +13,7 @@ const mockProduct: ProductSummary = {
 };
 
 const renderWithRouter = (ui: React.ReactElement) => {
-  return render(<BrowserRouter>{ui}</BrowserRouter>);
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
 };
 
 describe('PhoneCard', () => {
