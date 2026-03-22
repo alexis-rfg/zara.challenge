@@ -2,14 +2,11 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/hooks/useCart';
+import { useScopedLogger } from '@/hooks/useScopedLogger';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
-import { createLogger } from '@/utils/logger';
 import './CartPage.scss';
 
-const cartPageLogger = createLogger({
-  scope: 'cart.page',
-  tags: ['cart', 'page'],
-});
+const CART_PAGE_LOGGER_TAGS = ['cart', 'page'] as const;
 
 /**
  * Shopping cart page rendered at `/cart`.
@@ -20,6 +17,7 @@ export const CartPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { items, removeItem, totalItems, totalPrice } = useCart();
+  const cartPageLogger = useScopedLogger('cart.page', CART_PAGE_LOGGER_TAGS);
   const hasItems = items.length > 0;
 
   useEffect(() => {

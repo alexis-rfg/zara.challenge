@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProductById } from '@/api/products.api';
+import { fetchProductDetail } from '@/services/product.service';
 import { createLogger } from '@/utils/logger';
 import type { ProductDetail } from '@/types/product.types';
 import type { UseProductDetailResult } from '@/types/hooks.types';
@@ -44,7 +44,7 @@ export function useProductDetail(id: string | undefined): UseProductDetailResult
       setError(null);
 
       try {
-        const data = await getProductById(productId, controller.signal);
+        const data = await fetchProductDetail(productId, controller.signal);
         setProduct(data);
         loadSpan.finish({
           tags: ['success'],

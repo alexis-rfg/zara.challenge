@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useScopedLogger } from '@/hooks/useScopedLogger';
 import type { LanguageCode, LanguageOption } from '@/types/i18n.types';
-import { createLogger } from '@/utils/logger';
 import './LanguageSwitcher.scss';
 
 const LANGUAGES: readonly LanguageOption[] = [
@@ -9,10 +9,7 @@ const LANGUAGES: readonly LanguageOption[] = [
   { code: 'es', label: 'ES', name: 'Español' },
 ] as const;
 
-const languageLogger = createLogger({
-  scope: 'ui.language-switcher',
-  tags: ['ui', 'i18n'],
-});
+const LANGUAGE_LOGGER_TAGS = ['ui', 'i18n'] as const;
 
 /**
  * Globe-icon dropdown for switching the UI language between English and Spanish.
@@ -23,6 +20,7 @@ export const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const languageLogger = useScopedLogger('ui.language-switcher', LANGUAGE_LOGGER_TAGS);
 
   const currentLang = (i18n.language?.slice(0, 2) ?? 'en') as LanguageCode;
 

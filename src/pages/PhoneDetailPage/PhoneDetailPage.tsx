@@ -3,19 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useProductDetail } from '@/hooks/useProductDetail';
 import { useCart } from '@/hooks/useCart';
+import { useScopedLogger } from '@/hooks/useScopedLogger';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
 import { ColorSelector } from '@/components/ColorSelector/ColorSelector';
 import { StorageSelector } from '@/components/StorageSelector/StorageSelector';
 import { SimilarProducts } from '@/components/SimilarProducts/SimilarProducts';
 import type { ColorOption, ProductDetail, StorageOption } from '@/types/product.types';
 import type { ProductRouteParams } from '@/types/page.types';
-import { createLogger } from '@/utils/logger';
 import './PhoneDetailPage.scss';
 
-const phoneDetailLogger = createLogger({
-  scope: 'phone-detail.page',
-  tags: ['products', 'detail', 'ui'],
-});
+const PHONE_DETAIL_LOGGER_TAGS = ['products', 'detail', 'ui'] as const;
 
 /**
  * Top-level product attributes rendered in the specifications table
@@ -106,6 +103,7 @@ export const PhoneDetailPage = () => {
   const navigate = useNavigate();
   const { product, loading, error } = useProductDetail(id);
   const { addItem } = useCart();
+  const phoneDetailLogger = useScopedLogger('phone-detail.page', PHONE_DETAIL_LOGGER_TAGS);
 
   const [selectedColorIndex, setSelectedColorIndex] = useState<number | null>(null);
   const [selectedStorageIndex, setSelectedStorageIndex] = useState<number | null>(null);
@@ -167,7 +165,7 @@ export const PhoneDetailPage = () => {
     return () => {
       document.title = 'MBST';
     };
-  }, [product]);
+  }, [phoneDetailLogger, product]);
 
   /** Resets variant selections when the route changes to another product. */
   useEffect(() => {
