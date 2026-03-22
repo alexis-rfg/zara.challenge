@@ -29,13 +29,13 @@
 // React unmounts → remounts the wrapper on each route change, which replays
 // the `page-enter` animation (fade + subtle upward slide).
 .page-transition {
-  animation: page-enter 300ms ease-out;
+  animation: page-enter $animation-page-enter;
 }
 
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY($page-enter-translate-y);
   }
 
   to {

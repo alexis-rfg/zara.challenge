@@ -1,37 +1,13 @@
 import { useState, useCallback } from 'react';
-import type { ImgHTMLAttributes, SyntheticEvent } from 'react';
+import type { SyntheticEvent } from 'react';
+import type { LazyImageProps } from '@/types/components.types';
 import './LazyImage.scss';
-
-/**
- * Props for the {@link LazyImage} component.
- *
- * Extends every native `<img>` attribute so the component is a drop-in
- * replacement. The only addition is `eager` which opts out of lazy loading
- * for above-the-fold images (e.g. the product-detail hero).
- */
-export type LazyImageProps = ImgHTMLAttributes<HTMLImageElement> & {
-  /** When `true`, sets `loading="eager"` (default `false` → `"lazy"`). */
-  eager?: boolean;
-};
 
 /**
  * Progressive image component with native lazy loading and a fade-in reveal.
  *
- * - Uses `loading="lazy"` by default so the browser defers off-screen fetches.
- * - Adds `decoding="async"` to avoid blocking the main thread.
- * - Starts at `opacity: 0` and transitions to `opacity: 1` once the image's
- *   `onLoad` fires, producing a smooth fade-in effect.
- * - Applies an `--errored` modifier on load failure for graceful degradation.
- * - Respects `prefers-reduced-motion` (see LazyImage.scss).
- *
- * @example
- * ```tsx
- * // Lazy (default) — grid cards, similar products, cart items
- * <LazyImage src={url} alt="Galaxy S24" className="phone-card__image" />
- *
- * // Eager — above-the-fold hero image
- * <LazyImage eager src={url} alt="iPhone 15 Pro" className="detail__image" />
- * ```
+ * @param props - Component props.
+ * @returns Enhanced img element with loading states.
  */
 export const LazyImage = ({
   eager = false,
@@ -43,7 +19,15 @@ export const LazyImage = ({
 }: LazyImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const loadingStrategy = eager ? 'eager' : 'lazy';
+  const computedClassName =
+    `lazy-image${loaded ? ' lazy-image--loaded' : ''}${errored ? ' lazy-image--errored' : ''} ${className}`.trim();
 
+  /**
+   * Marks the image as loaded and forwards the load event.
+   *
+   * @param e - Synthetic image load event.
+   */
   const handleLoad = useCallback(
     (e: SyntheticEvent<HTMLImageElement>) => {
       setLoaded(true);
@@ -52,6 +36,11 @@ export const LazyImage = ({
     [onLoad],
   );
 
+  /**
+   * Marks the image as errored and forwards the error event.
+   *
+   * @param e - Synthetic image error event.
+   */
   const handleError = useCallback(
     (e: SyntheticEvent<HTMLImageElement>) => {
       setErrored(true);
@@ -64,8 +53,8 @@ export const LazyImage = ({
     <img
       {...rest}
       alt={alt}
-      className={`lazy-image${loaded ? ' lazy-image--loaded' : ''}${errored ? ' lazy-image--errored' : ''} ${className}`.trim()}
-      loading={eager ? 'eager' : 'lazy'}
+      className={computedClassName}
+      loading={loadingStrategy}
       decoding="async"
       onLoad={handleLoad}
       onError={handleError}

@@ -1,69 +1,137 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { LanguageCode, LanguageOption } from '@/types/i18n.types';
+import { createLogger } from '@/utils/logger';
 import './LanguageSwitcher.scss';
 
-const LANGUAGES = [
+const LANGUAGES: readonly LanguageOption[] = [
   { code: 'en', label: 'EN', name: 'English' },
   { code: 'es', label: 'ES', name: 'Español' },
 ] as const;
 
-type LangCode = (typeof LANGUAGES)[number]['code'];
+const languageLogger = createLogger({
+  scope: 'ui.language-switcher',
+  tags: ['ui', 'i18n'],
+});
 
 /**
  * Globe-icon dropdown for switching the UI language between English and Spanish.
  *
- * Uses `i18n.changeLanguage()` from `react-i18next` — no extra provider needed
- * because `initReactI18next` already injects one under the hood.
- * `i18next-browser-languagedetector` persists the chosen language to localStorage
- * automatically whenever `changeLanguage` is called.
+ * @returns Language switcher JSX.
  */
 export const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Normalise "en-US" → "en"
-  const currentLang = (i18n.language?.slice(0, 2) ?? 'en') as LangCode;
+  const currentLang = (i18n.language?.slice(0, 2) ?? 'en') as LanguageCode;
 
+  /** Closes the language dropdown. */
   const close = useCallback(() => setIsOpen(false), []);
 
-  // Close on outside click
   useEffect(() => {
-    const handlePointerDown = (e: PointerEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+    /**
+     * Closes the dropdown when the user clicks outside the component.
+     *
+     * @param event - Native pointer event.
+     */
+    const handlePointerDown = (event: PointerEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         close();
       }
     };
+
     document.addEventListener('pointerdown', handlePointerDown);
     return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, [close]);
 
-  // Close on Escape
   useEffect(() => {
     if (!isOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+
+    /**
+     * Closes the dropdown when the user presses Escape.
+     *
+     * @param event - Native keyboard event.
+     */
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        close();
+      }
     };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, close]);
 
-  const handleSelect = (code: string) => {
+  /**
+   * Changes the active language and closes the dropdown.
+   *
+   * @param code - Two-letter language code to activate.
+   */
+  const handleSelect = (code: LanguageCode) => {
+    languageLogger.info('change_language', {
+      tags: ['interaction'],
+      context: {
+        previousLanguage: currentLang,
+        nextLanguage: code,
+      },
+    });
+
     void i18n.changeLanguage(code);
     close();
   };
+
+  /** Toggles the language dropdown open state. */
+  const handleToggle = () => {
+    const nextIsOpen = !isOpen;
+
+    languageLogger.debug('toggle_dropdown', {
+      tags: ['interaction'],
+      context: {
+        nextIsOpen,
+      },
+    });
+
+    setIsOpen(nextIsOpen);
+  };
+
+  /**
+   * Returns the CSS class for a language option based on selection state.
+   *
+   * @param code - Language code for the option.
+   * @returns Option class name with active modifier when selected.
+   */
+  const getOptionClassName = (code: LanguageCode): string => {
+    return `lang-switcher__option${currentLang === code ? ' lang-switcher__option--active' : ''}`;
+  };
+
+  const dropdown = isOpen ? (
+    <ul className="lang-switcher__dropdown" role="listbox" aria-label={t('nav.selectLanguage')}>
+      {LANGUAGES.map(({ code, label, name }) => (
+        <li key={code} role="option" aria-selected={currentLang === code}>
+          <button
+            type="button"
+            className={getOptionClassName(code)}
+            onClick={() => handleSelect(code)}
+          >
+            <span className="lang-switcher__option-label">{label}</span>
+            <span className="lang-switcher__option-name">{name}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  ) : null;
 
   return (
     <div className="lang-switcher" ref={containerRef}>
       <button
         type="button"
         className="lang-switcher__toggle"
-        onClick={() => setIsOpen((o) => !o)}
+        onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={t('nav.languageToggleLabel', { lang: currentLang.toUpperCase() })}
       >
-        {/* Globe icon */}
         <svg
           className="lang-switcher__icon"
           width="16"
@@ -85,22 +153,7 @@ export const LanguageSwitcher = () => {
         </span>
       </button>
 
-      {isOpen && (
-        <ul className="lang-switcher__dropdown" role="listbox" aria-label={t('nav.selectLanguage')}>
-          {LANGUAGES.map(({ code, label, name }) => (
-            <li key={code} role="option" aria-selected={currentLang === code}>
-              <button
-                type="button"
-                className={`lang-switcher__option${currentLang === code ? ' lang-switcher__option--active' : ''}`}
-                onClick={() => handleSelect(code)}
-              >
-                <span className="lang-switcher__option-label">{label}</span>
-                <span className="lang-switcher__option-name">{name}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {dropdown}
     </div>
   );
 };

@@ -1,60 +1,18 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { fetchAllProducts, fetchProductDetail } from '@/services/product.service';
+import { createLogger } from '@/utils/logger';
 import type { ProductSummary, ColorOption } from '@/types/product.types';
+import type { FilterColor, UseColorFilterResult } from '@/types/hooks.types';
+
+const colorFilterLogger = createLogger({
+  scope: 'products.color-filter',
+  tags: ['products', 'filter', 'color'],
+});
 
 /**
- * A unique color extracted from the catalog's product details.
- */
-export type FilterColor = {
-  name: string;
-  hexCode: string;
-};
-
-/**
- * Shape returned by {@link useColorFilter}.
- */
-export type UseColorFilterResult = {
-  /** Unique colors available across all catalog products. */
-  availableColors: FilterColor[];
-  /** Currently selected color hex code, or `null` when no filter is active. */
-  selectedColor: string | null;
-  /** Whether the filter swatch panel is open. */
-  isOpen: boolean;
-  /** Whether color data is being fetched (first open only). */
-  isLoading: boolean;
-  /** Number of active color filters (0 or 1). */
-  activeCount: number;
-  /** Open the filter panel. Triggers a one-time data fetch on first open. */
-  open: () => void;
-  /** Close the panel without changing the selection. */
-  close: () => void;
-  /** Select a color by hex code and close the panel. */
-  select: (hexCode: string) => void;
-  /** Clear the active color filter. */
-  clear: () => void;
-  /** Returns a filtered copy of `products` that have the selected color. */
-  filterProducts: (products: ProductSummary[]) => ProductSummary[];
-};
-
-/**
- * Manages a mobile color-filter for the product catalog.
+ * Manages the mobile color filter for the product catalog.
  *
- * ### Data strategy
- * The list endpoint (`GET /products`) only returns {@link ProductSummary}
- * (no color data). Color options live in the detail endpoint
- * (`GET /products/:id`).
- *
- * On the **first** time the user opens the filter panel this hook:
- * 1. Fetches every product ID via `GET /products` (no limit).
- * 2. Fetches each product's detail in parallel to read `colorOptions`.
- * 3. Builds a `productId → colorName[]` map and a deduplicated list of
- *    unique colors (by `hexCode`).
- * 4. Caches the result — subsequent opens are instant.
- *
- * Once a color is selected, `filterProducts` does a synchronous client-side
- * filter against the cached map.
- *
- * @returns {@link UseColorFilterResult}
+ * @returns Color-filter view model for the product list page.
  */
 export const useColorFilter = (): UseColorFilterResult => {
   const [availableColors, setAvailableColors] = useState<FilterColor[]>([]);
@@ -62,30 +20,67 @@ export const useColorFilter = (): UseColorFilterResult => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // productId → full color options (hex, name, imageUrl) for that product
   const colorMapRef = useRef<Map<string, ColorOption[]>>(new Map());
   const fetchedRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
 
+  /**
+   * Loads catalog-wide color metadata and caches it for future openings.
+   */
   const fetchColorData = useCallback(async () => {
     if (fetchedRef.current) return;
 
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
+    const fetchSpan = colorFilterLogger.startSpan('load_palette', {
+      tags: ['load'],
+    });
 
     setIsLoading(true);
 
     try {
-      // 1. Get ALL product IDs (no limit param → server returns full catalog)
       const allProducts = await fetchAllProducts(controller.signal);
-
-      // 2. Fetch details in parallel to read colorOptions
-      const details = await Promise.all(
-        allProducts.map((p) => fetchProductDetail(p.id, controller.signal)),
+      const detailResults = await Promise.allSettled(
+        allProducts.map((product) => fetchProductDetail(product.id, controller.signal)),
       );
 
-      // 3. Build maps
+      if (controller.signal.aborted) {
+        colorFilterLogger.debug('load_palette_aborted');
+        return;
+      }
+
+      const details = detailResults.flatMap((result) =>
+        result.status === 'fulfilled' ? [result.value] : [],
+      );
+      const failedDetailCount = detailResults.length - details.length;
+
+      if (details.length === 0) {
+        fetchedRef.current = false;
+        setAvailableColors([]);
+
+        fetchSpan.fail(new Error('Color palette could not be built from product details'), {
+          tags: ['error'],
+          context: {
+            productCount: allProducts.length,
+            failedDetailCount,
+          },
+        });
+
+        return;
+      }
+
+      if (failedDetailCount > 0) {
+        colorFilterLogger.warn('load_palette_partial_failure', {
+          tags: ['warning'],
+          context: {
+            productCount: allProducts.length,
+            loadedDetailCount: details.length,
+            failedDetailCount,
+          },
+        });
+      }
+
       const colorMap = new Map<string, ColorOption[]>();
       const uniqueColors = new Map<string, FilterColor>();
 
@@ -105,9 +100,22 @@ export const useColorFilter = (): UseColorFilterResult => {
       colorMapRef.current = colorMap;
       setAvailableColors(Array.from(uniqueColors.values()));
       fetchedRef.current = true;
+
+      fetchSpan.finish({
+        tags: ['success'],
+        context: {
+          productCount: details.length,
+          colorCount: uniqueColors.size,
+          failedDetailCount,
+        },
+      });
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
-      // Silently degrade — filter panel will be empty
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        colorFilterLogger.debug('load_palette_aborted');
+        return;
+      }
+
+      fetchSpan.fail(err, { tags: ['error'] });
     } finally {
       if (!controller.signal.aborted) {
         setIsLoading(false);
@@ -115,48 +123,84 @@ export const useColorFilter = (): UseColorFilterResult => {
     }
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => abortRef.current?.abort();
   }, []);
 
+  /** Opens the filter panel and lazy-loads palette data on first access. */
   const open = useCallback(() => {
     setIsOpen(true);
+    colorFilterLogger.debug('open_panel', {
+      tags: ['interaction'],
+      context: {
+        hasCachedPalette: fetchedRef.current,
+      },
+    });
+
     if (!fetchedRef.current) {
       void fetchColorData();
     }
   }, [fetchColorData]);
 
+  /** Closes the filter panel while keeping the current selection. */
   const close = useCallback(() => {
     setIsOpen(false);
+    colorFilterLogger.debug('close_panel', {
+      tags: ['interaction'],
+    });
   }, []);
 
+  /**
+   * Applies a color filter by hex code and closes the panel.
+   *
+   * @param hexCode - Selected swatch hex code.
+   */
   const select = useCallback((hexCode: string) => {
     setSelectedColor(hexCode);
     setIsOpen(false);
+    colorFilterLogger.info('select_color', {
+      tags: ['interaction'],
+      context: {
+        hexCode,
+      },
+    });
   }, []);
 
+  /** Clears the active color filter selection. */
   const clear = useCallback(() => {
     setSelectedColor(null);
+    colorFilterLogger.info('clear_color', {
+      tags: ['interaction'],
+    });
   }, []);
 
+  /**
+   * Filters products by the active color and swaps images to the color-specific asset.
+   *
+   * @param products - Source product list to filter.
+   * @returns Filtered and image-adjusted product list.
+   */
   const filterProducts = useCallback(
     (products: ProductSummary[]): ProductSummary[] => {
       if (!selectedColor) return products;
+
       return products
-        .filter((p) => {
-          const colors = colorMapRef.current.get(p.id) ?? [];
-          return colors.some((c) => c.hexCode === selectedColor);
+        .filter((product) => {
+          const colors = colorMapRef.current.get(product.id) ?? [];
+          return colors.some((color) => color.hexCode === selectedColor);
         })
-        .map((p) => {
-          const match = colorMapRef.current.get(p.id)?.find((c) => c.hexCode === selectedColor);
-          // Swap the default image with the color-specific one
-          return match ? { ...p, imageUrl: match.imageUrl } : p;
+        .map((product) => {
+          const selectedOption = colorMapRef.current
+            .get(product.id)
+            ?.find((color) => color.hexCode === selectedColor);
+
+          return selectedOption ? { ...product, imageUrl: selectedOption.imageUrl } : product;
         });
     },
     [selectedColor],
   );
 
+  /** Derived active filter count used by the mobile filter badge. */
   const activeCount = useMemo(() => (selectedColor ? 1 : 0), [selectedColor]);
 
   return {

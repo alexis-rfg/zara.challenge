@@ -1,5 +1,6 @@
 import type { CartItem } from '@/types/cart.types';
 import { createLogger } from './logger';
+import { toSecureAssetUrl } from './urlSecurity';
 
 const CART_KEY = 'zara-cart';
 const storageLogger = createLogger({
@@ -9,6 +10,56 @@ const storageLogger = createLogger({
     storageKey: CART_KEY,
   },
 });
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};
+
+const normalizeCartItem = (value: unknown): CartItem => {
+  if (!isRecord(value)) {
+    throw new Error('Cart item must be an object');
+  }
+
+  const { id, name, brand, imageUrl, colorName, storageCapacity, price } = value;
+
+  if (typeof id !== 'string' || id.trim() === '') {
+    throw new Error('Cart item id must be a non-empty string');
+  }
+
+  if (typeof name !== 'string' || name.trim() === '') {
+    throw new Error('Cart item name must be a non-empty string');
+  }
+
+  if (typeof brand !== 'string' || brand.trim() === '') {
+    throw new Error('Cart item brand must be a non-empty string');
+  }
+
+  if (typeof imageUrl !== 'string') {
+    throw new Error('Cart item imageUrl must be a string');
+  }
+
+  if (typeof colorName !== 'string' || colorName.trim() === '') {
+    throw new Error('Cart item colorName must be a non-empty string');
+  }
+
+  if (typeof storageCapacity !== 'string' || storageCapacity.trim() === '') {
+    throw new Error('Cart item storageCapacity must be a non-empty string');
+  }
+
+  if (typeof price !== 'number' || !Number.isFinite(price)) {
+    throw new Error('Cart item price must be a finite number');
+  }
+
+  return {
+    id: id.trim(),
+    name: name.trim(),
+    brand: brand.trim(),
+    imageUrl: toSecureAssetUrl(imageUrl),
+    colorName: colorName.trim(),
+    storageCapacity: storageCapacity.trim(),
+    price,
+  };
+};
 
 /**
  * Retrieves the shopping cart from localStorage.
@@ -31,7 +82,22 @@ export const getCart = (): CartItem[] => {
       return [];
     }
 
-    const items = JSON.parse(stored) as CartItem[];
+    const parsed = JSON.parse(stored) as unknown;
+    if (!Array.isArray(parsed)) {
+      throw new Error('Stored cart payload must be an array');
+    }
+
+    const items = parsed.flatMap((value) => {
+      try {
+        return [normalizeCartItem(value)];
+      } catch (error) {
+        storageLogger.warn('read_invalid_item', {
+          tags: ['load', 'validation'],
+          error,
+        });
+        return [];
+      }
+    });
 
     storageLogger.debug('read_success', {
       tags: ['load'],
@@ -63,11 +129,12 @@ export const getCart = (): CartItem[] => {
  */
 export const saveCart = (items: CartItem[]): void => {
   try {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    const sanitizedItems = items.map((item) => normalizeCartItem(item));
+    localStorage.setItem(CART_KEY, JSON.stringify(sanitizedItems));
     storageLogger.debug('write_success', {
       tags: ['save'],
       context: {
-        itemCount: items.length,
+        itemCount: sanitizedItems.length,
       },
     });
   } catch (error) {

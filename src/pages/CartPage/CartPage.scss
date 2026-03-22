@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
-    padding: 2.5rem $padding-horizontal $spacing-xl;
+    padding: $cart-content-padding-top-desktop $padding-horizontal $spacing-xl;
 
     @media (max-width: $breakpoint-tablet) {
       padding: $spacing-xl $padding-horizontal-tablet $spacing-xl;
@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 2.5rem;
+    gap: $cart-item-gap;
 
     @media (max-width: $breakpoint-mobile) {
       align-items: flex-start;
@@ -58,13 +58,13 @@
   }
 
   &__item-image-wrapper {
-    width: 16.375rem;
-    height: 20.25rem;
+    width: $cart-item-image-width;
+    height: $cart-item-image-height;
     flex-shrink: 0;
 
     @media (max-width: $breakpoint-mobile) {
-      width: 10rem;
-      height: 12.36625rem;
+      width: $cart-item-image-width-mobile;
+      height: $cart-item-image-height-mobile;
     }
   }
 
@@ -80,16 +80,16 @@
     justify-content: space-between;
     align-items: flex-start;
     align-self: stretch;
-    gap: 2.5rem;
-    width: 15.375rem;
+    gap: $cart-item-gap;
+    width: $cart-item-info-width;
     min-width: 0;
-    height: 20.25rem;
-    padding: 2.5rem 0;
+    height: $cart-item-image-height;
+    padding: $cart-item-gap 0;
     flex-grow: 1;
 
     @media (max-width: $breakpoint-mobile) {
       width: auto;
-      height: 12.36625rem;
+      height: $cart-item-image-height-mobile;
     }
   }
 
@@ -97,7 +97,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: $spacing-md-plus;
     width: 100%;
   }
 
@@ -151,14 +151,14 @@
     grid-template-columns: $btn-width minmax(0, 1fr) $btn-width;
     grid-template-areas: "continue summary pay";
     align-items: center;
-    column-gap: 5rem;
+    column-gap: $cart-footer-column-gap;
     row-gap: $spacing-lg;
-    padding: $spacing-lg $padding-horizontal 3.5rem;
+    padding: $spacing-lg $padding-horizontal $cart-footer-padding-bottom;
     background: $color-background;
 
     @media (max-width: $breakpoint-tablet) {
       column-gap: $spacing-xl;
-      padding: $spacing-lg $padding-horizontal-tablet 3.5rem;
+      padding: $spacing-lg $padding-horizontal-tablet $cart-footer-padding-bottom;
     }
 
     @media (max-width: $breakpoint-mobile) {
@@ -166,7 +166,7 @@
       grid-template-areas:
         "summary summary"
         "continue pay";
-      column-gap: 0.75rem;
+      column-gap: $cart-footer-column-gap-mobile;
       row-gap: $spacing-lg;
       padding: $spacing-md $padding-horizontal-mobile $spacing-lg;
     }
@@ -228,7 +228,7 @@
     justify-content: center;
     width: $btn-width;
     height: $btn-height;
-    padding: 1.25rem $spacing-xl;
+    padding: $spacing-md-plus $spacing-xl;
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-card;

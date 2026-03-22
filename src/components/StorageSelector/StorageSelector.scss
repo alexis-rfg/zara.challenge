@@ -3,7 +3,12 @@
 .storage-selector {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
+  gap: $detail-selector-group-gap-desktop;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: $detail-selector-group-gap-compact;
+  }
 
   &__label {
     font-family: $font-family;
@@ -13,13 +18,18 @@
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: $font-size-card;
+      line-height: $line-height-tight;
+    }
   }
 
   &__options {
     display: flex;
     flex-direction: row;
     align-items: center;
-    flex-wrap: wrap;
+    width: 100%;
   }
 
   &__option {
@@ -28,8 +38,8 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: $spacing-lg;
-    height: 4.0625rem; // 65px (Figma spec)
+    padding: 0 $spacing-lg;
+    height: $detail-selector-control-height-desktop;
     border: $border-width solid $color-disabled;
     background: transparent;
     cursor: pointer;
@@ -41,6 +51,13 @@
     color: $color-text;
     transition: border-color $transition-fast;
     position: relative;
+    white-space: nowrap;
+
+    @media (max-width: $breakpoint-tablet) {
+      height: $detail-selector-control-height-compact;
+      font-size: $font-size-card;
+      line-height: $line-height-tight;
+    }
 
     // Adjacent border collapse
     & + & {

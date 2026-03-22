@@ -1,22 +1,13 @@
 import { Link } from 'react-router-dom';
 import { LazyImage } from '@/components/LazyImage/LazyImage';
-import type { ProductSummary } from '@/types/product.types';
+import type { PhoneCardProps } from '@/types/components.types';
 import './PhoneCard.scss';
-
-/** Props for the {@link PhoneCard} component. */
-export type PhoneCardProps = {
-  /** Product data to display in the card. */
-  product: ProductSummary;
-};
 
 /**
  * Catalog card that renders a product's image, brand, name, and formatted base price.
  *
- * The entire card is wrapped in a `<Link>` that navigates to `/products/:id`, so
- * it functions as both a list-view card and a similar-products carousel item.
- * Price is formatted with {@link Intl.NumberFormat} using `es-ES` locale and EUR currency.
- *
  * @param props - Component props.
+ * @returns Product card link JSX.
  */
 export const PhoneCard = ({ product }: PhoneCardProps) => {
   const formattedPrice = new Intl.NumberFormat('es-ES', {

@@ -5,39 +5,33 @@ import { useColorFilter } from '@/hooks/useColorFilter';
 import { SearchBar } from '@/components/SearchBar/SearchBar';
 import { ColorFilter } from '@/components/ColorFilter/ColorFilter';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
+import type { PhoneListPageState } from '@/types/page.types';
 import './PhoneListPage.scss';
 
 /**
- * Home page — displays the mobile phone catalog.
+ * Resolves the current list-page state from request and data status.
  *
- * ### Layout
- * - A sticky header containing {@link SearchBar} (desktop / all sizes) and
- *   {@link ColorFilter} (mobile-only).
- * - A CSS Grid of {@link PhoneCard} items.
- *
- * ### Data flow
- * - {@link useProducts} owns the API fetch lifecycle. It exposes `submitSearch`
- *   which `SearchBar` calls on Enter / clear; only then is a network request fired.
- * - {@link useColorFilter} manages a client-side colour filter that is applied
- *   on top of the API results via `filterProducts`.
- * - `displayProducts` is a memoised derived value so the filter is only
- *   re-computed when either `products` or the active colour changes.
- *
- * ### States handled
- * - **Loading** — a thin progress line under the sticky header (no spinner).
- * - **Error** — error banner with a reload button.
- * - **Empty results** — "No products found" message.
- * - **Populated** — CSS Grid of cards.
+ * @param loading - Whether the product request is still running.
+ * @param error - Current error message, if any.
+ * @param productCount - Number of products available to render.
+ * @returns Derived page state for the main content area.
  */
-type PageState = 'loading' | 'error' | 'empty' | 'populated';
-
-const getPageState = (loading: boolean, error: string | null, productCount: number): PageState => {
+const getPageState = (
+  loading: boolean,
+  error: string | null,
+  productCount: number,
+): PhoneListPageState => {
   if (error) return 'error';
   if (loading) return 'loading';
   if (productCount === 0) return 'empty';
   return 'populated';
 };
 
+/**
+ * Home page displaying the mobile phone catalog.
+ *
+ * @returns Phone list page JSX.
+ */
 export const PhoneListPage = () => {
   const { t } = useTranslation();
   const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
@@ -51,6 +45,11 @@ export const PhoneListPage = () => {
     document.title = t('phoneListPage.title');
   }, [t]);
 
+  /**
+   * Renders the correct content block for the current list-page state.
+   *
+   * @returns JSX for the error, loading, empty, or populated state.
+   */
   const renderContent = () => {
     switch (pageState) {
       case 'error':
@@ -73,18 +72,19 @@ export const PhoneListPage = () => {
           </div>
         );
 
-      case 'empty':
+      case 'empty': {
+        const emptyStateMessage = committedSearch
+          ? t('phoneListPage.noProductsFor', { term: committedSearch })
+          : t('phoneListPage.noProducts');
+
         return (
           <div className="page-transition">
             <div className="phone-list-page__empty" role="status">
-              <p>
-                {committedSearch
-                  ? t('phoneListPage.noProductsFor', { term: committedSearch })
-                  : t('phoneListPage.noProducts')}
-              </p>
+              <p>{emptyStateMessage}</p>
             </div>
           </div>
         );
+      }
 
       case 'populated':
         return (

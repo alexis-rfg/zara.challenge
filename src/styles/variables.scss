@@ -1,4 +1,4 @@
-// ─── Colors ───────────────────────────────────────────────────────────────────
+// Colors
 $color-primary: #000000;
 $color-secondary: #666666;
 $color-text: #000000;
@@ -7,82 +7,185 @@ $color-background: #ffffff;
 $color-border: #e0e0e0;
 $color-error: #d32f2f;
 $color-disabled: #cccccc;
+$color-brand-text: #706b66;
+$color-placeholder: #767676;
+$color-brand-dark: #1b1a18;
+$color-hover-dark: #333333;
+$color-hover-light: #f5f5f5;
+$color-btn-disabled-bg: #f3f2f2;
+$color-btn-disabled-text: #c2bfbc;
+$color-delete: #df0000;
+$color-white-dim: rgba(255, 255, 255, 0.72);
+$color-shadow-soft: rgba(0, 0, 0, 0.08);
 
-// Figma design tokens
-$color-brand-text: #706b66; // card brand label (WCAG AA ≥ 4.5:1 on white — darkened from Figma #79736d)
-$color-placeholder: #767676; // search placeholder (WCAG AA ≥ 4.5:1 on white)
-$color-brand-dark: #1b1a18; // cart CTA buttons (warm near-black)
-$color-hover-dark: #333333; // dark button hover state
-$color-hover-light: #f5f5f5; // outlined button hover state
-$color-btn-disabled-bg: #f3f2f2; // add-to-cart disabled background
-$color-btn-disabled-text: #c2bfbc; // add-to-cart disabled text
-$color-delete: #df0000; // remove-item button
-$color-white-dim: rgba(255, 255, 255, 0.72); // card brand text on hover
+// Spacing
+$spacing-3xs: 0.125rem;
+$spacing-xs: 0.25rem;
+$spacing-2xs: 0.375rem;
+$spacing-sm: 0.5rem;
+$spacing-sm-plus: 0.625rem;
+$spacing-sm-xl: 0.6875rem;
+$spacing-md-minus: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg-minus: 1.125rem;
+$spacing-md-plus: 1.25rem;
+$spacing-md-2xl: 1.5625rem;
+$spacing-lg: 1.5rem;
+$spacing-lg-plus: 1.6875rem;
+$spacing-xl: 2rem;
+$spacing-xl-plus: 2.125rem;
+$spacing-page-section: 2.5rem;
+$spacing-2xl-minus: 2.75rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 3.5rem;
+$spacing-4xl: 5rem;
+$spacing-5xl: 6.25rem;
+$spacing-6xl: 7.5rem;
+$spacing-7xl: 10rem;
+$spacing-8xl: 10.625rem;
 
-// ─── Spacing ──────────────────────────────────────────────────────────────────
-// All in rem for accessibility (scales with user's browser font size)
-$spacing-xs: 0.25rem; //  4px
-$spacing-sm: 0.5rem; //  8px
-$spacing-md: 1rem; // 16px
-$spacing-lg: 1.5rem; // 24px
-$spacing-xl: 2rem; // 32px
-$spacing-2xl: 3rem; // 48px
-
-// ─── Typography ───────────────────────────────────────────────────────────────
+// Typography
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-weight-light: 300;
 $font-weight-regular: 400;
+$font-size-xs: 0.625rem;
+$font-size-card: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-heading: 1.25rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2rem;
+$line-height-tight: 0.9375rem;
+$line-height-label: 1.0625rem;
+$line-height-base: 1.25rem;
+$line-height-lg: 1.5rem;
+$line-height-form-control: 1.1875rem;
+$line-height-root: 1.5;
+$letter-spacing-wide: 0.08em;
+$letter-spacing-button: 0.05em;
 
-$font-size-xs: 0.625rem; // 10px — card brand
-$font-size-card: 0.75rem; // 12px — card name / price / results count
-$font-size-sm: 0.875rem; // 14px — selectors / labels
-$font-size-base: 1rem; // 16px
-$font-size-heading: 1.25rem; // 20px — section headings (Specs, Similar Products)
-$font-size-lg: 1.125rem; // 18px
-$font-size-xl: 1.5rem; // 24px — detail page title
-$font-size-2xl: 2rem; // 32px
+// Opacity
+$opacity-hover-soft: 0.7;
+$opacity-hover-medium: 0.6;
+$opacity-hover-strong: 0.5;
+$opacity-image-error: 0.3;
 
-// Line heights
-$line-height-tight: 0.9375rem; // 15px — card / detail body text
-$line-height-label: 1.0625rem; // 17px — selectors / labels
-$line-height-base: 1.25rem; // 20px
-$line-height-lg: 1.5rem; // 24px
+// Borders and radii
+$border-width-hairline: 0.03125rem;
+$border-width: 0.0625rem;
+$outline-width: 0.125rem;
+$border-radius: 0.25rem;
+$border-radius-full: 50%;
 
-// Letter spacing
-$letter-spacing-wide: 0.08em; // primary CTA buttons
-$letter-spacing-button: 0.05em; // secondary / error buttons
+// Motion
+$transition-fast: 200ms ease;
+$transition-medium: 400ms ease;
+$transition-slow: 900ms ease;
+$transition-scrollbar: 100ms ease-out;
+$animation-page-enter: 300ms ease-out;
+$animation-progress: 1.2s ease-in-out infinite;
+$animation-spin: 1s linear infinite;
+$rotation-full: 360deg;
+$page-enter-translate-y: $spacing-sm;
 
-// ─── Borders & Outlines ───────────────────────────────────────────────────────
-$border-width-hairline: 0.03125rem; // 0.5px — card / spec-row borders
-$border-width: 0.0625rem; // 1px   — selector borders
-$outline-width: 0.125rem; // 2px   — keyboard focus rings
+// Breakpoints
+$breakpoint-wide: 87.5rem;
+$breakpoint-tablet: 64rem;
+$breakpoint-mobile: 48rem;
 
-// ─── Transitions ──────────────────────────────────────────────────────────────
-$transition-fast: 200ms ease; // selectors, buttons, hover states
-$transition-slow: 900ms ease; // card hover fill animation
-
-// ─── Breakpoints ──────────────────────────────────────────────────────────────
-$breakpoint-wide: 87.5rem; // 1400px — detail hero clamp
-$breakpoint-tablet: 64rem; // 1024px
-$breakpoint-mobile: 48rem; //  768px
-
-// ─── Z-index ──────────────────────────────────────────────────────────────────
+// Z-index
 $z-index-navbar: 100;
 $z-index-sticky: 90;
 
-// ─── Figma page layout ────────────────────────────────────────────────────────
-$header-height: 5rem; // 80px
-$padding-horizontal: 6.25rem; // 100px — desktop side padding
-$padding-horizontal-tablet: 2.5rem; //  40px
-$padding-horizontal-mobile: 1rem; //  16px
-$card-size: 21.5rem; // 344px — phone card square size
+// Shared layout
+$header-height: 5rem;
+$padding-horizontal: 6.25rem;
+$padding-horizontal-tablet: 2.5rem;
+$padding-horizontal-mobile: 1rem;
+$card-size: 21.5rem;
+$max-width: 75rem;
+$catalog-columns-desktop: 5;
+$catalog-columns-tablet: 2;
+$progress-indicator-width: 30%;
+$progress-indicator-end-x: 433%;
+$visually-hidden-size: $border-width;
+$visually-hidden-offset: -$border-width;
 
-// ─── Component dimensions ─────────────────────────────────────────────────────
-$spinner-size: 2.5rem; //  40px
-$spinner-border: 0.25rem; //   4px
-$btn-width: 16.25rem; // 260px — cart CTA button width
-$btn-height: 3.5rem; //  56px — cart CTA button height
+// Component dimensions
+$spinner-size: 2.5rem;
+$spinner-border: 0.25rem;
+$btn-width: 16.25rem;
+$btn-height: 3.5rem;
+$control-height: 3rem;
+$icon-size-sm: 1rem;
+$icon-size-md: 1.125rem;
+$icon-size-lg: 1.25rem;
+$swatch-size: 1.5rem;
+$swatch-inner-size: 1.25rem;
+$logo-width: 4.625rem;
+$back-bar-height: 2.75rem;
+$language-min-width: 1.5rem;
+$language-dropdown-min-width: 7.5rem;
+$dropdown-shadow-y: $spacing-xs;
+$dropdown-shadow-blur: $spacing-md-minus;
+$search-bar-padding-y: $spacing-md-minus;
+$search-bar-min-height: 5.4375rem;
+$search-bar-row-min-height: 1.6875rem;
+$search-input-min-height: 1.1875rem;
+$phone-card-image-height-mobile: 16.0625rem;
+$similar-products-padding-bottom-desktop: 6.5rem;
+$similar-products-padding-bottom-mobile: 5rem;
+$similar-products-content-gap: $spacing-page-section;
+$similar-products-scrollbar-track-width: 9.375rem;
+$similar-products-scrollbar-track-width-compact: 6.25rem;
+$similar-products-card-size-compact: 23.5625rem;
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
-$max-width: 75rem; // 1200px
-$border-radius: 0.25rem; //   4px
+// Phone detail page
+$detail-hero-padding-top-desktop: 6.875rem;
+$detail-hero-padding-top-tablet: $spacing-2xl;
+$detail-hero-gap-desktop: 10.625rem;
+$detail-hero-gap-tablet: 10.625rem;
+$detail-hero-gap-mobile: $spacing-page-section;
+$detail-hero-min-height-desktop: 39.375rem;
+$detail-hero-min-height-tablet: 26rem;
+$detail-image-width-desktop: 31.875rem;
+$detail-image-height-desktop: 39.375rem;
+$detail-image-width-tablet: 21.0625rem;
+$detail-image-height-tablet: 26rem;
+$detail-image-height-mobile: 18.75rem;
+$detail-product-info-width-desktop: 23.75rem;
+$detail-product-info-width-tablet: 22.625rem;
+$detail-product-info-min-height-desktop: 28.6875rem;
+$detail-product-info-min-height-tablet: 22.375rem;
+$detail-product-info-gap-desktop: 4rem;
+$detail-product-info-gap-compact: $spacing-page-section;
+$detail-title-gap: 0.6875rem;
+$detail-title-line-height-desktop: 1.8125rem;
+$detail-selectors-max-width: 17.0625rem;
+$detail-selectors-gap-desktop: $spacing-page-section;
+$detail-selectors-gap-compact: $spacing-xl;
+$detail-selector-group-gap-desktop: $spacing-lg;
+$detail-selector-group-gap-compact: $spacing-md-plus;
+$detail-selector-control-height-desktop: 4.0625rem;
+$detail-selector-control-height-compact: $control-height;
+$detail-add-btn-width-desktop: $detail-product-info-width-desktop;
+$detail-add-btn-width-compact: $btn-width;
+$detail-add-btn-height-desktop: $btn-height;
+$detail-add-btn-height-compact: $control-height;
+$detail-specs-padding-top-desktop: 9.625rem;
+$detail-specs-padding-y-tablet: 5.5rem;
+$detail-loading-min-height: 20rem;
+$detail-spec-label-width: 18.75rem;
+
+// Cart page
+$cart-content-padding-top-desktop: $spacing-page-section;
+$cart-item-gap: $spacing-page-section;
+$cart-item-image-width: 16.375rem;
+$cart-item-image-height: 20.25rem;
+$cart-item-image-width-mobile: 10rem;
+$cart-item-image-height-mobile: 12.36625rem;
+$cart-item-info-width: 15.375rem;
+$cart-footer-column-gap: 5rem;
+$cart-footer-padding-bottom: 3.5rem;
+$cart-footer-column-gap-mobile: $spacing-md-minus;

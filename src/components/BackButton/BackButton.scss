@@ -13,7 +13,7 @@
   transition: opacity $transition-fast;
 
   &:hover {
-    opacity: 0.7;
+    opacity: $opacity-hover-soft;
   }
 
   &:focus-visible {
@@ -22,8 +22,8 @@
   }
 
   &__icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: $icon-size-lg;
+    height: $icon-size-lg;
     flex-shrink: 0;
   }
 

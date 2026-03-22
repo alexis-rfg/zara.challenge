@@ -7,6 +7,10 @@ describe('logger observer', () => {
     vi.restoreAllMocks();
   });
 
+  it('does not expose the devtools API in test mode', () => {
+    expect(window.__APP_LOGGER__).toBeUndefined();
+  });
+
   it('stores emitted entries and notifies subscribers', () => {
     const logger = createLogger({
       scope: 'products.list',

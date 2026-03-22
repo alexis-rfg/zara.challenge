@@ -1,80 +1,25 @@
-import type { LogLevel, LogContext, SerializedError, LogEntry } from './logger.types';
+import type {
+  LogEntry,
+  LogEventOptions,
+  LogLevel,
+  LogListener,
+  LoggerApi,
+  LoggerConfig,
+  LoggerDevtoolsApi,
+  SerializedError,
+} from '@/types/logger.types';
 
-export type { LogLevel, LogContext, SerializedError, LogEntry };
-
-/** Callback invoked for every log entry emitted to the in-memory buffer. */
-export type LogListener = (entry: LogEntry) => void;
-
-/** Options accepted by every log method and by `startSpan`. */
-export type LogEventOptions = {
-  /** Additional tags merged with the logger's default tags. */
-  tags?: string[];
-  /** Structured key-value data merged with the logger's default context. */
-  context?: LogContext;
-  /** Correlation ID used to link related log entries (e.g. span start/end). */
-  correlationId?: string;
-  /** Duration in milliseconds — set automatically by `startSpan`. */
-  durationMs?: number;
-  /** Error to serialise and attach to the entry. */
-  error?: unknown;
-};
-
-/** Configuration provided when creating a new logger instance. */
-export type LoggerConfig = {
-  /** Dot-separated module path that appears in every entry (e.g. `'api.client'`). */
-  scope: string;
-  /** Default tags applied to every entry from this logger. */
-  tags?: string[];
-  /** Default context merged into every entry from this logger. */
-  context?: LogContext;
-};
-
-/** Options accepted by `finish` and `fail` on a span — excludes fields set automatically. */
-export type SpanCloseOptions = Omit<LogEventOptions, 'correlationId' | 'durationMs'>;
-
-/**
- * Public interface exposed by every logger instance created via {@link createLogger}.
- *
- * All log methods return the emitted {@link LogEntry} so callers can inspect or
- * forward it if needed. `startSpan` returns a span handle whose `finish`/`fail`
- * methods automatically measure elapsed time.
- */
-export type LoggerApi = {
-  debug: (event: string, options?: LogEventOptions) => LogEntry;
-  info: (event: string, options?: LogEventOptions) => LogEntry;
-  warn: (event: string, options?: LogEventOptions) => LogEntry;
-  error: (event: string, options?: LogEventOptions) => LogEntry;
-  /** Creates a child logger whose scope is `parent.child` and whose tags/context are merged. */
-  child: (config: Omit<LoggerConfig, 'context'> & { context?: LogContext }) => LoggerApi;
-  /**
-   * Starts a timed operation span. Emits a `.started` debug entry immediately
-   * and returns a handle to emit `.finished` (info) or `.failed` (error) on close.
-   */
-  startSpan: (
-    event: string,
-    options?: Omit<LogEventOptions, 'durationMs'>,
-  ) => {
-    correlationId: string;
-    finish: (options?: SpanCloseOptions) => LogEntry;
-    fail: (error: unknown, options?: SpanCloseOptions) => LogEntry;
-  };
-};
-
-/**
- * Browser devtools API exposed on `window.__APP_LOGGER__` in non-test environments.
- * Allows reading, clearing, and subscribing to log entries from the browser console.
- */
-type LoggerDevtoolsApi = {
-  /** Empties the in-memory log buffer. */
-  clear: () => void;
-  /** Returns a shallow copy of the current log buffer. */
-  getEntries: () => LogEntry[];
-  /**
-   * Registers a listener that is called for every future log entry.
-   * @returns An unsubscribe function that removes the listener.
-   */
-  subscribe: (listener: LogListener) => () => void;
-};
+export type {
+  LogContext,
+  LogEntry,
+  LogEventOptions,
+  LogLevel,
+  LogListener,
+  LoggerApi,
+  LoggerConfig,
+  LoggerDevtoolsApi,
+  SerializedError,
+} from '@/types/logger.types';
 
 /** Maximum number of entries kept in {@link LOG_BUFFER} before the oldest is evicted. */
 const MAX_BUFFER_SIZE = 200;
@@ -90,7 +35,7 @@ let logSequence = 0;
 
 /**
  * Returns a high-resolution timestamp in milliseconds.
- * Uses `performance.now()` when available (browser / Node ≥ 16) for sub-ms
+ * Uses `performance.now()` when available (browser / Node >= 16) for sub-ms
  * precision; falls back to `Date.now()` in environments that lack the
  * Performance API (e.g. some test runners).
  */
@@ -146,7 +91,7 @@ const serializeError = (error: unknown): SerializedError | undefined => {
 
 /**
  * Merges multiple tag arrays into a single deduplicated array while preserving
- * the original order of first occurrence. Empty/undefined sets are skipped.
+ * the original order of first occurrence. Empty or undefined sets are skipped.
  */
 const mergeTags = (...tagSets: Array<string[] | undefined>): string[] => {
   return [...new Set(tagSets.flatMap((tags) => tags ?? []).filter(Boolean))];
@@ -163,9 +108,17 @@ const shouldForwardToTerminal = (): boolean => {
 };
 
 /**
+ * Exposes the browser-side log inspector only in development.
+ */
+const shouldExposeDevtoolsApi = (): boolean => {
+  if (typeof import.meta.env === 'undefined') return false;
+  return import.meta.env.DEV && import.meta.env.MODE !== 'test';
+};
+
+/**
  * Fire-and-forgets a log entry to the local Vite dev-server endpoint
  * (`POST /api/dev-log`) so that structured logs appear in the terminal
- * alongside Vite's output. Failures are silently swallowed — the dev server
+ * alongside Vite's output. Failures are silently swallowed - the dev server
  * may not have the endpoint, and we never want logging to break the app.
  */
 const forwardEntryToTerminal = (entry: LogEntry): void => {
@@ -173,13 +126,13 @@ const forwardEntryToTerminal = (entry: LogEntry): void => {
     return;
   }
 
-  // Fire-and-forget — intentionally not awaited
+  // Fire-and-forget - intentionally not awaited
   fetch('/api/dev-log', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(entry),
   }).catch(() => {
-    // Silently ignore — dev server may not be reachable
+    // Silently ignore - dev server may not be reachable
   });
 };
 
@@ -302,6 +255,7 @@ const createLoggerApi = (config: LoggerConfig): LoggerApi => {
   };
 };
 
+/** In-browser devtools bridge used to inspect recent log entries during development. */
 const devtoolsApi: LoggerDevtoolsApi = {
   clear: () => {
     LOG_BUFFER.length = 0;
@@ -316,13 +270,7 @@ const devtoolsApi: LoggerDevtoolsApi = {
   },
 };
 
-declare global {
-  interface Window {
-    __APP_LOGGER__?: LoggerDevtoolsApi;
-  }
-}
-
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && shouldExposeDevtoolsApi()) {
   window.__APP_LOGGER__ = devtoolsApi;
 }
 
@@ -347,7 +295,7 @@ export const createLogger = (config: LoggerConfig): LoggerApi => {
  * call. Useful for piping logs to a UI panel or test spy.
  *
  * @param listener - Callback receiving each {@link LogEntry}.
- * @returns An unsubscribe function — call it to stop receiving entries.
+ * @returns An unsubscribe function - call it to stop receiving entries.
  */
 export const subscribeToLogs = (listener: LogListener): (() => void) => {
   return devtoolsApi.subscribe(listener);

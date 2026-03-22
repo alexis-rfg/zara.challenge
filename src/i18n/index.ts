@@ -9,13 +9,6 @@ const resources = {
   es: { translation: es },
 } as const;
 
-declare module 'i18next' {
-  interface CustomTypeOptions {
-    defaultNS: 'translation';
-    resources: (typeof resources)['en'];
-  }
-}
-
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
