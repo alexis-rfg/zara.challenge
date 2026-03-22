@@ -28,11 +28,19 @@
     "verify": "tsc --noEmit && eslint . --max-warnings 0 && vitest run",
     "typedoc": "typedoc",
     "typedoc:watch": "typedoc --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "type-check:e2e": "tsc -p tsconfig.e2e.json --noEmit",
     "prepare": "husky"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,css,scss,json,md}": "prettier --write",
-    "src/**/*.{ts,tsx}": ["eslint --fix", "vitest related --run"]
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "vitest related --run"
+    ]
   },
   "dependencies": {
     "react": "catalog:",
@@ -40,7 +48,9 @@
     "react-router-dom": "catalog:"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@eslint/js": "catalog:",
+    "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
