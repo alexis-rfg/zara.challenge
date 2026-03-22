@@ -1,0 +1,11 @@
+@use "@/styles/variables" as *;
+
+.not-found {
+  text-align: center;
+  padding: $spacing-2xl;
+
+  &__link {
+    color: $color-primary;
+    text-decoration: underline;
+  }
+}

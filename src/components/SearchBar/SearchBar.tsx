@@ -1,15 +1,31 @@
 import { useState } from 'react';
 import './SearchBar.scss';
 
+/** Props for the {@link SearchBar} component. */
 type SearchBarProps = {
-  /** Called when the user submits (Enter) or clears the search */
+  /** Called when the user submits via Enter or clears the input with the ✕ button. */
   onSearch: (term: string) => void;
-  /** The term that is currently active in the API / results (used for the results label) */
+  /** The term currently active in the API / driving the displayed results. Used to render the results label (e.g. `3 results for "iphone"`). */
   committedSearch: string;
+  /** Number of products in the current result set, displayed inside the search bar. */
   resultCount: number;
+  /** When `true`, shows a "Searching…" status message instead of the result count. */
   loading?: boolean;
 };
 
+/**
+ * Search form with a results-count indicator.
+ *
+ * The component keeps `inputValue` as local state so keystrokes do not cause
+ * upstream re-renders. A fetch is only triggered when the user presses **Enter**
+ * (form submit) or clicks the **✕** clear button, at which point `onSearch` is
+ * called with the trimmed (or empty) value.
+ *
+ * The results label is driven by `committedSearch` and `resultCount` — the
+ * values that reflect what is currently shown in the grid — not the live input.
+ *
+ * @param props - Component props.
+ */
 export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: SearchBarProps) => {
   const [inputValue, setInputValue] = useState('');
 

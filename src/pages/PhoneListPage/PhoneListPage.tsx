@@ -6,6 +6,28 @@ import { ColorFilter } from '@/components/ColorFilter/ColorFilter';
 import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import './PhoneListPage.scss';
 
+/**
+ * Home page — displays the mobile phone catalog.
+ *
+ * ### Layout
+ * - A sticky header containing {@link SearchBar} (desktop / all sizes) and
+ *   {@link ColorFilter} (mobile-only).
+ * - A CSS Grid of {@link PhoneCard} items.
+ *
+ * ### Data flow
+ * - {@link useProducts} owns the API fetch lifecycle. It exposes `submitSearch`
+ *   which `SearchBar` calls on Enter / clear; only then is a network request fired.
+ * - {@link useColorFilter} manages a client-side colour filter that is applied
+ *   on top of the API results via `filterProducts`.
+ * - `displayProducts` is a memoised derived value so the filter is only
+ *   re-computed when either `products` or the active colour changes.
+ *
+ * ### States handled
+ * - **Loading** — spinner + "Loading products…" message.
+ * - **Error** — error banner with a reload button.
+ * - **Empty results** — "No products found" message.
+ * - **Populated** — CSS Grid of cards.
+ */
 export const PhoneListPage = () => {
   const { products, loading, error, committedSearch, submitSearch, resultCount } = useProducts();
   const colorFilter = useColorFilter();

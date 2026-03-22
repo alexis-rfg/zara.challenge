@@ -4,7 +4,7 @@ import {
   getScrollProgress,
   getScrollbarTrackOffset,
   hasHorizontalOverflow,
-} from './carouselScroll';
+} from '../carouselScroll';
 
 describe('carouselScroll utilities - Unit Tests', () => {
   describe('hasHorizontalOverflow', () => {

@@ -29,6 +29,9 @@ typedoc/
 # Requirements documentation
 requirements/
 
+# Test coverage
+coverage/
+
 # Agents
 .agents/*
 .claude/*

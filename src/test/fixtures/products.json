@@ -1,0 +1,23 @@
+{
+  "galaxyS24": {
+    "id": "SMG-S24",
+    "brand": "Samsung",
+    "name": "Galaxy S24",
+    "basePrice": 799,
+    "imageUrl": "/img/s24.webp"
+  },
+  "iPhone15": {
+    "id": "APL-IP15",
+    "brand": "Apple",
+    "name": "iPhone 15",
+    "basePrice": 899,
+    "imageUrl": "/img/ip15.webp"
+  },
+  "pixel8": {
+    "id": "GGL-P8",
+    "brand": "Google",
+    "name": "Pixel 8",
+    "basePrice": 699,
+    "imageUrl": "/img/p8.webp"
+  }
+}

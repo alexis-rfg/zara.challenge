@@ -3,6 +3,19 @@ import { useCart } from '@/hooks/useCart';
 import { BackButton } from '@/components/BackButton/BackButton';
 import './Navbar.scss';
 
+/**
+ * Site-wide navigation bar rendered on every page via {@link Layout}.
+ *
+ * ### Behaviour
+ * - Always shows the MBST logo (no link — clicking the logo does not navigate).
+ * - Shows the cart icon with an item count badge on all pages **except** `/cart`
+ *   (hiding it on the cart page avoids a redundant self-link).
+ * - Shows a {@link BackButton} sub-bar beneath the main bar on product detail
+ *   pages (`/products/:id`).
+ *
+ * Cart item count is read from {@link useCart} which is backed by `localStorage`,
+ * so the count persists across page reloads.
+ */
 export const Navbar = () => {
   const { totalItems } = useCart();
   const { pathname } = useLocation();

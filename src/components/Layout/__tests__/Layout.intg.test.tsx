@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { Layout } from './Layout';
+import { MemoryRouter } from 'react-router-dom';
+import { Layout } from '../Layout';
 import { CartProvider } from '@/context/CartContext';
 
 // Mock localStorage utilities
@@ -13,11 +13,11 @@ vi.mock('@/utils/localStorage', () => ({
 
 const renderLayout = () => {
   return render(
-    <BrowserRouter>
+    <MemoryRouter>
       <CartProvider>
         <Layout />
       </CartProvider>
-    </BrowserRouter>,
+    </MemoryRouter>,
   );
 };
 

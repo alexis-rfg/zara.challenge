@@ -8,12 +8,21 @@ import { StorageSelector } from '@/components/StorageSelector/StorageSelector';
 import { SimilarProducts } from '@/components/SimilarProducts/SimilarProducts';
 import './PhoneDetailPage.scss';
 
+/**
+ * Top-level product attributes rendered in the specifications table
+ * before the technical spec rows. Keys map directly to {@link ProductDetail} fields.
+ */
 const SPEC_ROWS = [
   { label: 'Brand', key: 'brand' as const },
   { label: 'Name', key: 'name' as const },
   { label: 'Description', key: 'description' as const },
 ] as const;
 
+/**
+ * Technical specification rows rendered in the specifications table.
+ * Keys map to {@link ProductSpecs} fields. The order here determines
+ * the display order in the UI.
+ */
 const TECH_SPEC_ROWS = [
   { label: 'Screen', key: 'screen' as const },
   { label: 'Resolution', key: 'resolution' as const },
@@ -25,6 +34,32 @@ const TECH_SPEC_ROWS = [
   { label: 'Screen Refresh Rate', key: 'screenRefreshRate' as const },
 ] as const;
 
+/**
+ * Product detail page — rendered at `/products/:id`.
+ *
+ * ### Sections
+ * 1. **Hero** — large product image (updates on colour selection) + name, price, selectors,
+ *    and the "Añadir" CTA button.
+ * 2. **Specifications** — definition list with brand/name/description plus all 8 technical
+ *    spec fields from the API.
+ * 3. **Similar items** — horizontal carousel via {@link SimilarProducts}.
+ *
+ * ### Selection model
+ * - `selectedColorIndex` and `selectedStorageIndex` are independent pieces of local state.
+ * - Selecting one auto-defaults the other to index `0` so the button can become enabled
+ *   with a single interaction.
+ * - Selections are reset to `null` whenever `id` changes (navigating to a similar product).
+ *
+ * ### Add-to-cart
+ * - The CTA button is `disabled` + `aria-disabled` until **both** selections are made.
+ * - On click, the resolved colour + storage values (image URL, colour name, capacity, price)
+ *   are committed to cart context and the user is navigated to `/cart`.
+ *
+ * ### States handled
+ * - **Loading** — spinner.
+ * - **Error / missing product** — error message with "Back to Home" button.
+ * - **Loaded** — full page content.
+ */
 export const PhoneDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -34,11 +69,19 @@ export const PhoneDetailPage = () => {
   const [selectedColorIndex, setSelectedColorIndex] = useState<number | null>(null);
   const [selectedStorageIndex, setSelectedStorageIndex] = useState<number | null>(null);
 
+  /**
+   * Selects a colour by index and auto-defaults storage to 0 if not yet chosen,
+   * so one interaction is enough to enable the "Añadir" button.
+   */
   const handleColorSelect = (index: number) => {
     setSelectedColorIndex(index);
     if (selectedStorageIndex === null) setSelectedStorageIndex(0);
   };
 
+  /**
+   * Selects a storage tier by index and auto-defaults colour to 0 if not yet chosen,
+   * so one interaction is enough to enable the "Añadir" button.
+   */
   const handleStorageSelect = (index: number) => {
     setSelectedStorageIndex(index);
     if (selectedColorIndex === null) setSelectedColorIndex(0);
@@ -95,6 +138,12 @@ export const PhoneDetailPage = () => {
     minimumFractionDigits: 0,
   }).format(currentPrice);
 
+  /**
+   * Resolves the selected colour and storage options, adds the item to the cart
+   * with all values captured at add-time (image URL, colour name, capacity, price),
+   * then navigates to `/cart`. The guard at the top is a safety check — the button
+   * is already `disabled` when `canAddToCart` is false.
+   */
   const handleAddToCart = () => {
     if (!canAddToCart || selectedColorIndex === null || selectedStorageIndex === null) return;
     const selectedColor = product.colorOptions[selectedColorIndex];

@@ -1,0 +1,64 @@
+{
+  "iPhone15": {
+    "id": "APL-IP15",
+    "brand": "Apple",
+    "name": "iPhone 15",
+    "description": "The latest iPhone.",
+    "basePrice": 899,
+    "rating": 4.8,
+    "specs": {
+      "screen": "6.1\" Super Retina XDR",
+      "resolution": "2556 x 1179 pixels",
+      "processor": "A16 Bionic",
+      "mainCamera": "48 MP",
+      "selfieCamera": "12 MP",
+      "battery": "3877 mAh",
+      "os": "iOS 17",
+      "screenRefreshRate": "60 Hz"
+    },
+    "colorOptions": [
+      { "name": "Black", "hexCode": "#1C1C1E", "imageUrl": "/img/ip15-black.webp" },
+      { "name": "Blue", "hexCode": "#5E6B8B", "imageUrl": "/img/ip15-blue.webp" }
+    ],
+    "storageOptions": [
+      { "capacity": "128 GB", "price": 899 },
+      { "capacity": "256 GB", "price": 999 }
+    ],
+    "similarProducts": [
+      {
+        "id": "SMG-S24",
+        "brand": "Samsung",
+        "name": "Galaxy S24",
+        "basePrice": 799,
+        "imageUrl": "/img/s24.webp"
+      }
+    ]
+  },
+  "galaxyS24": {
+    "id": "SMG-S24",
+    "brand": "Samsung",
+    "name": "Galaxy S24",
+    "description": "The Galaxy S24.",
+    "basePrice": 799,
+    "rating": 4.6,
+    "specs": {
+      "screen": "6.2\" Dynamic AMOLED 2X",
+      "resolution": "2340 x 1080 pixels",
+      "processor": "Snapdragon 8 Gen 3",
+      "mainCamera": "50 MP",
+      "selfieCamera": "12 MP",
+      "battery": "4000 mAh",
+      "os": "Android 14",
+      "screenRefreshRate": "120 Hz"
+    },
+    "colorOptions": [
+      { "name": "Black", "hexCode": "#000000", "imageUrl": "/img/s24-black.webp" },
+      { "name": "White", "hexCode": "#FFFFFF", "imageUrl": "/img/s24-white.webp" }
+    ],
+    "storageOptions": [
+      { "capacity": "128 GB", "price": 799 },
+      { "capacity": "256 GB", "price": 899 }
+    ],
+    "similarProducts": []
+  }
+}

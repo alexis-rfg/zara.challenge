@@ -10,6 +10,20 @@ const cartLogger = createLogger({
   tags: ['cart', 'state'],
 });
 
+/**
+ * Pure reducer that computes the next cart state from the current state and a dispatched action.
+ *
+ * - `ADD_ITEM` — appends a new item. Duplicate combinations (same id + color + storage) are
+ *   intentionally allowed; each is an independent line item.
+ * - `REMOVE_ITEM` — removes the **first** matching item by `id + colorName + storageCapacity`.
+ *   Uses `findIndex` so only one unit is removed per click even if the same config appears twice.
+ * - `CLEAR_CART` — empties the cart entirely.
+ * - `LOAD_CART` — replaces the full item list (used on initial hydration from localStorage).
+ *
+ * @param state - Current cart state.
+ * @param action - Dispatched cart action.
+ * @returns Next cart state (a new object reference on every mutation).
+ */
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case CartActionType.ADD_ITEM:
@@ -48,6 +62,18 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
   }
 };
 
+/**
+ * Provides cart state and actions to the component tree via {@link CartContext}.
+ *
+ * ### Responsibilities
+ * - Hydrates cart from `localStorage` on mount.
+ * - Persists cart to `localStorage` on every state change.
+ * - Exposes stable `addItem`, `removeItem`, and `clearCart` callbacks (memoised
+ *   with `useCallback`) to prevent unnecessary re-renders in consumers.
+ * - Derives `totalItems` and `totalPrice` from the item list.
+ *
+ * @param children - React node(s) that will have access to the cart context.
+ */
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
 

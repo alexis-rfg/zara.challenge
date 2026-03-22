@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
-import { PhoneListPage } from './PhoneListPage';
+import { MemoryRouter } from 'react-router-dom';
+import { PhoneListPage } from '../PhoneListPage';
 import * as useProductsHook from '@/hooks/useProducts';
 import type { ProductSummary } from '@/types/product.types';
 
@@ -24,7 +24,7 @@ const mockProducts: ProductSummary[] = [
 ];
 
 const renderWithRouter = (ui: React.ReactElement) => {
-  return render(<BrowserRouter>{ui}</BrowserRouter>);
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
 };
 
 const mockHookBase = {

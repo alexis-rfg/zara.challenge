@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { getCart, saveCart, clearCart } from './localStorage';
-import { clearLogEntries, getLogEntries } from './logger';
+import { getCart, saveCart, clearCart } from '../localStorage';
+import { clearLogEntries, getLogEntries } from '../logger';
 import type { CartItem } from '@/types/cart.types';
 
 describe('localStorage utilities - Unit Tests', () => {
