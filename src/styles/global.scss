@@ -17,7 +17,7 @@ body {
   font-family: $font-family;
   color: $color-text;
   background-color: $color-background;
-  line-height: 1.5;
+  line-height: $line-height-root;
 }
 
 button {
@@ -25,7 +25,7 @@ button {
   cursor: pointer;
 
   &:disabled {
-    cursor: not-allowed;
+    cursor: cursor;
   }
 }
 
@@ -42,10 +42,10 @@ a {
 // Visually hidden — accessible to screen readers, hidden from view
 .sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: $visually-hidden-size;
+  height: $visually-hidden-size;
   padding: 0;
-  margin: -1px;
+  margin: $visually-hidden-offset;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -55,6 +55,6 @@ a {
 // ─── Shared animations ────────────────────────────────────────────────────────
 @keyframes spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate($rotation-full);
   }
 }

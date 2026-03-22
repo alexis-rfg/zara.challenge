@@ -22,7 +22,7 @@ describe('localStorage utilities - Unit Tests', () => {
           id: '1',
           name: 'iPhone 15',
           brand: 'Apple',
-          imageUrl: 'test.jpg',
+          imageUrl: 'http://example.com/test.jpg',
           colorName: 'Black',
           storageCapacity: '128GB',
           price: 999,
@@ -32,7 +32,12 @@ describe('localStorage utilities - Unit Tests', () => {
       localStorage.setItem('zara-cart', JSON.stringify(mockItems));
 
       const result = getCart();
-      expect(result).toEqual(mockItems);
+      expect(result).toEqual([
+        {
+          ...mockItems[0],
+          imageUrl: 'https://example.com/test.jpg',
+        },
+      ]);
     });
 
     it('should return empty array when localStorage data is corrupted', () => {
@@ -58,7 +63,7 @@ describe('localStorage utilities - Unit Tests', () => {
           id: '1',
           name: 'iPhone 15',
           brand: 'Apple',
-          imageUrl: 'test.jpg',
+          imageUrl: 'http://example.com/test.jpg',
           colorName: 'Black',
           storageCapacity: '128GB',
           price: 999,
@@ -68,7 +73,14 @@ describe('localStorage utilities - Unit Tests', () => {
       saveCart(mockItems);
 
       const stored = localStorage.getItem('zara-cart');
-      expect(stored).toBe(JSON.stringify(mockItems));
+      expect(stored).toBe(
+        JSON.stringify([
+          {
+            ...mockItems[0],
+            imageUrl: 'https://example.com/test.jpg',
+          },
+        ]),
+      );
     });
 
     it('should handle errors when saving fails', () => {
@@ -86,6 +98,34 @@ describe('localStorage utilities - Unit Tests', () => {
           scope: 'storage.cart',
           event: 'write_failed',
           tags: ['storage', 'cart', 'save', 'error'],
+        }),
+      );
+    });
+
+    it('should discard invalid cart items with unsafe image URLs', () => {
+      localStorage.setItem(
+        'zara-cart',
+        JSON.stringify([
+          {
+            id: '1',
+            name: 'iPhone 15',
+            brand: 'Apple',
+            imageUrl: 'javascript:alert(1)',
+            colorName: 'Black',
+            storageCapacity: '128GB',
+            price: 999,
+          },
+        ]),
+      );
+
+      const result = getCart();
+
+      expect(result).toEqual([]);
+      expect(getLogEntries()).toContainEqual(
+        expect.objectContaining({
+          scope: 'storage.cart',
+          event: 'read_invalid_item',
+          tags: ['storage', 'cart', 'load', 'validation'],
         }),
       );
     });

@@ -1,35 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { ColorOption } from '@/types/product.types';
+import type { ColorSelectorProps } from '@/types/components.types';
 import './ColorSelector.scss';
 
 /**
- * Props for the ColorSelector component.
- */
-export type ColorSelectorProps = {
-  /** Array of available color options */
-  colors: ColorOption[];
-  /** Index of the currently selected color, or null if none selected */
-  selectedIndex: number | null;
-  /** Callback fired when a color is selected */
-  onSelect: (index: number) => void;
-};
-
-/**
  * Color selector component with visual swatches and hover preview.
- * Displays color options as clickable swatches with the selected/hovered color name below.
  *
- * @param props - Component props
- * @returns A color selection interface with swatches and name display
- *
- * @example
- * ```tsx
- * <ColorSelector
- *   colors={product.colorOptions}
- *   selectedIndex={selectedColorIndex}
- *   onSelect={setSelectedColorIndex}
- * />
- * ```
+ * @param props - Component props.
+ * @returns Color selection interface with swatches and name display.
  */
 export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelectorProps) => {
   const { t } = useTranslation();
@@ -41,6 +19,16 @@ export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelector
       : selectedIndex !== null
         ? (colors[selectedIndex]?.name ?? '')
         : '';
+
+  /**
+   * Returns the CSS class for a swatch button based on selection state.
+   *
+   * @param index - Color option index.
+   * @returns Button class name with selected modifier when active.
+   */
+  const getOptionClassName = (index: number): string => {
+    return `color-selector__option${selectedIndex === index ? ' color-selector__option--selected' : ''}`;
+  };
 
   return (
     <div className="color-selector">
@@ -57,7 +45,7 @@ export const ColorSelector = ({ colors, selectedIndex, onSelect }: ColorSelector
             role="radio"
             aria-checked={selectedIndex === index}
             aria-label={color.name}
-            className={`color-selector__option${selectedIndex === index ? ' color-selector__option--selected' : ''}`}
+            className={getOptionClassName(index)}
             onClick={() => onSelect(index)}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}

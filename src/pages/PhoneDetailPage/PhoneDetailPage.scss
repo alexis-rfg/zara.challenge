@@ -13,11 +13,11 @@
     align-items: center;
     max-width: $max-width;
     margin: 0 auto;
-    padding: 6.875rem $padding-horizontal 0;
-    gap: 10.625rem;
-    min-height: 39.375rem;
+    padding: $detail-hero-padding-top-desktop $padding-horizontal 0;
+    gap: $detail-hero-gap-desktop;
+    min-height: $detail-hero-min-height-desktop;
 
-    // Prevent overflow on viewports between 1024px and 1400px
+    // Prevent overflow on wide viewports before the tablet layout takes over.
     @media (max-width: $breakpoint-wide) {
       gap: $spacing-xl;
       padding-left: $spacing-xl;
@@ -26,8 +26,9 @@
 
     // Tablet: keep horizontal layout like desktop
     @media (max-width: $breakpoint-tablet) {
-      padding: $spacing-xl $padding-horizontal-tablet 0;
-      gap: $spacing-xl;
+      padding: $detail-hero-padding-top-tablet $padding-horizontal-tablet 0;
+      gap: $detail-hero-gap-tablet;
+      min-height: $detail-hero-min-height-tablet;
     }
 
     // Mobile: switch to vertical layout
@@ -36,7 +37,7 @@
       flex-direction: column;
       align-items: flex-start;
       min-height: auto;
-      gap: 2.5rem; // 40px gap between image and product info (Figma mobile spec)
+      gap: $detail-hero-gap-mobile;
     }
   }
 
@@ -44,19 +45,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 31.875rem; // 510px (Figma spec)
-    height: 39.375rem; // 630px (Figma spec)
+    width: $detail-image-width-desktop;
+    height: $detail-image-height-desktop;
     flex-shrink: 0;
 
     @media (max-width: $breakpoint-tablet) {
-      width: 50%; // flexible width in tablet horizontal layout
-      height: 26rem;
-      flex-shrink: 1;
+      width: $detail-image-width-tablet;
+      height: $detail-image-height-tablet;
+      flex-shrink: 0;
     }
 
     @media (max-width: $breakpoint-mobile) {
       width: 100%;
-      height: 18.75rem;
+      height: $detail-image-height-mobile;
     }
   }
 
@@ -69,18 +70,19 @@
   &__product-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 4rem;
-    width: 23.75rem; // 380px (Figma spec)
-    min-height: 39.375rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: $detail-product-info-gap-desktop;
+    width: $detail-product-info-width-desktop;
+    min-height: $detail-product-info-min-height-desktop;
     flex-shrink: 0;
     margin-top: 0;
 
     @media (max-width: $breakpoint-tablet) {
-      width: 50%; // flexible width in tablet horizontal layout
-      gap: 2.5rem;
-      min-height: auto;
-      flex-shrink: 1;
+      width: $detail-product-info-width-tablet;
+      gap: $detail-product-info-gap-compact;
+      min-height: $detail-product-info-min-height-tablet;
+      flex-shrink: 0;
       margin-top: 0;
     }
 
@@ -94,39 +96,56 @@
   &__title-price {
     display: flex;
     flex-direction: column;
-    gap: 0.6875rem; // 11px (Figma spec)
+    align-items: flex-start;
+    gap: $detail-title-gap;
+    width: 100%;
+    text-align: left;
   }
 
   &__title {
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-xl;
-    line-height: 100%;
+    line-height: $detail-title-line-height-desktop;
     text-transform: uppercase;
     color: $color-text;
     margin: 0;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: $font-size-heading;
+      line-height: $line-height-lg;
+    }
   }
 
   &__price {
     font-family: $font-family;
     font-weight: $font-weight-light;
     font-size: $font-size-heading;
-    line-height: $font-size-heading;
+    line-height: $line-height-lg;
+    text-transform: capitalize;
     color: $color-text;
     margin: 0;
 
-    &::first-letter {
-      text-transform: uppercase;
+    @media (max-width: $breakpoint-tablet) {
+      font-size: $font-size-sm;
+      line-height: $line-height-label;
     }
   }
 
   &__selectors {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px (Figma spec)
+    align-items: flex-start;
+    gap: $detail-selectors-gap-desktop;
+    width: min(100%, #{$detail-selectors-max-width});
+
+    @media (max-width: $breakpoint-tablet) {
+      gap: $detail-selectors-gap-compact;
+    }
 
     @media (max-width: $breakpoint-mobile) {
-      gap: $spacing-xl; // 32px gap between selectors on mobile (Figma mobile spec)
+      gap: $detail-selectors-gap-compact;
+      width: 100%;
     }
   }
 
@@ -135,9 +154,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem $spacing-xl; // 20px 32px (Figma spec)
-    width: 100%;
-    height: $btn-height;
+    padding: 0 $spacing-xl;
+    width: $detail-add-btn-width-desktop;
+    height: $detail-add-btn-height-desktop;
     border: none;
     cursor: default;
     font-family: $font-family;
@@ -149,6 +168,15 @@
     transition:
       background-color $transition-fast,
       color $transition-fast;
+
+    @media (max-width: $breakpoint-tablet) {
+      width: $detail-add-btn-width-compact;
+      height: $detail-add-btn-height-compact;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+    }
 
     // Disabled / not ready state
     background: $color-btn-disabled-bg;
@@ -174,17 +202,17 @@
   &__specs {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem; // 40px (Figma spec)
+    gap: $spacing-page-section;
     max-width: $max-width;
     margin: 0 auto;
-    padding: 9.625rem $padding-horizontal; // 154px (Figma spec)
+    padding: $detail-specs-padding-top-desktop $padding-horizontal;
 
     @media (max-width: $breakpoint-tablet) {
-      padding: 5.5rem $padding-horizontal-tablet;
+      padding: $detail-specs-padding-y-tablet $padding-horizontal-tablet;
     }
 
     @media (max-width: $breakpoint-mobile) {
-      padding: 5rem $padding-horizontal-mobile;
+      padding: $similar-products-padding-bottom-mobile $padding-horizontal-mobile;
     }
   }
 
@@ -202,6 +230,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    width: 100%;
     margin: 0;
     padding: 0;
   }
@@ -212,7 +241,7 @@
     flex-direction: row;
     align-items: flex-start;
     padding: $spacing-md 0;
-    gap: 3rem;
+    gap: $spacing-2xl;
     width: 100%;
     border-bottom: $border-width-hairline solid $color-primary;
 
@@ -227,7 +256,7 @@
   }
 
   &__spec-label {
-    width: 18.75rem; // 300px (Figma spec)
+    width: $detail-spec-label-width;
     flex-shrink: 0;
     font-family: $font-family;
     font-weight: $font-weight-light;
@@ -262,7 +291,7 @@
     padding: $spacing-2xl $padding-horizontal;
     gap: $spacing-md;
     text-align: center;
-    min-height: 20rem;
+    min-height: $detail-loading-min-height;
 
     p {
       font-family: $font-family;
@@ -303,8 +332,62 @@
     height: $spinner-size;
     border: $spinner-border solid $color-border;
     border-top-color: $color-primary;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    border-radius: $border-radius-full;
+    animation: spin $animation-spin;
+  }
+
+  .similar-products {
+    @media (max-width: $breakpoint-tablet) {
+      padding-bottom: $similar-products-padding-bottom-mobile;
+
+      &__carousel-wrapper {
+        width: 100%;
+        height: $similar-products-card-size-compact;
+        margin-left: 0;
+      }
+
+      &__carousel {
+        &::before,
+        &::after {
+          content: none;
+        }
+
+        .phone-card {
+          width: $similar-products-card-size-compact;
+          height: $similar-products-card-size-compact;
+        }
+      }
+
+      &__scrollbar-track {
+        width: $similar-products-scrollbar-track-width-compact;
+      }
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      &__carousel-wrapper {
+        width: 100dvw;
+        height: $card-size;
+        margin-left: calc(var(--similar-products-viewport-inset) * -1);
+      }
+
+      &__carousel {
+        &::before,
+        &::after {
+          content: "";
+          flex: 0 0 var(--similar-products-viewport-inset);
+          height: 100%;
+        }
+
+        .phone-card {
+          width: $card-size;
+          height: $card-size;
+        }
+      }
+
+      &__scrollbar-track {
+        width: $similar-products-scrollbar-track-width;
+      }
+    }
   }
 }
 // @keyframes spin is defined in global.scss

@@ -108,7 +108,10 @@ describe('SearchBar', () => {
   it('has proper accessibility attributes', () => {
     render(<SearchBar {...defaultProps} />);
 
-    expect(screen.getByLabelText('Search products')).toBeInTheDocument();
+    const input = screen.getByLabelText('Search products');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('name', 'search');
+    expect(input).toHaveAttribute('id');
 
     const resultsRegion = screen.getByRole('status');
     expect(resultsRegion).toHaveAttribute('aria-live', 'polite');

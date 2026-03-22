@@ -14,16 +14,18 @@
 //   the image immediately to avoid motion-triggered discomfort.
 // ============================================================================
 
+@use "@/styles/variables" as *;
+
 .lazy-image {
   opacity: 0;
-  transition: opacity 400ms ease;
+  transition: opacity $transition-medium;
 
   &--loaded {
     opacity: 1;
   }
 
   &--errored {
-    opacity: 0.3;
+    opacity: $opacity-image-error;
   }
 }
 

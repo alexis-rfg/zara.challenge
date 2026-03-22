@@ -193,4 +193,30 @@ describe('useColorFilter', () => {
 
     expect(result.current.availableColors).toEqual([]);
   });
+
+  it('keeps the palette available when one product detail fails', async () => {
+    vi.mocked(productsApi.getProductById)
+      .mockReset()
+      .mockResolvedValueOnce(productDetailsFixtures.galaxyS24)
+      .mockRejectedValueOnce(new Error('Malformed product detail'));
+
+    const { result } = renderHook(() => useColorFilter());
+
+    act(() => {
+      result.current.open();
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.availableColors).toEqual([
+      {
+        name: productDetailsFixtures.galaxyS24.colorOptions[0]?.name ?? '',
+        hexCode: productDetailsFixtures.galaxyS24.colorOptions[0]?.hexCode ?? '',
+      },
+      {
+        name: productDetailsFixtures.galaxyS24.colorOptions[1]?.name ?? '',
+        hexCode: productDetailsFixtures.galaxyS24.colorOptions[1]?.hexCode ?? '',
+      },
+    ]);
+  });
 });

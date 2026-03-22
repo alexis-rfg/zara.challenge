@@ -28,7 +28,9 @@ describe('Navbar - Unit Tests', () => {
 
     renderNavbar();
 
-    expect(screen.getByAltText('MBST')).toBeInTheDocument();
+    const logo = screen.getByAltText('MBST');
+    expect(logo).toBeInTheDocument();
+    expect(logo.closest('a')).toHaveAttribute('href', '/');
     expect(screen.getByLabelText('Shopping cart with 0 items')).toBeInTheDocument();
   });
 

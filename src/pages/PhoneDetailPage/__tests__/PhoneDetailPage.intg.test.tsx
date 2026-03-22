@@ -151,6 +151,15 @@ describe('PhoneDetailPage', () => {
       expect(screen.getByRole('heading', { name: /iphone 15/i })).toBeInTheDocument();
     });
 
+    it('renders the hero price with EUR suffix and without the euro symbol', () => {
+      renderDetailPage();
+
+      const heroPrice = screen.getByText(/from 899\s*EUR/i);
+      expect(heroPrice).toBeInTheDocument();
+      expect(heroPrice).toHaveClass('phone-detail-page__price');
+      expect(heroPrice).not.toHaveTextContent('€');
+    });
+
     it('renders all 8 technical specs', () => {
       renderDetailPage();
       expect(screen.getByText('6.1" Super Retina XDR')).toBeInTheDocument();

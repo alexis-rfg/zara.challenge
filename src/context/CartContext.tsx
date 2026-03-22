@@ -1,4 +1,10 @@
-import type { CartItem, CartState, CartAction, CartContextType } from '@/types/cart.types';
+import type {
+  CartAction,
+  CartContextType,
+  CartItem,
+  CartProviderProps,
+  CartState,
+} from '@/types/cart.types';
 import { CartActionType } from '@/types/cart.types';
 import { useEffect, useReducer, useMemo, useCallback, useRef } from 'react';
 import { getCart, saveCart } from '@/utils/localStorage';
@@ -74,7 +80,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
  *
  * @param children - React node(s) that will have access to the cart context.
  */
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+export const CartProvider = ({ children }: CartProviderProps) => {
   const [state, dispatch] = useReducer(cartReducer, undefined, () => {
     const savedCart = getCart();
     cartLogger.info('hydrate', {
@@ -107,6 +113,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [state.items]);
 
   // Cart methods
+  /**
+   * Appends a fully configured product variant to the cart.
+   *
+   * @param item - Resolved cart line item to add.
+   */
   const addItem = useCallback((item: CartItem) => {
     cartLogger.info('add_item', {
       tags: ['mutation'],
@@ -120,6 +131,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: CartActionType.ADD_ITEM, payload: item });
   }, []);
 
+  /**
+   * Removes the first matching configured variant from the cart.
+   *
+   * @param id - Product identifier.
+   * @param colorName - Selected color name.
+   * @param storageCapacity - Selected storage capacity.
+   */
   const removeItem = useCallback((id: string, colorName: string, storageCapacity: string) => {
     cartLogger.info('remove_item', {
       tags: ['mutation'],
@@ -135,6 +153,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  /** Removes every line item from the cart. */
   const clearCart = useCallback(() => {
     cartLogger.warn('clear_cart', {
       tags: ['mutation'],

@@ -1,5 +1,6 @@
 import type { ProductDetail, ProductSummary } from '@/types/product.types';
 import { apiClient } from './client';
+import { parseProductDetailResponse, parseProductsResponse } from './productParsers';
 
 /**
  * Removes duplicate products from an array, keeping only the first occurrence
@@ -67,7 +68,8 @@ export const getProducts = async (
 
   const query = queryParams.toString();
   const endpoint = query ? `/products?${query}` : '/products';
-  const products = await apiClient<ProductSummary[]>(endpoint, signal);
+  const rawProducts = await apiClient<unknown>(endpoint, signal);
+  const products = parseProductsResponse(rawProducts);
 
   return dedupeProductsById(products);
 };
@@ -96,7 +98,8 @@ export const getProducts = async (
  * ```
  */
 export const getProductById = async (id: string, signal?: AbortSignal): Promise<ProductDetail> => {
-  const product = await apiClient<ProductDetail>(`/products/${id}`, signal);
+  const rawProduct = await apiClient<unknown>(`/products/${id}`, signal);
+  const product = parseProductDetailResponse(rawProduct);
 
   return {
     ...product,
