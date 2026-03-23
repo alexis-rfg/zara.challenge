@@ -4,6 +4,7 @@ import { createLogger } from '@/utils/logger';
 
 const API_BASE_URL = env().baseUrl;
 const API_KEY = env().apiKey;
+const API_REQUEST_TIMEOUT_MS = 15_000;
 const apiLogger = createLogger({
   scope: 'api.client',
   tags: ['api', 'http'],
@@ -40,7 +41,21 @@ export class ApiError extends Error {
   }
 }
 
-// ─── In-memory response cache ──────────────────────────────────────────────
+/**
+ * Represents a request that exceeded the client-side timeout budget.
+ */
+export class ApiTimeoutError extends Error {
+  constructor(
+    /** Timeout budget in milliseconds. */
+    public timeoutMs: number,
+    message = `API request timed out after ${timeoutMs / 1000} seconds`,
+  ) {
+    super(message);
+    this.name = 'ApiTimeoutError';
+  }
+}
+
+// In-memory response cache
 //
 // Why this exists:
 //   The product catalog API lives on a free Render.com instance with ~500ms
@@ -70,7 +85,57 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
  */
 const responseCache = new Map<string, CacheEntry>();
 
-// ─── API client ───────────────────────────────────────────────────────────
+// ── Prefetch bridge ───────────────────────────────────────────────────────
+// public/prefetch.js starts the initial API call before the JS bundle loads.
+// We store that in-flight promise so apiClient can await it instead of
+// issuing a duplicate network request.
+const pendingPrefetches = new Map<string, Promise<unknown>>();
+
+try {
+  const win = globalThis as unknown as { __PREFETCH__?: { products?: Promise<unknown> } };
+  if (win.__PREFETCH__?.products) {
+    pendingPrefetches.set(`${API_BASE_URL}/products?limit=20`, win.__PREFETCH__.products);
+    delete win.__PREFETCH__;
+  }
+} catch {
+  /* SSR / test environments — ignore */
+}
+
+type RequestSignalState = {
+  signal: AbortSignal;
+  cleanup: () => void;
+  timedOut: () => boolean;
+};
+
+/**
+ * Combines the caller signal with a hard timeout so requests cannot hang forever.
+ */
+const createRequestSignal = (callerSignal?: AbortSignal): RequestSignalState => {
+  const controller = new AbortController();
+  let didTimeout = false;
+
+  const abortFromCaller = () => controller.abort();
+
+  if (callerSignal?.aborted) {
+    controller.abort();
+  } else {
+    callerSignal?.addEventListener('abort', abortFromCaller, { once: true });
+  }
+
+  const timeoutId = globalThis.setTimeout(() => {
+    didTimeout = true;
+    controller.abort();
+  }, API_REQUEST_TIMEOUT_MS);
+
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      globalThis.clearTimeout(timeoutId);
+      callerSignal?.removeEventListener('abort', abortFromCaller);
+    },
+    timedOut: () => didTimeout,
+  };
+};
 
 /**
  * Generic, authenticated HTTP client for the product catalog API.
@@ -79,20 +144,16 @@ const responseCache = new Map<string, CacheEntry>();
  * backend. Responses are cached in memory for {@link CACHE_TTL_MS} ms so that
  * identical URL calls within the same session skip the network entirely.
  *
- * ### Request lifecycle
- * 1. **Cache check** — if a fresh entry exists for the URL, return it immediately.
- * 2. **Fetch** — issue a `GET` with the API key header and the optional
- *    `AbortSignal`.
- * 3. **Error handling** — non-2xx responses throw `ApiError`; network failures
- *    throw a plain `Error`; intentional aborts (StrictMode cleanup, navigation
- *    away) re-throw `DOMException(AbortError)` unchanged so callers can
- *    distinguish them from real failures.
- * 4. **Cache population** — successful responses are stored before returning.
- *
- * ### Why `signal ?? null` and not just `signal`
- * TypeScript's `exactOptionalPropertyTypes` flag narrows `RequestInit.signal`
- * to `AbortSignal | null` — passing `undefined` is a type error. The `?? null`
- * coercion satisfies the type without branching on every call-site.
+ * Request lifecycle:
+ * 1. Cache check - if a fresh entry exists for the URL, return it immediately.
+ * 2. Fetch - issue a `GET` with the API key header, the optional caller
+ *    `AbortSignal`, and a hard client timeout budget.
+ * 3. Error handling - non-2xx responses throw `ApiError`; timeout expiry
+ *    throws `ApiTimeoutError`; network failures throw a plain `Error`;
+ *    intentional aborts (StrictMode cleanup, navigation away) re-throw
+ *    `DOMException(AbortError)` unchanged so callers can distinguish them from
+ *    real failures.
+ * 4. Cache population - successful responses are stored before returning.
  *
  * @template T - Shape of the expected JSON response body.
  * @param endpoint - Path relative to the API base URL (e.g. `'/products?limit=20'`).
@@ -101,8 +162,9 @@ const responseCache = new Map<string, CacheEntry>();
  *   `.name === 'AbortError'`.
  * @returns The parsed JSON body cast to `T`.
  * @throws {ApiError} The server responded with a non-2xx status.
+ * @throws {ApiTimeoutError} The request exceeded the client-side timeout budget.
  * @throws {DOMException} The request was intentionally cancelled via `signal`.
- * @throws {Error} A network-level failure occurred (DNS, timeout, offline).
+ * @throws {Error} A network-level failure occurred (DNS, offline, etc.).
  *
  * @example
  * ```ts
@@ -118,7 +180,7 @@ const responseCache = new Map<string, CacheEntry>();
 export const apiClient = async <T>(endpoint: string, signal?: AbortSignal): Promise<T> => {
   const url = `${API_BASE_URL}${endpoint}`;
 
-  // Return cached response if still fresh — avoids a network round-trip for
+  // Return cached response if still fresh - avoids a network round-trip for
   // repeated calls to the same URL (e.g. navigating back to the home page or
   // React StrictMode's second effect invocation in development).
   const cached = responseCache.get(url);
@@ -126,16 +188,35 @@ export const apiClient = async <T>(endpoint: string, signal?: AbortSignal): Prom
     return cached.data as T;
   }
 
+  // Consume inline prefetch if available — avoids a duplicate network request.
+  const prefetch = pendingPrefetches.get(url);
+  if (prefetch) {
+    pendingPrefetches.delete(url);
+    try {
+      const prefetchData = await prefetch;
+      if (prefetchData) {
+        responseCache.set(url, { data: prefetchData, expiresAt: Date.now() + CACHE_TTL_MS });
+        apiLogger.info('prefetch_consumed', {
+          tags: ['cache', 'prefetch'],
+          context: { endpoint },
+        });
+        return prefetchData as T;
+      }
+    } catch {
+      /* prefetch failed — fall through to normal fetch */
+    }
+  }
+
   const requestSpan = apiLogger.startSpan('request', {
     tags: ['fetch'],
     context: { endpoint, method: 'GET', url },
   });
+  const requestSignal = createRequestSignal(signal);
 
   try {
     const response = await fetch(url, {
       headers: { 'x-api-key': API_KEY },
-      // `signal ?? null` — see JSDoc above for why null instead of undefined.
-      signal: signal ?? null,
+      signal: requestSignal.signal,
     });
 
     if (!response.ok) {
@@ -179,11 +260,26 @@ export const apiClient = async <T>(endpoint: string, signal?: AbortSignal): Prom
     // before the response arrives). Re-throw as-is so hooks can silently ignore
     // it without logging a false-positive error.
     if (error instanceof DOMException && error.name === 'AbortError') {
+      if (requestSignal.timedOut()) {
+        const timeoutError = new ApiTimeoutError(API_REQUEST_TIMEOUT_MS);
+
+        requestSpan.fail(timeoutError, {
+          tags: ['timeout', 'error'],
+          context: {
+            endpoint,
+            method: 'GET',
+            timeoutMs: API_REQUEST_TIMEOUT_MS,
+          },
+        });
+
+        throw timeoutError;
+      }
+
       throw error;
     }
 
-    // ApiError was already constructed and logged above — re-throw without wrapping.
-    if (error instanceof ApiError) {
+    // ApiError and ApiTimeoutError are already classified - re-throw as-is.
+    if (error instanceof ApiError || error instanceof ApiTimeoutError) {
       throw error;
     }
 
@@ -197,5 +293,7 @@ export const apiClient = async <T>(endpoint: string, signal?: AbortSignal): Prom
     });
 
     throw networkError;
+  } finally {
+    requestSignal.cleanup();
   }
 };

@@ -12,6 +12,8 @@ export type SearchBarProps = {
   resultCount: number;
   /** Whether the result set is currently loading. */
   loading?: boolean;
+  /** Whether the search input should be temporarily non-interactive. */
+  disabled?: boolean;
 };
 
 /** Props for the mobile ColorFilter component. */
@@ -60,6 +62,10 @@ export type LazyImageProps = ImgHTMLAttributes<HTMLImageElement> & {
 export type PhoneCardProps = {
   /** Product summary data displayed in the card. */
   product: ProductSummary;
+  /** Heading tag used for the product name to preserve semantic hierarchy. */
+  headingTag?: 'h2' | 'h3';
+  /** Promotes above-the-fold catalog images for faster initial rendering. */
+  eagerImage?: boolean;
 };
 
 /** Props for the SimilarProducts component. */

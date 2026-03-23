@@ -127,6 +127,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    transition: left $transition-scrollbar;
+    transform: translate3d(0, 0, 0);
+    transition: transform $transition-scrollbar;
+    will-change: transform;
   }
 }

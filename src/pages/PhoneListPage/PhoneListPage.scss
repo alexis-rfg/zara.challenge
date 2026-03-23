@@ -77,35 +77,41 @@
     grid-template-columns: repeat($catalog-columns-desktop, minmax(0, 1fr));
 
     // Base: every card gets right + bottom
-    .phone-card {
+    .phone-card,
+    .phone-list-page__skeleton-card {
       border-right: $border-width-hairline solid $color-primary;
       border-bottom: $border-width-hairline solid $color-primary;
     }
 
     // First row (cards 1–5) get top border
-    .phone-card:nth-child(-n + #{$catalog-columns-desktop}) {
+    .phone-card:nth-child(-n + #{$catalog-columns-desktop}),
+    .phone-list-page__skeleton-card:nth-child(-n + #{$catalog-columns-desktop}) {
       border-top: $border-width-hairline solid $color-primary;
     }
 
     // First column (every 5th+1) gets left border
-    .phone-card:nth-child(#{$catalog-columns-desktop}n + 1) {
+    .phone-card:nth-child(#{$catalog-columns-desktop}n + 1),
+    .phone-list-page__skeleton-card:nth-child(#{$catalog-columns-desktop}n + 1) {
       border-left: $border-width-hairline solid $color-primary;
     }
 
     @media (max-width: $breakpoint-tablet) {
       grid-template-columns: repeat($catalog-columns-tablet, minmax(0, 1fr));
 
-      .phone-card:nth-child(n) {
+      .phone-card:nth-child(n),
+      .phone-list-page__skeleton-card:nth-child(n) {
         border: 0;
         border-right: $border-width-hairline solid $color-primary;
         border-bottom: $border-width-hairline solid $color-primary;
       }
 
-      .phone-card:nth-child(-n + #{$catalog-columns-tablet}) {
+      .phone-card:nth-child(-n + #{$catalog-columns-tablet}),
+      .phone-list-page__skeleton-card:nth-child(-n + #{$catalog-columns-tablet}) {
         border-top: $border-width-hairline solid $color-primary;
       }
 
-      .phone-card:nth-child(#{$catalog-columns-tablet}n + 1) {
+      .phone-card:nth-child(#{$catalog-columns-tablet}n + 1),
+      .phone-list-page__skeleton-card:nth-child(#{$catalog-columns-tablet}n + 1) {
         border-left: $border-width-hairline solid $color-primary;
       }
     }
@@ -113,16 +119,75 @@
     @media (max-width: $breakpoint-mobile) {
       grid-template-columns: 1fr;
 
-      .phone-card:nth-child(n) {
+      .phone-card:nth-child(n),
+      .phone-list-page__skeleton-card:nth-child(n) {
         border: 0;
         border-right: $border-width-hairline solid $color-primary;
         border-bottom: $border-width-hairline solid $color-primary;
         border-left: $border-width-hairline solid $color-primary;
       }
 
-      .phone-card:first-child {
+      .phone-card:first-child,
+      .phone-list-page__skeleton-card:first-child {
         border-top: $border-width-hairline solid $color-primary;
       }
+    }
+  }
+
+  &__skeleton-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: $spacing-md;
+    box-sizing: border-box;
+    background: $color-background;
+
+    @media (max-width: $breakpoint-mobile) {
+      aspect-ratio: auto;
+      min-height: 21.5rem;
+    }
+  }
+
+  &__skeleton-media,
+  &__skeleton-line {
+    background: $color-hover-light;
+    border-radius: $border-radius;
+  }
+
+  &__skeleton-media {
+    flex: 1;
+    min-height: 12rem;
+  }
+
+  &__skeleton-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $spacing-sm;
+  }
+
+  &__skeleton-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__skeleton-line {
+    display: block;
+    height: $spacing-sm;
+    width: 100%;
+
+    &--short {
+      max-width: 40%;
+    }
+
+    &--price {
+      width: 30%;
+      flex-shrink: 0;
     }
   }
 

@@ -63,6 +63,13 @@ export class ErrorFactory {
   }
 
   /**
+   * Creates a timeout error.
+   */
+  static timeoutError(originalError?: unknown): AppError {
+    return new AppError(ErrorCode.TIMEOUT, undefined, originalError);
+  }
+
+  /**
    * Creates an API error
    */
   static apiError(originalError?: unknown): AppError {

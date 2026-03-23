@@ -64,7 +64,7 @@ export default defineConfig({
     // Generate source maps for the production build. This allows debugging
     // production issues in browser DevTools without exposing readable source
     // to end users (source maps are separate files only fetched by DevTools).
-    sourcemap: true,
+    sourcemap: 'hidden',
     rollupOptions: {
       output: {
         // Splits bundle into logical groups for better caching and parallel loading

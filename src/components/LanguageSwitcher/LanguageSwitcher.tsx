@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScopedLogger } from '@/hooks/useScopedLogger';
 import type { LanguageCode, LanguageOption } from '@/types/i18n.types';
@@ -20,6 +20,7 @@ export const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownId = useId();
   const languageLogger = useScopedLogger('ui.language-switcher', LANGUAGE_LOGGER_TAGS);
 
   const currentLang = (i18n.language?.slice(0, 2) ?? 'en') as LanguageCode;
@@ -104,7 +105,12 @@ export const LanguageSwitcher = () => {
   };
 
   const dropdown = isOpen ? (
-    <ul className="lang-switcher__dropdown" role="listbox" aria-label={t('nav.selectLanguage')}>
+    <ul
+      id={dropdownId}
+      className="lang-switcher__dropdown"
+      role="listbox"
+      aria-label={t('nav.selectLanguage')}
+    >
       {LANGUAGES.map(({ code, label, name }) => (
         <li key={code} role="option" aria-selected={currentLang === code}>
           <button
@@ -127,6 +133,7 @@ export const LanguageSwitcher = () => {
         className="lang-switcher__toggle"
         onClick={handleToggle}
         aria-haspopup="listbox"
+        aria-controls={isOpen ? dropdownId : undefined}
         aria-expanded={isOpen}
         aria-label={t('nav.languageToggleLabel', { lang: currentLang.toUpperCase() })}
       >
@@ -141,6 +148,7 @@ export const LanguageSwitcher = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
+          focusable="false"
         >
           <circle cx="12" cy="12" r="10" />
           <path d="M2 12h20" />
