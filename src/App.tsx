@@ -1,10 +1,28 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '@/components/Layout/Layout';
 import { CartProvider } from '@/context/CartContext';
-import { CartPage } from '@/pages/CartPage/CartPage';
-import { NotFoundPage } from '@/pages/NotFoundPage/NotFoundPage';
-import { PhoneDetailPage } from '@/pages/PhoneDetailPage/PhoneDetailPage';
 import { PhoneListPage } from '@/pages/PhoneListPage/PhoneListPage';
+
+const CartPage = lazy(async () =>
+  import('@/pages/CartPage/CartPage').then((module) => ({ default: module.CartPage })),
+);
+const NotFoundPage = lazy(async () =>
+  import('@/pages/NotFoundPage/NotFoundPage').then((module) => ({
+    default: module.NotFoundPage,
+  })),
+);
+const PhoneDetailPage = lazy(async () =>
+  import('@/pages/PhoneDetailPage/PhoneDetailPage').then((module) => ({
+    default: module.PhoneDetailPage,
+  })),
+);
+
+const routeFallback = (
+  <div role="status" aria-live="polite" aria-label="Loading page" className="sr-only">
+    Loading page
+  </div>
+);
 
 /**
  * Application root component.
@@ -35,9 +53,30 @@ export const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<PhoneListPage />} />
-            <Route path="products/:id" element={<PhoneDetailPage />} />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route
+              path="products/:id"
+              element={
+                <Suspense fallback={routeFallback}>
+                  <PhoneDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="cart"
+              element={
+                <Suspense fallback={routeFallback}>
+                  <CartPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={routeFallback}>
+                  <NotFoundPage />
+                </Suspense>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

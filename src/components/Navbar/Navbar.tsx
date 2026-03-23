@@ -52,6 +52,8 @@ export const Navbar = () => {
                 className="navbar__logo"
                 width="74"
                 height="24"
+                decoding="async"
+                fetchPriority="high"
               />
             </Link>
             <LanguageSwitcher />

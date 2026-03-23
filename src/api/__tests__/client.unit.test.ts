@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { apiClient, ApiError } from '../client';
+import { apiClient, ApiError, ApiTimeoutError } from '../client';
 
 vi.mock('@/env', () => ({
   env: () => ({ apiKey: 'test-api-key', baseUrl: 'https://api.test' }),
@@ -23,6 +23,17 @@ describe('ApiError', () => {
     expect(err.message).toBe('Not Found');
     expect(err.status).toBe(404);
     expect(err.statusText).toBe('Not Found');
+    expect(err).toBeInstanceOf(Error);
+  });
+});
+
+describe('ApiTimeoutError', () => {
+  it('creates an error with timeout metadata', () => {
+    const err = new ApiTimeoutError(15_000);
+
+    expect(err.name).toBe('ApiTimeoutError');
+    expect(err.message).toBe('API request timed out after 15 seconds');
+    expect(err.timeoutMs).toBe(15_000);
     expect(err).toBeInstanceOf(Error);
   });
 });
@@ -100,6 +111,32 @@ describe('apiClient', () => {
     await expect(apiClient('/endpoint-abort')).rejects.toEqual(abortError);
   });
 
+  it('throws ApiTimeoutError when the request exceeds the timeout budget', async () => {
+    mockFetch.mockImplementationOnce((_url, init) => {
+      const activeSignal = init?.signal as AbortSignal;
+
+      return new Promise((_resolve, reject) => {
+        activeSignal.addEventListener(
+          'abort',
+          () => reject(new DOMException('Aborted', 'AbortError')),
+          { once: true },
+        );
+      });
+    });
+
+    const request = apiClient('/endpoint-timeout');
+    void request.catch(() => undefined);
+
+    await vi.advanceTimersByTimeAsync(15_000);
+    await expect(request).rejects.toEqual(
+      expect.objectContaining({
+        name: 'ApiTimeoutError',
+        message: 'API request timed out after 15 seconds',
+        timeoutMs: 15_000,
+      }),
+    );
+  });
+
   it('wraps unknown network errors', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Network failure'));
 
@@ -135,28 +172,36 @@ describe('apiClient', () => {
     await apiClient('/endpoint-ttl');
     expect(mockFetch).toHaveBeenCalledTimes(1);
 
-    // Advance past the 5-minute TTL
     vi.advanceTimersByTime(5 * 60 * 1000 + 1);
 
     await apiClient('/endpoint-ttl');
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
-  it('forwards AbortSignal to fetch', async () => {
+  it('composes the caller AbortSignal into the fetch signal', async () => {
     const controller = new AbortController();
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      statusText: 'OK',
-      json: () => Promise.resolve({}),
+    let fetchSignal: AbortSignal | undefined;
+
+    mockFetch.mockImplementationOnce((_url, init) => {
+      fetchSignal = init?.signal as AbortSignal;
+
+      return new Promise((_resolve, reject) => {
+        fetchSignal?.addEventListener(
+          'abort',
+          () => reject(new DOMException('Aborted', 'AbortError')),
+          { once: true },
+        );
+      });
     });
 
-    await apiClient('/endpoint-signal', controller.signal);
+    const request = apiClient('/endpoint-signal', controller.signal);
+    void request.catch(() => undefined);
+    controller.abort();
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({ signal: controller.signal }),
-    );
+    await expect(request).rejects.toEqual(expect.objectContaining({ name: 'AbortError' }));
+    expect(fetchSignal).toBeInstanceOf(AbortSignal);
+    expect(fetchSignal).not.toBe(controller.signal);
+    expect(fetchSignal?.aborted).toBe(true);
   });
 
   it('wraps non-Error network failures', async () => {

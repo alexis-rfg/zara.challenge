@@ -1,8 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useProducts } from '../useProducts';
+import { ApiTimeoutError } from '@/api/client';
 import * as productService from '@/services/product.service';
 import productFixtures from '@/test/fixtures/products.json';
+
+const { productsLoadFailedMock, timeoutErrorMock } = vi.hoisted(() => ({
+  productsLoadFailedMock: vi.fn((err: unknown) => err),
+  timeoutErrorMock: vi.fn((err: unknown) => err),
+}));
 
 vi.mock('@/services/product.service', () => ({
   fetchProducts: vi.fn(),
@@ -10,7 +16,8 @@ vi.mock('@/services/product.service', () => ({
 
 vi.mock('@/utils/error.utils', () => ({
   ErrorFactory: {
-    productsLoadFailed: vi.fn((err: unknown) => err),
+    productsLoadFailed: productsLoadFailedMock,
+    timeoutError: timeoutErrorMock,
   },
   getErrorMessage: vi.fn(() => 'Failed to load products. Please try again.'),
   logError: vi.fn(),
@@ -60,6 +67,21 @@ describe('useProducts', () => {
 
     expect(result.current.error).toBe('Failed to load products. Please try again.');
     expect(result.current.products).toEqual([]);
+  });
+
+  it('maps ApiTimeoutError to the timeout-specific application error', async () => {
+    vi.mocked(productService.fetchProducts).mockRejectedValue(new ApiTimeoutError(15_000));
+
+    const { getErrorMessage } = await import('@/utils/error.utils');
+    vi.mocked(getErrorMessage).mockReturnValueOnce('Request timed out. Please try again.');
+
+    const { result } = renderHook(() => useProducts());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(timeoutErrorMock).toHaveBeenCalledTimes(1);
+    expect(productsLoadFailedMock).not.toHaveBeenCalled();
+    expect(result.current.error).toBe('Request timed out. Please try again.');
   });
 
   it('initial fetch has no search params (uses limit:20 via service)', async () => {

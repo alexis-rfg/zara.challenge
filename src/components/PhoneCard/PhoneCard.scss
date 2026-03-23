@@ -11,6 +11,11 @@
   aspect-ratio: 1; // square cards at desktop/tablet
   overflow: hidden;
 
+  @supports (content-visibility: auto) {
+    content-visibility: auto;
+    contain-intrinsic-size: 320px 320px;
+  }
+
   // No card-level borders here. Each context scopes its own border rules:
   //   - .phone-list-page__grid  → nth-child borders (PhoneListPage.scss)
   //   - .similar-products__carousel → explicit borders (SimilarProducts.scss)

@@ -11,6 +11,7 @@ export const CartIcon = () => (
     viewBox="0 0 18 18"
     fill="none"
     aria-hidden="true"
+    focusable="false"
   >
     <path
       d="M5.25 6V4.875C5.25 2.80493 6.92993 1.125 9 1.125C11.0701 1.125 12.75 2.80493 12.75 4.875V6"

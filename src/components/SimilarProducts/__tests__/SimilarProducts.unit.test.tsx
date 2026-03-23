@@ -67,7 +67,7 @@ describe('SimilarProducts', () => {
     fireEvent.scroll(carousel as Element);
 
     const track = document.querySelector('.similar-products__scrollbar-track') as HTMLElement;
-    expect(track?.style.left).toBe('80px');
+    expect(track?.style.transform).toBe('translate3d(80px, 0, 0)');
   });
 
   it('does NOT show scrollbar when no overflow', () => {
