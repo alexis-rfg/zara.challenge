@@ -8,6 +8,8 @@ import { PhoneCard } from '@/components/PhoneCard/PhoneCard';
 import type { PhoneListPageState } from '@/types/page.types';
 import './PhoneListPage.scss';
 
+const LOADING_SKELETON_COUNT = 5;
+
 /**
  * Resolves the current list-page state from request and data status.
  *
@@ -22,7 +24,7 @@ const getPageState = (
   productCount: number,
 ): PhoneListPageState => {
   if (error) return 'error';
-  if (loading) return 'loading';
+  if (loading && productCount === 0) return 'loading';
   if (productCount === 0) return 'empty';
   return 'populated';
 };
@@ -40,21 +42,38 @@ export const PhoneListPage = () => {
 
   const displayProducts = useMemo(() => filterProducts(products), [products, filterProducts]);
   const pageState = getPageState(loading, error, displayProducts.length);
-
   useEffect(() => {
     document.title = t('phoneListPage.title');
   }, [t]);
 
-  const loadingProgress =
-    pageState === 'loading' ? (
-      <div className="phone-list-page__progress-wrapper">
-        <div
-          className="phone-list-page__progress"
-          role="progressbar"
-          aria-label={t('phoneListPage.loadingAriaLabel')}
-        />
+  const loadingProgress = loading ? (
+    <div className="phone-list-page__progress-wrapper">
+      <div
+        className="phone-list-page__progress"
+        role="progressbar"
+        aria-label={t('phoneListPage.loadingAriaLabel')}
+      />
+    </div>
+  ) : null;
+
+  const loadingSkeleton = (
+    <div className="phone-list-page__grid-shell" aria-hidden="true">
+      <div className="phone-list-page__grid phone-list-page__grid--skeleton">
+        {Array.from({ length: LOADING_SKELETON_COUNT }, (_, index) => (
+          <div key={`skeleton-${index}`} className="phone-list-page__skeleton-card">
+            <div className="phone-list-page__skeleton-media" />
+            <div className="phone-list-page__skeleton-footer">
+              <div className="phone-list-page__skeleton-copy">
+                <span className="phone-list-page__skeleton-line phone-list-page__skeleton-line--short" />
+                <span className="phone-list-page__skeleton-line" />
+              </div>
+              <span className="phone-list-page__skeleton-line phone-list-page__skeleton-line--price" />
+            </div>
+          </div>
+        ))}
       </div>
-    ) : null;
+    </div>
+  );
 
   /**
    * Renders the correct content block for the current list-page state.
@@ -73,7 +92,7 @@ export const PhoneListPage = () => {
         );
 
       case 'loading':
-        return null;
+        return loadingSkeleton;
 
       case 'empty': {
         const emptyStateMessage = committedSearch
@@ -81,23 +100,19 @@ export const PhoneListPage = () => {
           : t('phoneListPage.noProducts');
 
         return (
-          <div className="page-transition">
-            <div className="phone-list-page__empty" role="status">
-              <p>{emptyStateMessage}</p>
-            </div>
+          <div className="phone-list-page__empty" role="status">
+            <p>{emptyStateMessage}</p>
           </div>
         );
       }
 
       case 'populated':
         return (
-          <div className="page-transition">
-            <div className="phone-list-page__grid-shell">
-              <div className="phone-list-page__grid">
-                {displayProducts.map((product) => (
-                  <PhoneCard key={product.id} product={product} />
-                ))}
-              </div>
+          <div className="phone-list-page__grid-shell">
+            <div className="phone-list-page__grid">
+              {displayProducts.map((product, index) => (
+                <PhoneCard key={product.id} product={product} eagerImage={index < 5} />
+              ))}
             </div>
           </div>
         );

@@ -18,6 +18,11 @@ describe('LazyImage', () => {
     expect(screen.getByRole('img')).toHaveAttribute('loading', 'eager');
   });
 
+  it('promotes eager images with high fetch priority', () => {
+    render(<LazyImage eager src="/img/test.webp" alt="Test" />);
+    expect(screen.getByRole('img')).toHaveAttribute('fetchpriority', 'high');
+  });
+
   it('always sets decoding to async', () => {
     render(<LazyImage src="/img/test.webp" alt="Test" />);
     expect(screen.getByRole('img')).toHaveAttribute('decoding', 'async');

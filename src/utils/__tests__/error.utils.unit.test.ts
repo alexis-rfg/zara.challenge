@@ -58,6 +58,11 @@ describe('ErrorFactory', () => {
     expect(err.code).toBe(ErrorCode.NETWORK_ERROR);
   });
 
+  it('timeoutError creates AppError with TIMEOUT code', () => {
+    const err = ErrorFactory.timeoutError();
+    expect(err.code).toBe(ErrorCode.TIMEOUT);
+  });
+
   it('apiError creates AppError with API_ERROR code', () => {
     const err = ErrorFactory.apiError();
     expect(err.code).toBe(ErrorCode.API_ERROR);

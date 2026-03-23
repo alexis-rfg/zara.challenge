@@ -74,24 +74,52 @@ describe('PhoneListPage', () => {
   });
 
   it('shows search bar while loading', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
+      loading: true,
+    });
 
     renderWithRouter(<PhoneListPage />);
 
     expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
-  it('renders the loading progress bar before the search bar while loading', () => {
-    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({ ...mockHookBase, loading: true });
+  it('renders the loading progress bar with skeleton and sticky header during the initial load', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
+      loading: true,
+    });
 
     renderWithRouter(<PhoneListPage />);
 
     const progress = screen.getByRole('progressbar', { name: /loading products/i });
-    const searchForm = screen.getByRole('search');
+    expect(progress).toBeInTheDocument();
+    expect(document.querySelector('.phone-list-page__sticky-header')).toBeInTheDocument();
+    expect(document.querySelectorAll('.phone-list-page__skeleton-card')).toHaveLength(5);
+  });
 
-    expect(progress.compareDocumentPosition(searchForm) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
+  it('keeps the search bar visible during later searches once the initial load finished', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
+      loading: true,
+    });
+
+    renderWithRouter(<PhoneListPage />);
+
+    expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeEnabled();
+    expect(screen.getByRole('search')).toBeInTheDocument();
+  });
+
+  it('does not render the old reveal wrapper during the initial load', () => {
+    vi.spyOn(useProductsHook, 'useProducts').mockReturnValue({
+      ...mockHookBase,
+      loading: true,
+    });
+
+    renderWithRouter(<PhoneListPage />);
+
+    expect(document.querySelector('.phone-list-page__loaded-content')).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search for a smartphone...')).toBeInTheDocument();
   });
 
   it('displays products in grid', () => {

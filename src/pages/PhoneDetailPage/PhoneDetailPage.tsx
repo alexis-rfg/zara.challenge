@@ -268,6 +268,9 @@ export const PhoneDetailPage = () => {
             src={currentImageUrl}
             alt={`${product.brand} ${product.name}`}
             className="phone-detail-page__image"
+            width={640}
+            height={640}
+            sizes="(max-width: 768px) 100vw, 40vw"
           />
         </div>
 

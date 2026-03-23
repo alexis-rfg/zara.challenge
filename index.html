@@ -2,10 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>zara-challenge</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+    <!-- SEO -->
+    <title>Zara Mobile Phones | Browse & Shop Smartphones</title>
+    <meta name="description" content="Browse the latest smartphones from top brands like Apple, Samsung, and Google. Compare prices, specs, and colors in the Zara mobile phone catalog." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect to API origin — saves DNS + TLS negotiation (~200-500 ms) -->
+    <link rel="preconnect" href="%VITE_API_BASE_URL%" crossorigin />
+    <link rel="dns-prefetch" href="%VITE_API_BASE_URL%" />
+
+    <!-- Prefetch: start the products API call before the JS bundle loads.
+         Config is inline (Vite replaces %ENV% only in HTML); logic is external. -->
+    <script>
+      window.__PREFETCH_CONFIG__ = {
+        apiBaseUrl: '%VITE_API_BASE_URL%',
+        apiKey: '%VITE_API_KEY%'
+      };
+    </script>
+    <script src="/prefetch.js"></script>
   </head>
   <body>
     <div id="root"></div>

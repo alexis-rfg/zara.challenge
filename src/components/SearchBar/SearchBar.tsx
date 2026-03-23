@@ -17,7 +17,13 @@ import './SearchBar.scss';
  * @param props - Component props.
  * @returns Search form JSX.
  */
-export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: SearchBarProps) => {
+export const SearchBar = ({
+  onSearch,
+  committedSearch,
+  resultCount,
+  loading,
+  disabled = false,
+}: SearchBarProps) => {
   const { t } = useTranslation();
   const inputId = useId();
   const [inputValue, setInputValue] = useState('');
@@ -45,11 +51,13 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (disabled) return;
     onSearch(inputValue.trim());
   };
 
   /** Clears the input and resets the committed search upstream. */
   const handleClear = () => {
+    if (disabled) return;
     setInputValue('');
     onSearch('');
   };
@@ -68,6 +76,7 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
       type="button"
       className="search-bar__clear"
       onClick={handleClear}
+      disabled={disabled}
       aria-label={t('searchBar.clearAriaLabel')}
     >
       <svg
@@ -80,6 +89,7 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
         strokeLinecap="round"
         strokeLinejoin="round"
         aria-hidden="true"
+        focusable="false"
       >
         <line x1="18" y1="6" x2="6" y2="18" />
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -101,6 +111,7 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
+          focusable="false"
         >
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
@@ -114,6 +125,7 @@ export const SearchBar = ({ onSearch, committedSearch, resultCount, loading }: S
           placeholder={t('searchBar.placeholder')}
           value={inputValue}
           onChange={handleInputChange}
+          disabled={disabled}
           aria-label={t('searchBar.ariaLabel')}
         />
 

@@ -15,13 +15,15 @@ export const LazyImage = ({
   alt = '',
   onLoad,
   onError,
+  fetchPriority,
   ...rest
 }: LazyImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const loadingStrategy = eager ? 'eager' : 'lazy';
+  const resolvedFetchPriority = fetchPriority ?? (eager ? 'high' : null);
   const computedClassName =
-    `lazy-image${loaded ? ' lazy-image--loaded' : ''}${errored ? ' lazy-image--errored' : ''} ${className}`.trim();
+    `lazy-image${loaded || eager ? ' lazy-image--loaded' : ''}${errored ? ' lazy-image--errored' : ''} ${className}`.trim();
 
   /**
    * Marks the image as loaded and forwards the load event.
@@ -55,6 +57,7 @@ export const LazyImage = ({
       alt={alt}
       className={computedClassName}
       loading={loadingStrategy}
+      {...(resolvedFetchPriority ? { fetchPriority: resolvedFetchPriority } : {})}
       decoding="async"
       onLoad={handleLoad}
       onError={handleError}

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { ApiTimeoutError } from '@/api/client';
 import { fetchProducts } from '@/services/product.service';
 import { ErrorFactory, getErrorMessage, logError } from '@/utils/error.utils';
+import type { AppError } from '@/types/error.types';
 import { createLogger } from '@/utils/logger';
 import type { ProductSummary } from '@/types/product.types';
 import type { UseProductsResult } from '@/types/hooks.types';
@@ -45,7 +47,10 @@ export const useProducts = (): UseProductsResult => {
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;
 
-        const appError = ErrorFactory.productsLoadFailed(err);
+        const appError: AppError =
+          err instanceof ApiTimeoutError
+            ? ErrorFactory.timeoutError(err)
+            : ErrorFactory.productsLoadFailed(err);
         setError(getErrorMessage(appError));
         loadSpan.fail(err, { tags: ['error'], context: { committedSearch } });
         logError(err, 'useProducts.loadProducts');
@@ -73,5 +78,12 @@ export const useProducts = (): UseProductsResult => {
     setCommittedSearch(term.trim());
   }, []);
 
-  return { products, loading, error, committedSearch, submitSearch, resultCount: products.length };
+  return {
+    products,
+    loading,
+    error,
+    committedSearch,
+    submitSearch,
+    resultCount: products.length,
+  };
 };
